@@ -1,5 +1,6 @@
 package com.example.copia;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -8,10 +9,12 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.parse.Parse;
+import com.parse.ParseUser;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
@@ -25,6 +28,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .clientKey(getString(R.string.back4app_client_key))
                 .server(getString(R.string.back4app_server_url))
                 .build());
+        ParseUser user = ParseUser.getCurrentUser();
+        if(user == null)
+        {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         if(savedInstanceState == null)
@@ -64,7 +73,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentSearch()).commit();
                 break;
             case R.id.logout:
-                Toast.makeText(this, "Logout", Toast.LENGTH_SHORT).show();
+                ParseUser.logOut();
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);
