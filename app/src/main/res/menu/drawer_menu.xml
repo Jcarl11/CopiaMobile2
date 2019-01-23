@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/category_client"
+            android:icon="@drawable/ic_arrow"
+            android:title="Client" />
+        <item android:id="@+id/category_suppliers"
+            android:icon="@drawable/ic_arrow"
+            android:title="Suppliers" />
+        <item android:id="@+id/category_contractors"
+            android:icon="@drawable/ic_arrow"
+            android:title="Contractors" />
+        <item android:id="@+id/category_consultants"
+            android:icon="@drawable/ic_arrow"
+            android:title="Consultants" />
+        <item android:id="@+id/category_specifications"
+            android:icon="@drawable/ic_arrow"
+            android:title="Specifications" />
+        <item android:id="@+id/category_search"
+            android:icon="@drawable/ic_search"
+            android:title="Search" />
+    </group>
+    <item android:title="Misc">
+        <menu>
+            <item
+                android:id="@+id/logout"
+                android:icon="@drawable/ic_signout"
+                android:title="Logout" />
+        </menu>
+    </item>
+</menu>
