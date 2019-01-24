@@ -28,7 +28,6 @@ public class FragmentClient extends Fragment
     ArrayList<String> typeList = new ArrayList<>();
     AutoLabelUI mAutoLabel_tags;
     AutoLabelUI mAutoLabel_remark;
-    ArrayList<String>tags = new ArrayList<>();
     Button btn_add,btn_upload,client_btn_addremark;
     EditText client_edittext_tags,client_edittext_remark;
     Spinner spinner_industry, spinner_type;
