@@ -74,9 +74,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentSearch()).commit();
                 break;
             case R.id.logout:
-                ParseUser.logOut();
-                startActivity(new Intent(this, LoginActivity.class));
-                finish();
+                new LogoutTask(this).execute((Void)null);
                 break;
         }
         drawer.closeDrawer(GravityCompat.START);

@@ -1,7 +1,6 @@
 package com.example.copia;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,9 +15,11 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import dmax.dialog.SpotsDialog;
+
+
 public class RegisterActivity extends AppCompatActivity {
 
-    private ProgressBar progressBar;
     private EditText email, username, password,repassword;
     private Button submit;
     @Override
@@ -26,7 +27,6 @@ public class RegisterActivity extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        progressBar = (ProgressBar)findViewById(R.id.progressbar_register);
         email = (EditText)findViewById(R.id.editext_email);
         username = (EditText)findViewById(R.id.editext_username);
         password = (EditText)findViewById(R.id.edittext_password);
@@ -40,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity {
         {
             if(isPasswordMatched())
             {
-                new TaskExecute().execute((Void)null);
+                new TaskExecute(this).execute((Void)null);
             }
             else
                 Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT).show();
@@ -69,8 +69,21 @@ public class RegisterActivity extends AppCompatActivity {
 
     private class TaskExecute extends AsyncTask<Void, Void, Boolean>
     {
+        AlertDialog dialog;
+        RegisterActivity registerActivity;
         boolean finished = false;
         boolean successful = false;
+
+        public TaskExecute(RegisterActivity registerActivity)
+        {
+            this.registerActivity = registerActivity;
+            dialog = new SpotsDialog.Builder()
+                    .setMessage("Please wait")
+                    .setContext(registerActivity)
+                    .setCancelable(false)
+                    .build();
+        }
+
         @Override
         protected Boolean doInBackground(Void... voids) {
             ParseUser user = new ParseUser();
@@ -103,27 +116,15 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            progressBar.setVisibility(ProgressBar.VISIBLE);
+            dialog.show();
         }
 
         @Override
         protected void onPostExecute(Boolean aBoolean) {
-            progressBar.setVisibility(ProgressBar.INVISIBLE);
-            AlertDialog.Builder builder = new AlertDialog.Builder(RegisterActivity.this);
-            builder.setTitle("Important");
-            builder.setMessage("A confirmation Email was sent to your email, Please confirm to be able to login");
-            builder.setCancelable(true);
-
-            builder.setPositiveButton(
-                    "Yes",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.dismiss();
-                        }
-                    });
-
-            AlertDialog alert11 = builder.create();
-            alert11.show();
+            dialog.dismiss();
+            Utilities.getInstance().showAlertBox("Important",
+                    "A confirmation Email was sent to your email, Please confirm to be able to login",
+                    RegisterActivity.this);
         }
     }
 
