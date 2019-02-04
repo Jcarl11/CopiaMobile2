@@ -35,14 +35,12 @@ public class FragmentClient extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_client,container,false);
-        industryList.add("Hospitality");
-        industryList.add("Design");
-        industryList.add("Retail");
-        industryList.add("Food and Beverage");
-        industryList.add("Construction");
-        typeList.add("Government");
-        typeList.add("Private");
-        typeList.add("Corporate");
+        List<ComboboxEntity> industry = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Client", "Industry");
+        List<ComboboxEntity> type = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Client", "Type");
+        for(ComboboxEntity entity : industry)
+            industryList.add(entity.getTitle());
+        for(ComboboxEntity entity : type)
+            typeList.add(entity.getTitle());
         ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, industryList);
         ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, typeList);
         dataAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);

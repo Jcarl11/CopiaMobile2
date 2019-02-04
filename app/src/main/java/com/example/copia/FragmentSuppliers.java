@@ -34,16 +34,14 @@ public class FragmentSuppliers extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_suppliers, container, false);
-        industryList.add("Art and Design");
-        industryList.add("Information Technology");
-        industryList.add("Graphics and Printing");
-        industryList.add("Food and Beverage");
-        industryList.add("Construction");
-        industryList.add("Hospitality");
-        industryList.add("Retail");
-        typeList.add("Finishing");
-        typeList.add("Private");
-        typeList.add("Corporate");
+
+        List<ComboboxEntity> industry = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Suppliers", "Industry");
+        List<ComboboxEntity> type = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Suppliers", "Type");
+        for(ComboboxEntity entity : industry)
+            industryList.add(entity.getTitle());
+        for(ComboboxEntity entity : type)
+            typeList.add(entity.getTitle());
+
         suppliers_edittext_representative = (EditText)view.findViewById(R.id.suppliers_edittext_representative);
         suppliers_edittext_position = (EditText)view.findViewById(R.id.suppliers_edittext_position);
         suppliers_edittext_company = (EditText)view.findViewById(R.id.suppliers_edittext_company);
@@ -63,6 +61,8 @@ public class FragmentSuppliers extends Fragment
         dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         suppliers_spinner_industry.setAdapter(dataAdapter1);
         suppliers_spinner_type.setAdapter(dataAdapter2);
+        suppliers_spinner_industry.setPrompt("Industry");
+        suppliers_spinner_type.setPrompt("Type");
         suppliers_btn_addtag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)

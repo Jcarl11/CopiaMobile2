@@ -7,4 +7,6 @@
     <string name="back4app_client_key">NZhpiMQGNbTLp0p6RRk8AbbNHw3j6kzh5hZ50s8V</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="prompt_industry">Industry</string>
+    <string name="prompt_type">Type</string>
 </resources>

@@ -15,10 +15,10 @@ public class Utilities
         return instance;
     }
 
-    public void showAlertBox(String titile, String message, Context context)
+    public void showAlertBox(String title, String message, Context context)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(titile);
+        builder.setTitle(title);
         builder.setMessage(message);
         builder.setCancelable(true);
 
