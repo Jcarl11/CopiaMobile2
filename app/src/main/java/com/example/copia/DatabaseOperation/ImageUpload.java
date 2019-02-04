@@ -4,9 +4,11 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.SaveCallback;
+import com.vincent.filepicker.filter.entity.ImageFile;
 import com.vincent.filepicker.filter.entity.NormalFile;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,18 +21,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class FileUpload
+public class ImageUpload
 {
     ArrayList<Boolean> results = new ArrayList<>();
-    public boolean file_upload(final ParseObject reference, ArrayList<NormalFile> filesList)
+    public boolean image_upload(final ParseObject reference, ArrayList<ImageFile> imageList)
     {
-        if(filesList.size() > 0)
+        if(imageList.size() > 0)
         {
-
             ArrayList<Callable<Boolean>> taskList = new ArrayList<>();
             List<Future<Boolean>> callableList = new ArrayList<>();
             ExecutorService es = Executors.newFixedThreadPool(5);
-            for (final NormalFile file : filesList)
+            for (final ImageFile file : imageList)
             {
                 Callable<Boolean> callable = new Callable<Boolean>()
                 {
@@ -39,12 +40,12 @@ public class FileUpload
                     @Override
                     public Boolean call() throws Exception
                     {
-                        File normalFile = new File(file.getPath());
-                        ParseObject query = new ParseObject("PDFFiles");
+                        File imageFile = new File(file.getPath());
+                        ParseObject query = new ParseObject("Images");
                         query.put("ClientPointer", reference);
                         query.put("Name", file.getName());
                         try {
-                            query.put("Files", new ParseFile(normalFile.getName(), FileUtils.readFileToByteArray(normalFile)));
+                            query.put("Files", new ParseFile(imageFile.getName(), FileUtils.readFileToByteArray(imageFile)));
                         }
                         catch (IOException e) {e.printStackTrace();}
                         query.saveInBackground(new SaveCallback() {
@@ -67,7 +68,7 @@ public class FileUpload
             }
             try {
                 callableList = es.invokeAll(taskList);
-                for(Future<Boolean> future : callableList)
+                for (Future<Boolean> future : callableList)
                     results.add(future.get());
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -83,6 +84,7 @@ public class FileUpload
                 es.shutdownNow();
             }
         }
+
         return results.contains(false);
     }
 }

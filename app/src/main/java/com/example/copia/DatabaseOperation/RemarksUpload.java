@@ -8,6 +8,7 @@ import com.parse.SaveCallback;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -18,8 +19,8 @@ public class RemarksUpload
     ArrayList<Callable<Boolean>> taskList = new ArrayList<>();
     List<Future<Boolean>> callableList = new ArrayList<>();
     ExecutorService es = Executors.newFixedThreadPool(5);
-
-    public void client_remarks_upload(List<Label> remarksList, final ParseObject reference)
+    ArrayList<Boolean> results = new ArrayList<>();
+    public boolean client_remarks_upload(List<Label> remarksList, final ParseObject reference)
     {
         if(remarksList.size() > 0)
         {
@@ -52,7 +53,11 @@ public class RemarksUpload
 
             try {
                 callableList = es.invokeAll(taskList);
+                for(Future<Boolean> future : callableList)
+                    results.add(future.get());
             } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
                 e.printStackTrace();
             }
             es.shutdown();
@@ -64,5 +69,6 @@ public class RemarksUpload
                 es.shutdownNow();
             }
         }
+        return results.contains(false);
     }
 }

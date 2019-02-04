@@ -22,33 +22,22 @@ import com.dpizarro.autolabel.library.AutoLabelUI;
 import com.dpizarro.autolabel.library.AutoLabelUISettings;
 import com.dpizarro.autolabel.library.Label;
 import com.example.copia.DatabaseOperation.FileUpload;
+import com.example.copia.DatabaseOperation.ImageUpload;
 import com.example.copia.DatabaseOperation.RemarksUpload;
 import com.example.copia.DatabaseOperation.UploadPrimary;
-import com.parse.ParseException;
 import com.parse.ParseObject;
-import com.parse.ParseQuery;
-import com.parse.SaveCallback;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.activity.ImagePickActivity;
 import com.vincent.filepicker.activity.NormalFilePickActivity;
 import com.vincent.filepicker.filter.entity.ImageFile;
 import com.vincent.filepicker.filter.entity.NormalFile;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.json.JSONArray;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture;
 
 import dmax.dialog.SpotsDialog;
 
@@ -234,6 +223,7 @@ public class FragmentClient extends Fragment implements View.OnClickListener
     private class ClientUploadTask extends AsyncTask<Void, Void, Boolean>
     {
         FileUpload fileUpload = new FileUpload();
+        ImageUpload imageUpload = new ImageUpload();
         UploadPrimary uploadPrimary = new UploadPrimary();
         RemarksUpload remarksUpload = new RemarksUpload();
         AlertDialog dialog;
@@ -248,7 +238,8 @@ public class FragmentClient extends Fragment implements View.OnClickListener
 
         @Override
         protected Boolean doInBackground(Void... voids) {
-            List<Label> labels = mAutoLabel_remark.getLabels();
+            ArrayList<Boolean> results = new ArrayList<>();
+            final List<Label> labels = mAutoLabel_remark.getLabels();
             HashMap<String, String> data = new HashMap<>();
             data.put("Representative", client_edittext_representative.getText().toString().trim().toUpperCase());
             data.put("Position", client_edittext_position.getText().toString().trim().toUpperCase());
@@ -256,10 +247,15 @@ public class FragmentClient extends Fragment implements View.OnClickListener
             data.put("Industry", spinner_industry.getSelectedItem().toString().toUpperCase());
             data.put("Type", spinner_type.getSelectedItem().toString().toUpperCase());
 
+
             final ParseObject clientObject = uploadPrimary.client_upload(data, client_extractStringsToTags());
-            remarksUpload.client_remarks_upload(labels, clientObject);
-            fileUpload.file_upload(clientObject, imageList, filesList);
-            return true;
+            if(!remarksUpload.client_remarks_upload(labels, clientObject))
+                results.add(false);
+            if(!imageUpload.image_upload(clientObject, imageList))
+                results.add(false);
+            if(!fileUpload.file_upload(clientObject, filesList))
+                results.add(false);
+            return results.contains(false);
         }
 
         @Override
@@ -272,7 +268,7 @@ public class FragmentClient extends Fragment implements View.OnClickListener
             if(aBoolean)
                 Utilities.getInstance().showAlertBox("Status", "Successful", getContext());
             else
-                Utilities.getInstance().showAlertBox("Status", "Something went wrong", getContext());
+                Utilities.getInstance().showAlertBox("Status", "Some of the files/remarks were not uploaded properly", getContext());
         }
     }
 }
