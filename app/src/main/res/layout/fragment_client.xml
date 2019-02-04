@@ -48,30 +48,6 @@
             android:layout_marginBottom="10dp"
             android:prompt="@string/prompt_type"
             android:spinnerMode="dialog" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp"
-            android:weightSum="3">
-
-            <EditText
-                android:id="@+id/client_edittext_addtag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Add tag"
-                android:textColor="@android:color/black"
-                android:layout_weight="2"/>
-
-            <Button
-                android:id="@+id/client_button_add"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="Add"
-                android:background="@color/colorPrimary"
-                android:textColor="@android:color/white"
-                android:layout_weight="1"/>
-        </LinearLayout>
         <com.dpizarro.autolabel.library.AutoLabelUI
             android:id="@+id/label_tag"
             android:layout_width="match_parent"
@@ -105,6 +81,28 @@
             android:id="@+id/label_remark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
+        <Button
+            android:id="@+id/client_btn_uploadfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="CHOOSE FILES"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="10dp"/>
+        <Button
+            android:id="@+id/client_btn_uploadimage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="CHOOSE IMAGE"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="10dp"/>
+        <com.dpizarro.autolabel.library.AutoLabelUI
+            android:id="@+id/label_files"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
         <Button
             android:id="@+id/client_button_upload"
             android:layout_width="match_parent"
@@ -112,6 +110,7 @@
             android:background="@color/colorPrimary"
             android:textColor="@android:color/white"
             android:text="Upload"/>
+
     </LinearLayout>
 
 </ScrollView>
