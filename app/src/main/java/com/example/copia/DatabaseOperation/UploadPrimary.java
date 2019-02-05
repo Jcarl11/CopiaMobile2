@@ -73,4 +73,34 @@ public class UploadPrimary
         }
         return query;
     }
+    public ParseObject contractors_upload(HashMap<String, String> contractorsData, ArrayList<String> tags)
+    {
+        finished = false;
+        successful = false;
+        final ParseObject query = new ParseObject("Contractors");
+        query.put("Representative", contractorsData.get("Representative"));
+        query.put("Position", contractorsData.get("Position"));
+        query.put("Company", contractorsData.get("Company"));
+        query.put("Specialization", contractorsData.get("Specialization"));
+        query.put("Industry", contractorsData.get("Industry"));
+        query.put("Classification", contractorsData.get("Classification"));
+        query.put("Tags", new JSONArray(tags));
+        query.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e == null)
+                    successful = true;
+                finished= true;
+            }
+        });
+        while(finished == false)
+        {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return query;
+    }
 }

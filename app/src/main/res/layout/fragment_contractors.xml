@@ -38,43 +38,22 @@
             android:layout_height="wrap_content"
             android:hint="Specialization"
             android:textColor="@android:color/black"/>
+
         <Spinner
             android:id="@+id/contractors_combobox_industry"
             android:layout_width="match_parent"
-            android:layout_height="30dp"/>
+            android:layout_height="30dp"
+            android:prompt="@string/prompt_industry"
+            android:spinnerMode="dialog" />
+
         <Spinner
             android:id="@+id/contractors_combobox_classification"
             android:layout_width="match_parent"
             android:layout_height="30dp"
-            android:layout_marginBottom="10dp"/>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginBottom="10dp"
-            android:weightSum="3">
+            android:prompt="@string/prompt_classification"
+            android:spinnerMode="dialog" />
 
-            <EditText
-                android:id="@+id/contractors_edittext_addtag"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="Add tag"
-                android:textColor="@android:color/black"
-                android:layout_weight="2"/>
-
-            <Button
-                android:id="@+id/contractors_button_add"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="Add"
-                android:background="@color/colorPrimary"
-                android:textColor="@android:color/white"
-                android:layout_weight="1"/>
-        </LinearLayout>
-        <com.dpizarro.autolabel.library.AutoLabelUI
-            android:id="@+id/contractors_label_tag"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -92,20 +71,41 @@
                 android:layout_weight="2"/>
 
             <Button
-                android:id="@+id/contractors_button_addremark"
+                android:id="@+id/contractors_btn_addremark"
                 android:layout_width="wrap_content"
                 android:layout_height="30dp"
-                android:text="Add"
+                android:layout_weight="1"
                 android:background="@color/colorPrimary"
-                android:textColor="@android:color/white"
-                android:layout_weight="1"/>
+                android:text="Add"
+                android:textColor="@android:color/white" />
         </LinearLayout>
         <com.dpizarro.autolabel.library.AutoLabelUI
             android:id="@+id/contractors_label_remark"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+
         <Button
-            android:id="@+id/contractors_button_upload"
+            android:id="@+id/contractors_btn_uploadfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="CHOOSE FILES"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="10dp"/>
+        <Button
+            android:id="@+id/contractors_btn_uploadimage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="CHOOSE IMAGE"
+            android:textColor="@android:color/white"
+            android:layout_marginBottom="10dp"/>
+        <com.dpizarro.autolabel.library.AutoLabelUI
+            android:id="@+id/contractors_label_files"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <Button
+            android:id="@+id/contractors_btn_upload"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorPrimary"

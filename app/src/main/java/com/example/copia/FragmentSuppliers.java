@@ -84,8 +84,6 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
         dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         suppliers_spinner_industry.setAdapter(dataAdapter1);
         suppliers_spinner_type.setAdapter(dataAdapter2);
-        suppliers_spinner_industry.setPrompt("Industry");
-        suppliers_spinner_type.setPrompt("Type");
         suppliers_btn_addremark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

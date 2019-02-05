@@ -72,7 +72,7 @@ public class RemarksUpload
             }
         }
         else
-            results.add(false);
+            results.add(true);
         return results.contains(false);
     }
 
@@ -127,7 +127,62 @@ public class RemarksUpload
             }
         }
         else
-            results.add(false);
+            results.add(true);
+        return results.contains(false);
+    }
+
+    public boolean contractors_remarks_upload(List<Label> remarksList, final ParseObject reference)
+    {
+        ArrayList<Boolean> results = new ArrayList<>();
+        if(remarksList.size() > 0)
+        {
+            for (Label label : remarksList) {
+                final String remark = label.getText();
+                Callable<Boolean> task = new Callable<Boolean>() {
+                    private boolean finish = false;
+                    private boolean successful = false;
+
+                    @Override
+                    public Boolean call() throws Exception {
+                        ParseObject query2 = new ParseObject("Notes");
+                        query2.put("Remark", remark);
+                        query2.put("ContractorsPointer", reference);
+                        query2.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if (e == null)
+                                    successful = true;
+                                finish = true;
+                            }
+                        });
+                        while (finish == false)
+                            Thread.sleep(1000);
+                        return successful;
+                    }
+                };
+                taskList.add(task);
+            }
+
+            try {
+                callableList = es.invokeAll(taskList);
+                for(Future<Boolean> future : callableList)
+                    results.add(future.get());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            es.shutdown();
+            try {
+                if (!es.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+                    es.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                es.shutdownNow();
+            }
+        }
+        else
+            results.add(true);
         return results.contains(false);
     }
 }
