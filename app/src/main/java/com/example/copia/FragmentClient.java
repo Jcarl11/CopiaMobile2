@@ -48,7 +48,6 @@ public class FragmentClient extends Fragment implements View.OnClickListener
     ArrayList<NormalFile> filesList = new ArrayList<>();
     ArrayList<String> industryList = new ArrayList<>();
     ArrayList<String> typeList = new ArrayList<>();
-    AutoLabelUI mAutoLabel_tags;
     AutoLabelUI mAutoLabel_remark;
     AutoLabelUI label_files;
     Button client_button_upload,client_btn_addremark,client_btn_uploadfile, client_btn_uploadimage;
@@ -84,11 +83,9 @@ public class FragmentClient extends Fragment implements View.OnClickListener
         spinner_type = (Spinner)view.findViewById(R.id.combobox_type);
         spinner_industry.setAdapter(dataAdapter1);
         spinner_type.setAdapter(dataAdapter2);
-        mAutoLabel_tags = (AutoLabelUI) view.findViewById(R.id.label_tag);
         mAutoLabel_remark = (AutoLabelUI)view.findViewById(R.id.label_remark);
         label_files = (AutoLabelUI)view.findViewById(R.id.label_files);
         AutoLabelUISettings autoLabelUISettings = new AutoLabelUISettings.Builder().build();
-        mAutoLabel_tags.setSettings(autoLabelUISettings);
         client_btn_addremark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -180,20 +177,6 @@ public class FragmentClient extends Fragment implements View.OnClickListener
         return hasNull;
     }
 
-    private boolean isFileValid(String file)
-    {
-        boolean isValid = false;
-        String extension = FilenameUtils.getExtension(file);
-        if(extension.equalsIgnoreCase("jpg"))
-            isValid = true;
-        else if(extension.equalsIgnoreCase("pdf"))
-            isValid = true;
-        else if(extension.equalsIgnoreCase("png"))
-            isValid = true;
-        else if(extension.equalsIgnoreCase("gif"))
-            isValid = true;
-        return isValid;
-    }
     public ArrayList<String> client_extractStringsToTags()
     {
         String representative = client_edittext_representative.getText().toString().trim().toUpperCase();
@@ -251,9 +234,9 @@ public class FragmentClient extends Fragment implements View.OnClickListener
             final ParseObject clientObject = uploadPrimary.client_upload(data, client_extractStringsToTags());
             if(!remarksUpload.client_remarks_upload(labels, clientObject))
                 results.add(false);
-            if(!imageUpload.image_upload(clientObject, imageList))
+            if(!imageUpload.client_image_upload(clientObject, imageList))
                 results.add(false);
-            if(!fileUpload.file_upload(clientObject, filesList))
+            if(!fileUpload.client_file_upload(clientObject, filesList))
                 results.add(false);
             return results.contains(false);
         }
