@@ -103,4 +103,35 @@ public class UploadPrimary
         }
         return query;
     }
+
+    public ParseObject consultants_upload(HashMap<String, String> consultantsData, ArrayList<String> consultants_extractStringsToTags)
+    {
+        finished = false;
+        successful = false;
+        final ParseObject query = new ParseObject("Consultants");
+        query.put("Representative", consultantsData.get("Representative"));
+        query.put("Position", consultantsData.get("Position"));
+        query.put("Company", consultantsData.get("Company"));
+        query.put("Specialization", consultantsData.get("Specialization"));
+        query.put("Industry", consultantsData.get("Industry"));
+        query.put("Classification", consultantsData.get("Classification"));
+        query.put("Tags", new JSONArray(consultants_extractStringsToTags));
+        query.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e == null)
+                    successful = true;
+                finished= true;
+            }
+        });
+        while(finished == false)
+        {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return query;
+    }
 }

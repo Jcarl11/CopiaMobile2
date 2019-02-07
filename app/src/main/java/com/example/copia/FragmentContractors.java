@@ -192,6 +192,7 @@ public class FragmentContractors extends Fragment implements View.OnClickListene
         return tags;
     }
 
+
     private class ContractorsUploadTask extends AsyncTask<Void, Void, Boolean>
     {
         FileUpload fileUpload = new FileUpload();
@@ -241,4 +242,5 @@ public class FragmentContractors extends Fragment implements View.OnClickListene
                 Utilities.getInstance().showAlertBox("Status", "Some of the files/remarks were not uploaded properly", getContext());
         }
     }
+
 }
