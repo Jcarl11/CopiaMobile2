@@ -283,4 +283,70 @@ public class FileUpload
             results.add(true);
         return results.contains(false);
     }
+
+    public boolean specifications_file_upload(final ParseObject reference, ArrayList<NormalFile> filesList)
+    {
+        ArrayList<Boolean> results = new ArrayList<>();
+        if(filesList.size() > 0)
+        {
+            ArrayList<Callable<Boolean>> taskList = new ArrayList<>();
+            List<Future<Boolean>> callableList = new ArrayList<>();
+            ExecutorService es = Executors.newFixedThreadPool(5);
+            for (final NormalFile file : filesList)
+            {
+                Callable<Boolean> callable = new Callable<Boolean>()
+                {
+                    private boolean finish = false;
+                    private boolean successful = false;
+                    @Override
+                    public Boolean call() throws Exception
+                    {
+                        File normalFile = new File(file.getPath());
+                        ParseObject query = new ParseObject("PDFFiles");
+                        query.put("SpecificationsPointer", reference);
+                        query.put("Name", file.getName());
+                        try {
+                            query.put("Files", new ParseFile(normalFile.getName(), FileUtils.readFileToByteArray(normalFile)));
+                        }
+                        catch (IOException e) {e.printStackTrace();}
+                        query.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if(e == null)
+                                    successful = true;
+                                finish = true;
+
+                            }
+                        });
+
+                        while(finish == false)
+                            Thread.sleep(1000);
+
+                        return successful;
+                    }
+                };
+                taskList.add(callable);
+            }
+            try {
+                callableList = es.invokeAll(taskList);
+                for(Future<Boolean> future : callableList)
+                    results.add(future.get());
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
+            es.shutdown();
+            try {
+                if (!es.awaitTermination(800, TimeUnit.MILLISECONDS)) {
+                    es.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                es.shutdownNow();
+            }
+        }
+        else
+            results.add(true);
+        return results.contains(false);
+    }
 }

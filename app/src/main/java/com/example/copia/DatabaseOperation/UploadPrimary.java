@@ -134,4 +134,32 @@ public class UploadPrimary
         }
         return query;
     }
+    public ParseObject specifications_upload(HashMap<String, String> specificationsData, ArrayList<String> specifications_extractStringsToTags)
+    {
+        finished = false;
+        successful = false;
+        final ParseObject query = new ParseObject("Specifications");
+        query.put("Title", specificationsData.get("Title"));
+        query.put("Division", specificationsData.get("Division"));
+        query.put("Section", specificationsData.get("Section"));
+        query.put("Type", specificationsData.get("Type"));
+        query.put("Tags", new JSONArray(specifications_extractStringsToTags));
+        query.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e == null)
+                    successful = true;
+                finished= true;
+            }
+        });
+        while(finished == false)
+        {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return query;
+    }
 }
