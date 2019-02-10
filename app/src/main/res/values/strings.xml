@@ -10,4 +10,5 @@
     <string name="prompt_industry">Industry</string>
     <string name="prompt_type">Type</string>
     <string name="prompt_classification">Classification</string>
+    <string name="prompt_searchin">Search in</string>
 </resources>

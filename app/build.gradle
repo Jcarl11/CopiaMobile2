@@ -33,7 +33,8 @@ dependencies {
     implementation 'com.github.parse-community.Parse-SDK-Android:parse:1.18.5'
     implementation 'com.github.davidpizarro:autolabelui:1.0.1'
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
-    implementation 'com.github.satyan:sugar:1.5'
+    implementation 'com.github.satyan:sugar:1.3'
     implementation 'com.vincent.filepicker:MultiTypeFilePicker:1.0.8'
     implementation 'commons-io:commons-io:2.6'
+    implementation 'de.codecrafters.tableview:tableview:2.8.0'
 }

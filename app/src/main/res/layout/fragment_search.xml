@@ -1,11 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent">
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="SEARCH"
-        android:textSize="30sp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"/>
+        android:orientation="vertical"
+        android:padding="10dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Search in:"
+            android:textColor="@android:color/black"/>
+        <Spinner
+            android:id="@+id/search_spinner_searchin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:prompt="@string/prompt_searchin"
+            android:spinnerMode="dialog"/>
+        <EditText
+            android:id="@+id/search_edittext_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Search"
+            android:textColor="@android:color/black"
+            android:inputType="text"/>
+
+        <de.codecrafters.tableview.TableView xmlns:table="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/tableView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none" />
+    </LinearLayout>
 </RelativeLayout>
