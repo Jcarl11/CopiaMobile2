@@ -14,7 +14,7 @@ public class Utilities
             instance = new Utilities();
         return instance;
     }
-
+    public static int API_LEVEL = android.os.Build.VERSION.SDK_INT;
     public void showAlertBox(String title, String message, Context context)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);

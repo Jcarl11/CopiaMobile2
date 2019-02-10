@@ -3,6 +3,7 @@ package com.example.copia;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else {
             new RetrieveComboBoxTask().execute((Void) null);
         }
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         if(savedInstanceState == null)

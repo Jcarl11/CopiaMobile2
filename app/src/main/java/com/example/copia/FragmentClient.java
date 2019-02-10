@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import dmax.dialog.SpotsDialog;
 
@@ -53,6 +56,11 @@ public class FragmentClient extends Fragment implements View.OnClickListener
     Button client_button_upload,client_btn_addremark,client_btn_uploadfile, client_btn_uploadimage;
     EditText client_edittext_remark,client_edittext_representative,client_edittext_position,client_edittext_company;
     Spinner spinner_industry, spinner_type;
+    ParseObject reference = null;
+    UploadPrimary uploadPrimary = new UploadPrimary();
+    RemarksUpload remarksUpload = new RemarksUpload();
+    ImageUpload imageUpload = new ImageUpload();
+    FileUpload fileUpload = new FileUpload();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -205,10 +213,6 @@ public class FragmentClient extends Fragment implements View.OnClickListener
 
     private class ClientUploadTask extends AsyncTask<Void, Void, Boolean>
     {
-        FileUpload fileUpload = new FileUpload();
-        ImageUpload imageUpload = new ImageUpload();
-        UploadPrimary uploadPrimary = new UploadPrimary();
-        RemarksUpload remarksUpload = new RemarksUpload();
         AlertDialog dialog;
         public ClientUploadTask()
         {
@@ -219,6 +223,7 @@ public class FragmentClient extends Fragment implements View.OnClickListener
                     .build();
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.N)
         @Override
         protected Boolean doInBackground(Void... voids) {
             ArrayList<Boolean> results = new ArrayList<>();
@@ -230,14 +235,33 @@ public class FragmentClient extends Fragment implements View.OnClickListener
             data.put("Industry", spinner_industry.getSelectedItem().toString().toUpperCase());
             data.put("Type", spinner_type.getSelectedItem().toString().toUpperCase());
 
+            if(Utilities.API_LEVEL >= android.os.Build.VERSION_CODES.N) //If api level is 24 or above
+            {
+                CompletableFuture<ParseObject> REFERENCE = CompletableFuture.supplyAsync(()->uploadPrimary.client_upload(data, client_extractStringsToTags()));
+                try {reference = REFERENCE.get();}
+                catch (ExecutionException e) {e.printStackTrace();}
+                catch (InterruptedException e) {e.printStackTrace();}
 
-            final ParseObject clientObject = uploadPrimary.client_upload(data, client_extractStringsToTags());
-            if(!remarksUpload.client_remarks_upload(labels, clientObject))
-                results.add(false);
-            if(!imageUpload.client_image_upload(clientObject, imageList))
-                results.add(false);
-            if(!fileUpload.client_file_upload(clientObject, filesList))
-                results.add(false);
+                CompletableFuture<Void> cf = CompletableFuture.supplyAsync(()->remarksUpload.client_remarks_upload(labels, reference))
+                                                    .thenAccept(result->{results.add(result);})
+                                                    .thenApplyAsync(dat->imageUpload.client_image_upload(reference, imageList))
+                                                    .thenAccept(result->{results.add(result);})
+                                                    .thenApplyAsync(dat->fileUpload.client_file_upload(reference, filesList))
+                                                    .thenAccept(result->{results.add(result);});
+                try {cf.get();}
+                catch (ExecutionException e) {e.printStackTrace();}
+                catch (InterruptedException e) {e.printStackTrace();}
+            }
+            else
+            {
+                final ParseObject clientObject = uploadPrimary.client_upload(data, client_extractStringsToTags());
+                if(!remarksUpload.client_remarks_upload(labels, clientObject))
+                    results.add(false);
+                if(!imageUpload.client_image_upload(clientObject, imageList))
+                    results.add(false);
+                if(!fileUpload.client_file_upload(clientObject, filesList))
+                    results.add(false);
+            }
             return results.contains(false);
         }
 
