@@ -34,11 +34,18 @@ import com.vincent.filepicker.filter.entity.NormalFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import dmax.dialog.SpotsDialog;
 
 public class FragmentContractors extends Fragment implements View.OnClickListener
 {
+    ParseObject reference = null;
+    FileUpload fileUpload = new FileUpload();
+    ImageUpload imageUpload = new ImageUpload();
+    UploadPrimary uploadPrimary = new UploadPrimary();
+    RemarksUpload remarksUpload = new RemarksUpload();
     ArrayList<ImageFile> imageList = new ArrayList<>();
     ArrayList<NormalFile> filesList = new ArrayList<>();
     ArrayList<String> industryList = new ArrayList<>();
@@ -195,10 +202,7 @@ public class FragmentContractors extends Fragment implements View.OnClickListene
 
     private class ContractorsUploadTask extends AsyncTask<Void, Void, Boolean>
     {
-        FileUpload fileUpload = new FileUpload();
-        ImageUpload imageUpload = new ImageUpload();
-        UploadPrimary uploadPrimary = new UploadPrimary();
-        RemarksUpload remarksUpload = new RemarksUpload();
+
         AlertDialog dialog;
         public ContractorsUploadTask()
         {
@@ -220,13 +224,33 @@ public class FragmentContractors extends Fragment implements View.OnClickListene
             data.put("Industry", contractors_spinner_industry.getSelectedItem().toString().toUpperCase());
             data.put("Classification", contractors_spinner_classification.getSelectedItem().toString().toUpperCase());
 
-            final ParseObject contractorsObject = uploadPrimary.contractors_upload(data, contractors_extractStringsToTags());
-            if(!remarksUpload.contractors_remarks_upload(labels, contractorsObject))
-                results.add(false);
-            if(!imageUpload.contractors_image_upload(contractorsObject, imageList))
-                results.add(false);
-            if(!fileUpload.contractors_file_upload(contractorsObject, filesList))
-                results.add(false);
+            if(Utilities.API_LEVEL >= android.os.Build.VERSION_CODES.N) //If api level is 24 or above
+            {
+                CompletableFuture<ParseObject> REFERENCE = CompletableFuture.supplyAsync(()->uploadPrimary.contractors_upload(data, contractors_extractStringsToTags()));
+                try {reference = REFERENCE.get();}
+                catch (ExecutionException e) {e.printStackTrace();}
+                catch (InterruptedException e) {e.printStackTrace();}
+
+                CompletableFuture<Void> cf = CompletableFuture.supplyAsync(()->remarksUpload.contractors_remarks_upload(labels, reference))
+                        .thenAccept(result->{results.add(result);})
+                        .thenApplyAsync(dat->imageUpload.contractors_image_upload(reference, imageList))
+                        .thenAccept(result->{results.add(result);})
+                        .thenApplyAsync(dat->fileUpload.contractors_file_upload(reference, filesList))
+                        .thenAccept(result->{results.add(result);});
+                try {cf.get();}
+                catch (ExecutionException e) {e.printStackTrace();}
+                catch (InterruptedException e) {e.printStackTrace();}
+            }
+            else
+            {
+                final ParseObject contractorsObject = uploadPrimary.contractors_upload(data, contractors_extractStringsToTags());
+                if (!remarksUpload.contractors_remarks_upload(labels, contractorsObject))
+                    results.add(false);
+                if (!imageUpload.contractors_image_upload(contractorsObject, imageList))
+                    results.add(false);
+                if (!fileUpload.contractors_file_upload(contractorsObject, filesList))
+                    results.add(false);
+            }
             return results.contains(false);
         }
 

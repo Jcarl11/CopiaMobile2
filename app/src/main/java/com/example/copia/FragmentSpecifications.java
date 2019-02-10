@@ -31,11 +31,18 @@ import com.vincent.filepicker.filter.entity.NormalFile;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import dmax.dialog.SpotsDialog;
 
 public class FragmentSpecifications extends Fragment implements View.OnClickListener
 {
+    ParseObject reference = null;
+    FileUpload fileUpload = new FileUpload();
+    ImageUpload imageUpload = new ImageUpload();
+    UploadPrimary uploadPrimary = new UploadPrimary();
+    RemarksUpload remarksUpload = new RemarksUpload();
     ArrayList<NormalFile> filesList = new ArrayList<>();
     EditText specifications_edittext_document, specifications_edittext_division, specifications_edittext_section, specifications_edittext_type,
             specifications_edittext_keywords, specifications_edittext_remarks;
@@ -163,10 +170,6 @@ public class FragmentSpecifications extends Fragment implements View.OnClickList
 
     private class SpecificationsUploadTask extends AsyncTask<Void, Void, Boolean>
     {
-        FileUpload fileUpload = new FileUpload();
-        ImageUpload imageUpload = new ImageUpload();
-        UploadPrimary uploadPrimary = new UploadPrimary();
-        RemarksUpload remarksUpload = new RemarksUpload();
         AlertDialog dialog;
         public SpecificationsUploadTask() {
             dialog = new SpotsDialog.Builder()
@@ -186,11 +189,29 @@ public class FragmentSpecifications extends Fragment implements View.OnClickList
             data.put("Section", specifications_edittext_section.getText().toString().trim().toUpperCase());
             data.put("Type", specifications_edittext_type.getText().toString().trim().toUpperCase());
 
-            final ParseObject specificationsObject = uploadPrimary.specifications_upload(data, specifications_extractStringsToTags());
-            if(!remarksUpload.specifications_remarks_upload(labels, specificationsObject))
-                results.add(false);
-            if(!fileUpload.specifications_file_upload(specificationsObject, filesList))
-                results.add(false);
+            if(Utilities.API_LEVEL >= android.os.Build.VERSION_CODES.N) //If api level is 24 or above
+            {
+                CompletableFuture<ParseObject> REFERENCE = CompletableFuture.supplyAsync(()->uploadPrimary.specifications_upload(data, specifications_extractStringsToTags()));
+                try {reference = REFERENCE.get();}
+                catch (ExecutionException e) {e.printStackTrace();}
+                catch (InterruptedException e) {e.printStackTrace();}
+
+                CompletableFuture<Void> cf = CompletableFuture.supplyAsync(()->remarksUpload.specifications_remarks_upload(labels, reference))
+                        .thenAccept(result->{results.add(result);})
+                        .thenApplyAsync(dat->fileUpload.specifications_file_upload(reference, filesList))
+                        .thenAccept(result->{results.add(result);});
+                try {cf.get();}
+                catch (ExecutionException e) {e.printStackTrace();}
+                catch (InterruptedException e) {e.printStackTrace();}
+            }
+            else
+            {
+                final ParseObject specificationsObject = uploadPrimary.specifications_upload(data, specifications_extractStringsToTags());
+                if (!remarksUpload.specifications_remarks_upload(labels, specificationsObject))
+                    results.add(false);
+                if (!fileUpload.specifications_file_upload(specificationsObject, filesList))
+                    results.add(false);
+            }
             return results.contains(false);
         }
 

@@ -224,9 +224,10 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
             data.put("Industry", suppliers_spinner_industry.getSelectedItem().toString().toUpperCase());
             data.put("Type", suppliers_spinner_type.getSelectedItem().toString().toUpperCase());
 
+
             if(Utilities.API_LEVEL >= android.os.Build.VERSION_CODES.N) //If api level is 24 or above
             {
-                CompletableFuture<ParseObject> REFERENCE = CompletableFuture.supplyAsync(()->uploadPrimary.client_upload(data, suppliers_extractStringsToTags()));
+                CompletableFuture<ParseObject> REFERENCE = CompletableFuture.supplyAsync(()->uploadPrimary.suppliers_upload(data, suppliers_extractStringsToTags()));
                 try {reference = REFERENCE.get();}
                 catch (ExecutionException e) {e.printStackTrace();}
                 catch (InterruptedException e) {e.printStackTrace();}
