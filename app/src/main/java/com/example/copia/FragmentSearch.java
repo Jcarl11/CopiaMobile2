@@ -14,22 +14,12 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import de.codecrafters.tableview.TableView;
-import de.codecrafters.tableview.listeners.TableDataClickListener;
-import de.codecrafters.tableview.toolkit.SimpleTableDataAdapter;
-import de.codecrafters.tableview.toolkit.SimpleTableHeaderAdapter;
-
 public class FragmentSearch extends Fragment
 {
-    private static final String[][] SPACESHIPS = { { "Casini", "Chemical", "NASA", "Jupiter" },
-            { "Spitzer", "Nuclear", "NASA", "Alpha Centauri" } };
-    private static String[] header = {"header 1", "header 2", "header 3", "header 4"};
-    TableView tableView;
     ArrayList<String> searchCategories = new ArrayList<>();
     EditText search_edittext_search;
     Spinner search_spinner_searchin;
@@ -42,16 +32,7 @@ public class FragmentSearch extends Fragment
             searchCategories.add(entity.getCategory());
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, searchCategories);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        tableView = (TableView)view.findViewById(R.id.tableView);
-        tableView.setHeaderBackgroundColor(getResources().getColor(R.color.colorPrimary));
-        tableView.setHeaderAdapter(new SimpleTableHeaderAdapter(getContext(), header));
-        tableView.setDataAdapter(new SimpleTableDataAdapter(getContext(), SPACESHIPS));
-        tableView.addDataClickListener(new TableDataClickListener() {
-            @Override
-            public void onDataClicked(int rowIndex, Object clickedData) {
-                Toast.makeText(getContext(), ((String[])clickedData)[2], Toast.LENGTH_SHORT).show();
-            }
-        });
+
         search_spinner_searchin = (Spinner)view.findViewById(R.id.search_spinner_searchin);
         search_spinner_searchin.setAdapter(dataAdapter);
         search_edittext_search = (EditText)view.findViewById(R.id.search_edittext_search);
