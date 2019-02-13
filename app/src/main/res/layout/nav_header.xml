@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="176dp"
-    android:background="@color/colorPrimary"
+    android:background="@drawable/banneropacity"
     android:gravity="bottom"
     android:orientation="vertical"
     android:padding="16dp"
@@ -12,17 +12,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@mipmap/ic_launcher_round" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="8dp"
         android:text="Concipio Tektura"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/black" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="https://concipio-tektura.weebly.com/"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/black"
         android:textSize="11dp" />
 </LinearLayout>
