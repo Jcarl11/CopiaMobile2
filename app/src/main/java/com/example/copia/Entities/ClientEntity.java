@@ -2,6 +2,7 @@ package com.example.copia.Entities;
 
 public class ClientEntity
 {
+    private String objectId;
     private String representative;
     private String position;
     private String company;
@@ -10,7 +11,8 @@ public class ClientEntity
 
     public ClientEntity() {}
 
-    public ClientEntity(String representative, String position, String company, String industry, String type) {
+    public ClientEntity(String objectId, String representative, String position, String company, String industry, String type) {
+        this.objectId = objectId;
         this.representative = representative;
         this.position = position;
         this.company = company;
@@ -18,13 +20,15 @@ public class ClientEntity
         this.type = type;
     }
 
-    public String getRepresentative() {
-        return representative;
-    }
+    public String getObjectId() {return objectId;}
+
+    public void setObjectId(String objectId) {this.objectId = objectId;}
 
     public void setRepresentative(String representative) {
         this.representative = representative;
     }
+
+    public String getRepresentative() {return representative;}
 
     public String getPosition() {
         return position;
