@@ -21,8 +21,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.copia.DatabaseOperation.DeleteFiles;
+import com.example.copia.DatabaseOperation.DeleteImages;
+import com.example.copia.DatabaseOperation.DeleteNotes;
+import com.example.copia.DatabaseOperation.RetreiveReference;
 import com.example.copia.Entities.ClientEntity;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -30,6 +35,8 @@ import com.parse.ParseQuery;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import dmax.dialog.SpotsDialog;
 import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener;
@@ -90,9 +97,7 @@ public class FragmentSearch extends Fragment
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which){
                                     case DialogInterface.BUTTON_POSITIVE:
-                                        search_recyclerview.removeView(view);
-                                        clientEntities.remove(pos);
-                                        clientAdapter.notifyItemRemoved(pos);
+                                        new DeleteClientTask(clientEntities.get(pos).getObjectId()).execute((Void)null);
                                         break;
 
                                     case DialogInterface.BUTTON_NEGATIVE:
@@ -192,6 +197,86 @@ public class FragmentSearch extends Fragment
             }
             else
                 Utilities.getInstance().showAlertBox("Response", "0 records found", getContext());
+        }
+    }
+    private class DeleteClientTask extends AsyncTask<Void, Void, Boolean>
+    {
+        RetreiveReference retreiveReference = new RetreiveReference();
+        DeleteImages deleteImages = new DeleteImages();
+        DeleteNotes deleteNotes = new DeleteNotes();
+        DeleteFiles deleteFiles = new DeleteFiles();
+        String objID;
+        AlertDialog dialog;
+        public DeleteClientTask(String objID) {
+            this.objID = objID;
+            dialog = new SpotsDialog.Builder()
+                    .setMessage("Deleting references")
+                    .setContext(getContext())
+                    .setCancelable(false)
+                    .build();
+        }
+
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            List<Boolean> results = new ArrayList<>();
+            ParseQuery<ParseObject> reference = retreiveReference.client_retrieve(objID);
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                CompletableFuture<List<Boolean>> cf = CompletableFuture.supplyAsync(()->deleteImages.client_images_delete(reference))
+                                            .thenApplyAsync(data->deleteNotes.client_notes_delete(reference,data))
+                                            .thenApplyAsync(data->deleteFiles.client_files_delete(reference,data))
+                                            .thenApplyAsync(data->{
+                                                reference.getInBackground(objID, new GetCallback<ParseObject>() {
+                                                    @Override
+                                                    public void done(ParseObject object, ParseException e) {
+                                                        if(e == null && object != null) {
+                                                            try {
+                                                                object.delete();
+                                                                data.add(true);
+                                                            } catch (ParseException e1) {
+                                                                e1.printStackTrace();
+                                                            }
+                                                        }
+                                                        else
+                                                            data.add(false);
+                                                    }
+                                                });
+                                                return data;
+                                            });
+                try {
+                   results = cf.get();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+            {
+                List<Boolean> first = deleteImages.client_images_delete(reference);
+                List<Boolean> second = deleteNotes.client_notes_delete(reference, first);
+                results = deleteFiles.client_files_delete(reference,second);
+            }
+
+            return results.contains(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            dialog.dismiss();
+            if(aBoolean == false)
+            {
+                clientEntities.remove(pos);
+                clientAdapter.notifyItemRemoved(pos);
+                Utilities.getInstance().showAlertBox("Successful", "Record deleted", getContext());
+            }
+            else
+                Utilities.getInstance().showAlertBox("Error", "Some of the references were not\ndeleted properly. Please retry the deletion process", getContext());
         }
     }
 }
