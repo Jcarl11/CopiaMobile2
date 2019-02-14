@@ -36,6 +36,7 @@ import com.vincent.filepicker.filter.entity.NormalFile;
 
 import org.apache.commons.io.FilenameUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +60,7 @@ public class FragmentClient extends Fragment implements View.OnClickListener
     ParseObject reference = null;
     UploadPrimary uploadPrimary = new UploadPrimary();
     RemarksUpload remarksUpload = new RemarksUpload();
-    ImageUpload imageUpload = new ImageUpload();
+    ImageUpload imageUpload = new ImageUpload(getContext());
     FileUpload fileUpload = new FileUpload();
     @Nullable
     @Override
@@ -138,6 +139,9 @@ public class FragmentClient extends Fragment implements View.OnClickListener
             case R.id.client_button_upload:
                 if(hasNullFields() == false)
                 {
+                    /*File compressedFile = new FileCompressor().compressImage(new File(imageList.get(0).getPath()), getContext());
+                    String newSize = String.valueOf(compressedFile.length() / 1024);
+                    Utilities.getInstance().showAlertBox("Size", newSize, getContext());*/
                     new ClientUploadTask().execute((Void)null);
                 }
                 else
@@ -154,6 +158,7 @@ public class FragmentClient extends Fragment implements View.OnClickListener
             case Constant.REQUEST_CODE_PICK_IMAGE:
                 if (resultCode == Activity.RESULT_OK) {
                     ArrayList<ImageFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_IMAGE);
+
                     imageList = list;
                     for (ImageFile file : list)
                         label_files.addLabel(file.getName());
@@ -246,7 +251,7 @@ public class FragmentClient extends Fragment implements View.OnClickListener
                                                     .thenAccept(result->{results.add(result);})
                                                     .thenApplyAsync(dat->imageUpload.client_image_upload(reference, imageList))
                                                     .thenAccept(result->{results.add(result);})
-                                                    .thenApplyAsync(dat->fileUpload.client_file_upload(reference, filesList))
+                                                    .thenApplyAsync(dat->fileUpload.client_file_upload(reference, filesList, getContext()))
                                                     .thenAccept(result->{results.add(result);});
                 try {cf.get();}
                 catch (ExecutionException e) {e.printStackTrace();}
@@ -259,7 +264,7 @@ public class FragmentClient extends Fragment implements View.OnClickListener
                     results.add(false);
                 if(!imageUpload.client_image_upload(clientObject, imageList))
                     results.add(false);
-                if(!fileUpload.client_file_upload(clientObject, filesList))
+                if(!fileUpload.client_file_upload(clientObject, filesList, getContext()))
                     results.add(false);
             }
             return results.contains(false);

@@ -1,5 +1,8 @@
 package com.example.copia.DatabaseOperation;
 
+import android.content.Context;
+
+import com.example.copia.FileCompressor;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -21,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 public class FileUpload
 {
-    public boolean client_file_upload(final ParseObject reference, ArrayList<NormalFile> filesList)
+    public boolean client_file_upload(final ParseObject reference, ArrayList<NormalFile> filesList, Context context)
     {
         ArrayList<Boolean> results = new ArrayList<>();
         if(filesList.size() > 0)

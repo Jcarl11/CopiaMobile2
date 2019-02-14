@@ -43,7 +43,7 @@ public class FragmentContractors extends Fragment implements View.OnClickListene
 {
     ParseObject reference = null;
     FileUpload fileUpload = new FileUpload();
-    ImageUpload imageUpload = new ImageUpload();
+    ImageUpload imageUpload = new ImageUpload(getContext());
     UploadPrimary uploadPrimary = new UploadPrimary();
     RemarksUpload remarksUpload = new RemarksUpload();
     ArrayList<ImageFile> imageList = new ArrayList<>();

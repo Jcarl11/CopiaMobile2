@@ -1,5 +1,15 @@
 package com.example.copia.DatabaseOperation;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.support.annotation.Dimension;
+import android.util.Log;
+import android.util.Size;
+
+import com.example.copia.FileCompressor;
+import com.example.copia.FragmentClient;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -23,6 +33,10 @@ import java.util.concurrent.TimeUnit;
 
 public class ImageUpload
 {
+    Context context;
+    public ImageUpload(Context context) {
+        this.context = context;
+    }
 
     public boolean client_image_upload(final ParseObject reference, ArrayList<ImageFile> imageList)
     {
@@ -41,7 +55,8 @@ public class ImageUpload
                     @Override
                     public Boolean call() throws Exception
                     {
-                        File imageFile = new File(file.getPath());
+                        File originalFile = new File(file.getPath());
+                        File imageFile = new FileCompressor().compressImage(originalFile,context);
                         ParseObject query = new ParseObject("Images");
                         query.put("ClientPointer", reference);
                         query.put("Name", file.getName());
@@ -108,7 +123,8 @@ public class ImageUpload
                     @Override
                     public Boolean call() throws Exception
                     {
-                        File imageFile = new File(file.getPath());
+                        File originalFile = new File(file.getPath());
+                        File imageFile = new FileCompressor().compressImage(originalFile,context);
                         ParseObject query = new ParseObject("Images");
                         query.put("SuppliersPointer", reference);
                         query.put("Name", file.getName());
@@ -175,7 +191,8 @@ public class ImageUpload
                     @Override
                     public Boolean call() throws Exception
                     {
-                        File imageFile = new File(file.getPath());
+                        File originalFile = new File(file.getPath());
+                        File imageFile = new FileCompressor().compressImage(originalFile,context);
                         ParseObject query = new ParseObject("Images");
                         query.put("ContractorsPointer", reference);
                         query.put("Name", file.getName());
@@ -241,7 +258,8 @@ public class ImageUpload
                     @Override
                     public Boolean call() throws Exception
                     {
-                        File imageFile = new File(file.getPath());
+                        File originalFile = new File(file.getPath());
+                        File imageFile = new FileCompressor().compressImage(originalFile,context);
                         ParseObject query = new ParseObject("Images");
                         query.put("ConsultantsPointer", reference);
                         query.put("Name", file.getName());

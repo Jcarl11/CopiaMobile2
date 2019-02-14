@@ -46,7 +46,7 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
     ParseObject reference = null;
     UploadPrimary uploadPrimary = new UploadPrimary();
     RemarksUpload remarksUpload = new RemarksUpload();
-    ImageUpload imageUpload = new ImageUpload();
+    ImageUpload imageUpload = new ImageUpload(getContext());
     FileUpload fileUpload = new FileUpload();
     ArrayList<ImageFile> imageList = new ArrayList<>();
     ArrayList<NormalFile> filesList = new ArrayList<>();

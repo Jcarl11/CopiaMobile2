@@ -40,7 +40,6 @@ public class FragmentSpecifications extends Fragment implements View.OnClickList
 {
     ParseObject reference = null;
     FileUpload fileUpload = new FileUpload();
-    ImageUpload imageUpload = new ImageUpload();
     UploadPrimary uploadPrimary = new UploadPrimary();
     RemarksUpload remarksUpload = new RemarksUpload();
     ArrayList<NormalFile> filesList = new ArrayList<>();
