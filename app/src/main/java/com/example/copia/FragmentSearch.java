@@ -41,6 +41,7 @@ import java.util.concurrent.ExecutionException;
 import dmax.dialog.SpotsDialog;
 import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener;
 
+
 public class FragmentSearch extends Fragment
 {
     ClientAdapter clientAdapter;
@@ -123,7 +124,30 @@ public class FragmentSearch extends Fragment
                 .setItemClickCallback(new SwipeDismissRecyclerViewTouchListener.OnItemClickCallBack() {
                     @Override
                     public void onClick(int i) {
-                        Utilities.getInstance().showAlertBox("Touched", clientEntities.get(i).getObjectId(), getContext());
+                        //Utilities.getInstance().showAlertBox("Touched", clientEntities.get(i).getObjectId(), getContext());
+                        String[] choices = new String[]{"Notes", "Image Files", "PDF Files"};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Choose what to show: ");
+                        builder.setCancelable(true);
+                        builder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if(which == 0) {
+                                    //Notes
+                                }
+                                else if(which == 1) {
+                                    dialog.dismiss();
+                                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentImages()).addToBackStack(null).commit();
+                                }
+                                else if(which == 2) {
+                                    //PDFFiles
+                                }
+
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+
                     }
                 })
                 .create();

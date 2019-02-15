@@ -11,4 +11,7 @@
     <string name="prompt_type">Type</string>
     <string name="prompt_classification">Classification</string>
     <string name="prompt_searchin">Search in</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
