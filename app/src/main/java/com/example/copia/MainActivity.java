@@ -30,6 +30,7 @@ import dmax.dialog.SpotsDialog;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
     TextView textview_username, textview_email;
+    private String objectId = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,7 +108,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else
             super.onBackPressed();
     }
-
+    public void setObjectId(String objectId)
+    {
+        this.objectId = objectId;
+    }
+    public String getObjectId()
+    {
+        return objectId;
+    }
     private class RetrieveComboBoxTask extends AsyncTask<Void, Void, ArrayList<ComboboxEntity>>
     {
         boolean finished = false;

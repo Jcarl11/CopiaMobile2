@@ -137,6 +137,7 @@ public class FragmentSearch extends Fragment
                                 }
                                 else if(which == 1) {
                                     dialog.dismiss();
+                                    ((MainActivity)getActivity()).setObjectId(clientEntities.get(pos).getObjectId());
                                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentImages()).addToBackStack(null).commit();
                                 }
                                 else if(which == 2) {
