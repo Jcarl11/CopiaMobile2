@@ -1,4 +1,4 @@
-package com.example.copia;
+package com.example.copia.Adapters;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,8 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.copia.Entities.ImagesEntity;
+import com.example.copia.R;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesViewHolder>

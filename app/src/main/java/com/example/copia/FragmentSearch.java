@@ -1,10 +1,8 @@
 package com.example.copia;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,6 +19,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.copia.Adapters.ClientAdapter;
 import com.example.copia.DatabaseOperation.DeleteFiles;
 import com.example.copia.DatabaseOperation.DeleteImages;
 import com.example.copia.DatabaseOperation.DeleteNotes;
@@ -133,7 +132,9 @@ public class FragmentSearch extends Fragment
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if(which == 0) {
-                                    //Notes
+                                    dialog.dismiss();
+                                    ((MainActivity)getActivity()).setObjectId(clientEntities.get(pos).getObjectId());
+                                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentNotes()).addToBackStack(null).commit();
                                 }
                                 else if(which == 1) {
                                     dialog.dismiss();

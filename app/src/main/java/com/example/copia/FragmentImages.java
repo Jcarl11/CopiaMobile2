@@ -11,16 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.copia.Adapters.ImagesAdapter;
 import com.example.copia.Entities.ImagesEntity;
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseRelation;
-import com.parse.PointerEncoder;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +45,6 @@ public class FragmentImages extends Fragment {
 
     private class ImagesRetrieveTask extends AsyncTask<Void, Void, List<ImagesEntity>>
     {
-
         boolean finished = false;
         AlertDialog dialog;
         String objectId = null;

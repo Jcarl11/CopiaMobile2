@@ -1,4 +1,4 @@
-package com.example.copia;
+package com.example.copia.Adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,8 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.copia.Entities.ClientEntity;
-
-import org.w3c.dom.Text;
+import com.example.copia.R;
 
 import java.util.List;
 
