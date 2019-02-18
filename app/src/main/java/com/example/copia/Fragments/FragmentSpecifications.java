@@ -1,4 +1,4 @@
-package com.example.copia;
+package com.example.copia.Fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -22,6 +22,8 @@ import com.example.copia.DatabaseOperation.FileUpload;
 import com.example.copia.DatabaseOperation.ImageUpload;
 import com.example.copia.DatabaseOperation.RemarksUpload;
 import com.example.copia.DatabaseOperation.UploadPrimary;
+import com.example.copia.R;
+import com.example.copia.Utilities;
 import com.parse.ParseObject;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.activity.NormalFilePickActivity;

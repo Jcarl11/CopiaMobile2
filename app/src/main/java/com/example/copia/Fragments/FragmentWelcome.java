@@ -1,4 +1,4 @@
-package com.example.copia;
+package com.example.copia.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.copia.R;
 import com.parse.ParseUser;
 
 public class FragmentWelcome extends Fragment

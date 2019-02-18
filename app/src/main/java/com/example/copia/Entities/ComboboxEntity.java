@@ -1,4 +1,4 @@
-package com.example.copia;
+package com.example.copia.Entities;
 
 import android.text.TextUtils;
 

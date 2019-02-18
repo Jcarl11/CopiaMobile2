@@ -1,4 +1,4 @@
-package com.example.copia;
+package com.example.copia.Fragments;
 
 
 import android.app.AlertDialog;
@@ -13,6 +13,9 @@ import android.view.ViewGroup;
 
 import com.example.copia.Adapters.PDFAdapter;
 import com.example.copia.Entities.PDFEntity;
+import com.example.copia.MainActivity;
+import com.example.copia.R;
+import com.example.copia.Utilities;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;

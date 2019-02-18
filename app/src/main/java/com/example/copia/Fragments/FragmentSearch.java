@@ -1,4 +1,4 @@
-package com.example.copia;
+package com.example.copia.Fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +20,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.copia.Adapters.ClientAdapter;
+import com.example.copia.Entities.ComboboxEntity;
 import com.example.copia.DatabaseOperation.DeleteFiles;
 import com.example.copia.DatabaseOperation.DeleteImages;
 import com.example.copia.DatabaseOperation.DeleteNotes;
 import com.example.copia.DatabaseOperation.RetreiveReference;
 import com.example.copia.Entities.ClientEntity;
+import com.example.copia.MainActivity;
+import com.example.copia.R;
+import com.example.copia.Utilities;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
