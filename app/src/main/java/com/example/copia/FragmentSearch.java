@@ -132,12 +132,11 @@ public class FragmentSearch extends Fragment
                 .setItemClickCallback(new SwipeDismissRecyclerViewTouchListener.OnItemClickCallBack() {
                     @Override
                     public void onClick(int i) {
-                        //Utilities.getInstance().showAlertBox("Touched", clientEntities.get(i).getObjectId(), getContext());
                         String[] choices = new String[]{"Notes", "Image Files", "PDF Files"};
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Choose what to show: ");
                         builder.setCancelable(true);
-                        builder.setSingleChoiceItems(choices, -1, new DialogInterface.OnClickListener() {
+                        builder.setItems(choices, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if(which == 0) {
@@ -155,7 +154,6 @@ public class FragmentSearch extends Fragment
                                     ((MainActivity)getActivity()).setObjectId(clientEntities.get(pos).getObjectId());
                                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentPdf()).addToBackStack(null).commit();
                                 }
-
                             }
                         });
                         AlertDialog dialog = builder.create();
