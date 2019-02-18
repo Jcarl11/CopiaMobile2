@@ -38,9 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         String mUsername = username.getText().toString().trim();
         String mPassword = password.getText().toString().trim();
         if(!TextUtils.isEmpty(mUsername) && !TextUtils.isEmpty(mPassword))
-        {
             new TaskExecute(this, mUsername, mPassword).execute((Void)null);
-        }
         else
             Toast.makeText(this, "Don't leave blank fields", Toast.LENGTH_SHORT).show();
     }

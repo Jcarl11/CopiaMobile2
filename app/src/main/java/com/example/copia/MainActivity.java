@@ -42,34 +42,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .server(getString(R.string.back4app_server_url))
                 .build());
         ParseUser user = ParseUser.getCurrentUser();
-        if(user == null)
+        if(null == user)
         {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         }
-        else {
+        else if(user != null) {
             new RetrieveComboBoxTask().execute((Void) null);
 
+
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            View headerView = navigationView.getHeaderView(0);
+            navigationView.setNavigationItemSelectedListener(this);
+            if (savedInstanceState == null)
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentWelcome()).commit();
+            android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.toolbar);
+            setSupportActionBar(toolbar);
+            drawer = findViewById(R.id.drawer_layout);
+            textview_username = (TextView) headerView.findViewById(R.id.textview_username);
+            textview_email = (TextView) headerView.findViewById(R.id.textview_email);
+            textview_username.setText("Logged in as: " + user.getUsername());
+            textview_email.setText(user.getEmail());
+
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+                    R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+            drawer.addDrawerListener(toggle);
+            toggle.syncState();
         }
-
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        View headerView = navigationView.getHeaderView(0);
-        navigationView.setNavigationItemSelectedListener(this);
-        if(savedInstanceState == null)
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentWelcome()).commit();
-        android.support.v7.widget.Toolbar toolbar = (android.support.v7.widget.Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        drawer = findViewById(R.id.drawer_layout);
-        textview_username = (TextView)headerView.findViewById(R.id.textview_username);
-        textview_email = (TextView)headerView.findViewById(R.id.textview_email);
-        textview_username.setText("Logged in as: " + user.getUsername());
-        textview_email.setText(user.getEmail());
-
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
-                R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
     }
 
     @Override

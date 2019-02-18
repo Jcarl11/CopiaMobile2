@@ -1,13 +1,14 @@
 package com.example.copia.Entities;
 
+
 public class ClientEntity
 {
-    private String objectId;
-    private String representative;
-    private String position;
-    private String company;
-    private String industry;
-    private String type;
+    String objectId;
+    String representative;
+    String position;
+    String company;
+    String industry;
+    String type;
 
     public ClientEntity() {}
 

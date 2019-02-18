@@ -11,14 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.copia.Adapters.NotesAdapter;
-import com.example.copia.Entities.NotesEntity;
+import com.example.copia.Adapters.PDFAdapter;
+import com.example.copia.Entities.PDFEntity;
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,46 +28,47 @@ import dmax.dialog.SpotsDialog;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentNotes extends Fragment {
-    NotesAdapter notesAdapter;
-    List<NotesEntity> notesEntities;
-    RecyclerView notes_recyclerview;
-    public FragmentNotes() {}
+public class FragmentPdf extends Fragment
+{
+    boolean finished = false;
+    List<PDFEntity> pdfEntities;
+    RecyclerView pdf_recyclerview;
+    PDFAdapter pdfAdapter;
+    public FragmentPdf() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.fragment_fragment_notes, container, false);
-        notesEntities = new ArrayList<>();
-        notes_recyclerview = (RecyclerView)view.findViewById(R.id.notes_recyclerview);
-        notes_recyclerview.setHasFixedSize(true);
-        notes_recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        View view = inflater.inflate(R.layout.fragment_fragment_pdf, container, false);
+        pdfEntities = new ArrayList<>();
+        pdf_recyclerview = (RecyclerView)view.findViewById(R.id.pdf_recyclerview);
+        pdf_recyclerview.setHasFixedSize(true);
+        pdf_recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         String objectId = ((MainActivity)getActivity()).getObjectId();
-        new NotesRetrieveTask(objectId).execute((Void)null);
+        new PDFRetrieveTask(objectId).execute((Void)null);
         return view;
     }
 
-    private class NotesRetrieveTask extends AsyncTask<Void, Void, List<NotesEntity>>
+    private class PDFRetrieveTask extends AsyncTask<Void, Void, List<PDFEntity>>
     {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM yyyy");
-        boolean finished = false;
         AlertDialog dialog;
-        String objectId = null;
+        String objectId;
 
-        public NotesRetrieveTask(String objectId) {
-            finished = false;
+        public PDFRetrieveTask(String objectId) {
+            pdfEntities = new ArrayList<>();
+            this.dialog = dialog;
             this.objectId = objectId;
-            notesEntities = new ArrayList<>();
             dialog = new SpotsDialog.Builder()
-                    .setMessage("Loading Notes")
+                    .setMessage("Loading PDF files")
                     .setContext(getContext())
                     .setCancelable(false)
                     .build();
         }
 
         @Override
-        protected List<NotesEntity> doInBackground(Void... voids) {
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Notes");
+        protected List<PDFEntity> doInBackground(Void... voids) {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("PDFFiles");
             query.whereEqualTo("Parent", objectId);
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
@@ -77,11 +77,15 @@ public class FragmentNotes extends Fragment {
                     {
                         for(ParseObject object : objects)
                         {
-                            NotesEntity notesEntity = new NotesEntity();
-                            notesEntity.setObjectId(object.getObjectId());
-                            notesEntity.setCreatedAt(simpleDateFormat.format(object.getCreatedAt()));
-                            notesEntity.setRemark(object.getString("Remark"));
-                            notesEntities.add(notesEntity);
+                            PDFEntity pdfEntity = new PDFEntity();
+                            pdfEntity.setFilename(object.getString("Name"));
+                            pdfEntity.setCreatedAt(simpleDateFormat.format(object.getCreatedAt()));
+                            try
+                            {
+                                pdfEntity.setFile(object.getParseFile("Files").getData());
+                            }
+                            catch (ParseException e1) {e1.printStackTrace();}
+                            pdfEntities.add(pdfEntity);
                         }
                     }
                     finished = true;
@@ -95,19 +99,19 @@ public class FragmentNotes extends Fragment {
                     e.printStackTrace();
                 }
             }
-            return notesEntities;
+            return pdfEntities;
         }
 
         @Override
         protected void onPreExecute() {dialog.show();}
 
         @Override
-        protected void onPostExecute(List<NotesEntity> notesEntities) {
+        protected void onPostExecute(List<PDFEntity> pdfEntities) {
             dialog.dismiss();
-            if(notesEntities.size() > 0)
+            if(pdfEntities.size() > 0)
             {
-                notesAdapter = new NotesAdapter(getContext(), notesEntities);
-                notes_recyclerview.setAdapter(notesAdapter);
+                pdfAdapter = new PDFAdapter(getContext(), pdfEntities);
+                pdf_recyclerview.setAdapter(pdfAdapter);
             }
             else
                 Utilities.getInstance().showAlertBox("Response", "0 Records Found", getContext());

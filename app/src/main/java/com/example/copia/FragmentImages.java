@@ -31,8 +31,8 @@ public class FragmentImages extends Fragment {
     public FragmentImages() {}
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
         View view = inflater.inflate(R.layout.fragment_fragment_images, container, false);
         imagesEntities = new ArrayList<>();
         images_recyclerview = (RecyclerView)view.findViewById(R.id.images_recyclerview);
@@ -60,12 +60,9 @@ public class FragmentImages extends Fragment {
 
         @Override
         protected List<ImagesEntity> doInBackground(Void... voids) {
-            try {
-            ParseQuery<ParseObject> client = ParseQuery.getQuery("Client");
-            client.get(objectId);
+
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Images");
-            query.include("ClientPointer");
-            query.whereMatchesQuery("ClientPointer", client);
+            query.whereEqualTo("Parent", objectId);
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {
@@ -87,9 +84,6 @@ public class FragmentImages extends Fragment {
                     finished = true;
                 }
             });
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
             while(finished == false)
             {
                 try {

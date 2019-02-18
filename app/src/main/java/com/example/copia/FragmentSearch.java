@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +32,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +47,7 @@ public class FragmentSearch extends Fragment
 {
     ClientAdapter clientAdapter;
     List<ClientEntity> clientEntities;
-    ArrayList<String> searchCategories = new ArrayList<>();
+
     EditText search_edittext_search;
     Spinner search_spinner_searchin;
     RecyclerView search_recyclerview;
@@ -55,6 +57,7 @@ public class FragmentSearch extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
+        ArrayList<String> searchCategories = new ArrayList<>();
         List<ComboboxEntity> comboboxEntities = ComboboxEntity.findWithQuery(ComboboxEntity.class, "Select distinct category from combobox_entity");
         for(ComboboxEntity entity : comboboxEntities)
             searchCategories.add(entity.getCategory());
@@ -63,7 +66,6 @@ public class FragmentSearch extends Fragment
         search_recyclerview = (RecyclerView)view.findViewById(R.id.search_recyclerview);
         search_recyclerview.setHasFixedSize(true);
         search_recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        clientEntities = new ArrayList<>();
         option = false;
         search_recyclerview.setOnTouchListener(listener());
         search_spinner_searchin = (Spinner)view.findViewById(R.id.search_spinner_searchin);
@@ -79,6 +81,13 @@ public class FragmentSearch extends Fragment
         });
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        search_recyclerview.setAdapter(clientAdapter);
+    }
+
     private SwipeDismissRecyclerViewTouchListener listener()
     {
         SwipeDismissRecyclerViewTouchListener listener = new SwipeDismissRecyclerViewTouchListener.Builder(
@@ -142,7 +151,9 @@ public class FragmentSearch extends Fragment
                                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentImages()).addToBackStack(null).commit();
                                 }
                                 else if(which == 2) {
-                                    //PDFFiles
+                                    dialog.dismiss();
+                                    ((MainActivity)getActivity()).setObjectId(clientEntities.get(pos).getObjectId());
+                                    getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentPdf()).addToBackStack(null).commit();
                                 }
 
                             }
