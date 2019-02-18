@@ -17,7 +17,9 @@ public class FileCompressor
     {
         File compressed = null;
         try {
-            compressed = new Compressor(context).compressToFile(originalFile);
+            compressed = new Compressor(context)
+                    .setCompressFormat(Bitmap.CompressFormat.JPEG)
+                    .compressToFile(originalFile);
         } catch (IOException e) {
             e.printStackTrace();
         }

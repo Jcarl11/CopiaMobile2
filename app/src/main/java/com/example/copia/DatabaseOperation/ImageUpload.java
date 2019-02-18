@@ -56,12 +56,14 @@ public class ImageUpload
                     public Boolean call() throws Exception
                     {
                         File originalFile = new File(file.getPath());
-                        File imageFile = new FileCompressor().compressImage(originalFile,context);
+                        //File imageFile = new FileCompressor().compressImage(originalFile,context);
+
                         ParseObject query = new ParseObject("Images");
                         query.put("ClientPointer", reference);
+                        query.put("Parent", reference.getObjectId());
                         query.put("Name", file.getName());
                         try {
-                            query.put("Files", new ParseFile(imageFile.getName(), FileUtils.readFileToByteArray(imageFile)));
+                            query.put("Files", new ParseFile(originalFile.getName(), FileUtils.readFileToByteArray(originalFile)));
                         }
                         catch (IOException e) {e.printStackTrace();}
                         query.saveInBackground(new SaveCallback() {
@@ -127,6 +129,7 @@ public class ImageUpload
                         File imageFile = new FileCompressor().compressImage(originalFile,context);
                         ParseObject query = new ParseObject("Images");
                         query.put("SuppliersPointer", reference);
+                        query.put("Parent", reference.getObjectId());
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(imageFile.getName(), FileUtils.readFileToByteArray(imageFile)));
@@ -195,6 +198,7 @@ public class ImageUpload
                         File imageFile = new FileCompressor().compressImage(originalFile,context);
                         ParseObject query = new ParseObject("Images");
                         query.put("ContractorsPointer", reference);
+                        query.put("Parent", reference.getObjectId());
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(imageFile.getName(), FileUtils.readFileToByteArray(imageFile)));
@@ -262,6 +266,7 @@ public class ImageUpload
                         File imageFile = new FileCompressor().compressImage(originalFile,context);
                         ParseObject query = new ParseObject("Images");
                         query.put("ConsultantsPointer", reference);
+                        query.put("Parent", reference.getObjectId());
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(imageFile.getName(), FileUtils.readFileToByteArray(imageFile)));

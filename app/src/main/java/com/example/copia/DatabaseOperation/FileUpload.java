@@ -43,6 +43,7 @@ public class FileUpload
                     {
                         File normalFile = new File(file.getPath());
                         ParseObject query = new ParseObject("PDFFiles");
+                        query.put("Parent", reference.getObjectId());
                         query.put("ClientPointer", reference);
                         query.put("Name", file.getName());
                         try {
@@ -110,6 +111,7 @@ public class FileUpload
                         File normalFile = new File(file.getPath());
                         ParseObject query = new ParseObject("PDFFiles");
                         query.put("SuppliersPointer", reference);
+                        query.put("Parent", reference.getObjectId());
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(normalFile.getName(), FileUtils.readFileToByteArray(normalFile)));
@@ -176,6 +178,7 @@ public class FileUpload
                         File normalFile = new File(file.getPath());
                         ParseObject query = new ParseObject("PDFFiles");
                         query.put("ContractorsPointer", reference);
+                        query.put("Parent", reference.getObjectId());
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(normalFile.getName(), FileUtils.readFileToByteArray(normalFile)));
@@ -241,6 +244,7 @@ public class FileUpload
                         File normalFile = new File(file.getPath());
                         ParseObject query = new ParseObject("PDFFiles");
                         query.put("ConsultantsPointer", reference);
+                        query.put("Parent", reference.getObjectId());
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(normalFile.getName(), FileUtils.readFileToByteArray(normalFile)));
@@ -307,6 +311,7 @@ public class FileUpload
                         File normalFile = new File(file.getPath());
                         ParseObject query = new ParseObject("PDFFiles");
                         query.put("SpecificationsPointer", reference);
+                        query.put("Parent", reference.getObjectId());
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(normalFile.getName(), FileUtils.readFileToByteArray(normalFile)));

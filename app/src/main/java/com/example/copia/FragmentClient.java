@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -158,7 +159,6 @@ public class FragmentClient extends Fragment implements View.OnClickListener
             case Constant.REQUEST_CODE_PICK_IMAGE:
                 if (resultCode == Activity.RESULT_OK) {
                     ArrayList<ImageFile> list = data.getParcelableArrayListExtra(Constant.RESULT_PICK_IMAGE);
-
                     imageList = list;
                     for (ImageFile file : list)
                         label_files.addLabel(file.getName());
@@ -253,7 +253,9 @@ public class FragmentClient extends Fragment implements View.OnClickListener
                                                     .thenAccept(result->{results.add(result);})
                                                     .thenApplyAsync(dat->fileUpload.client_file_upload(reference, filesList, getContext()))
                                                     .thenAccept(result->{results.add(result);});
-                try {cf.get();}
+                try {cf.get();
+                    Log.d("Size", String.valueOf(imageList.size()));
+                }
                 catch (ExecutionException e) {e.printStackTrace();}
                 catch (InterruptedException e) {e.printStackTrace();}
             }
