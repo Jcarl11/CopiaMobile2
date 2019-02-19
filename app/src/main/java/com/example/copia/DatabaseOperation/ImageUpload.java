@@ -52,6 +52,7 @@ public class ImageUpload
                         ParseObject query = new ParseObject("Images");
                         query.put("ClientPointer", reference);
                         query.put("Parent", reference.getObjectId());
+                        query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(originalFile.getName(), FileUtils.readFileToByteArray(originalFile)));

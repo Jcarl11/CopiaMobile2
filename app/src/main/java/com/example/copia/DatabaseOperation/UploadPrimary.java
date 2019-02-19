@@ -24,6 +24,7 @@ public class UploadPrimary
         query.put("Industry", clientData.get("Industry"));
         query.put("Type", clientData.get("Type"));
         query.put("Tags", new JSONArray(tags));
+        query.put("Deleted", false);
         query.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {

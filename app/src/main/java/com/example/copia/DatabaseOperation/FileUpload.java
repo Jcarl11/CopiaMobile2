@@ -45,6 +45,7 @@ public class FileUpload
                         ParseObject query = new ParseObject("PDFFiles");
                         query.put("Parent", reference.getObjectId());
                         query.put("ClientPointer", reference);
+                        query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(normalFile.getName(), FileUtils.readFileToByteArray(normalFile)));

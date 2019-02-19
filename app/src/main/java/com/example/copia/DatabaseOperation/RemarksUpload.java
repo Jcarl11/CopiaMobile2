@@ -37,6 +37,7 @@ public class RemarksUpload
                         ParseObject query2 = new ParseObject("Notes");
                         query2.put("Remark", remark);
                         query2.put("ClientPointer", reference);
+                        query2.put("Deleted", false);
                         query2.put("Parent", reference.getObjectId());
                         query2.saveInBackground(new SaveCallback() {
                             @Override
