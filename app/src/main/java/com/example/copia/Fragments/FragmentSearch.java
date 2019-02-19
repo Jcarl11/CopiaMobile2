@@ -119,7 +119,7 @@ public class FragmentSearch extends Fragment
                         };
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                        builder.setMessage("This record will be deleted permanently").setPositiveButton("Yes", dialogClickListener)
+                        builder.setMessage("This record will be deleted").setPositiveButton("Yes", dialogClickListener)
                                 .setNegativeButton("No", dialogClickListener).show();
 
                     }
@@ -188,6 +188,7 @@ public class FragmentSearch extends Fragment
             String[] parameters = searchKeywords.split(",");
             ParseQuery<ParseObject> query = ParseQuery.getQuery(searchIn);
             query.whereContainedIn("Tags", Arrays.asList(parameters));
+            query.whereEqualTo("Deleted", false);
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {
@@ -258,29 +259,11 @@ public class FragmentSearch extends Fragment
         @Override
         protected Boolean doInBackground(Void... voids) {
             List<Boolean> results = new ArrayList<>();
-            ParseQuery<ParseObject> reference = retreiveReference.client_retrieve(objID);
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                CompletableFuture<List<Boolean>> cf = CompletableFuture.supplyAsync(()->deleteImages.client_images_delete(reference))
-                                            .thenApplyAsync(data->deleteNotes.client_notes_delete(reference,data))
-                                            .thenApplyAsync(data->deleteFiles.client_files_delete(reference,data))
-                                            .thenApplyAsync(data->{
-                                                reference.getInBackground(objID, new GetCallback<ParseObject>() {
-                                                    @Override
-                                                    public void done(ParseObject object, ParseException e) {
-                                                        if(e == null && object != null) {
-                                                            try {
-                                                                object.delete();
-                                                                data.add(true);
-                                                            } catch (ParseException e1) {
-                                                                e1.printStackTrace();
-                                                            }
-                                                        }
-                                                        else
-                                                            data.add(false);
-                                                    }
-                                                });
-                                                return data;
-                                            });
+                CompletableFuture<List<Boolean>> cf = CompletableFuture.runAsync(()->retreiveReference.client_retrieve(objID))
+                                            .supplyAsync(()->deleteImages.client_images_delete(objID))
+                                            .thenApplyAsync(data->deleteNotes.client_notes_delete(objID,data))
+                                            .thenApplyAsync(data->deleteFiles.client_files_delete(objID,data));
                 try {
                    results = cf.get();
                 } catch (ExecutionException e) {
@@ -291,9 +274,9 @@ public class FragmentSearch extends Fragment
             }
             else
             {
-                List<Boolean> first = deleteImages.client_images_delete(reference);
-                List<Boolean> second = deleteNotes.client_notes_delete(reference, first);
-                results = deleteFiles.client_files_delete(reference,second);
+                List<Boolean> first = deleteImages.client_images_delete(objID);
+                List<Boolean> second = deleteNotes.client_notes_delete(objID, first);
+                results = deleteFiles.client_files_delete(objID,second);
             }
 
             return results.contains(false);

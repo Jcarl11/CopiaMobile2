@@ -10,12 +10,12 @@ import java.util.List;
 public class DeleteNotes
 {
     boolean finished = false;
-    public List<Boolean> client_notes_delete(ParseQuery<ParseObject> reference, List<Boolean> results)
+    public List<Boolean> client_notes_delete(String reference, List<Boolean> results)
     {
         finished = false;
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Notes");
-        query.include("ClientPointer");
-        query.whereMatchesQuery("ClientPointer", reference);
+        query.whereEqualTo("Parent", reference);
+        query.whereEqualTo("Deleted", false);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
@@ -23,11 +23,8 @@ public class DeleteNotes
                 {
                     for(ParseObject parseObject : objects)
                     {
-                        try {
-                            parseObject.delete();
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
-                        }
+                        parseObject.put("Deleted", true);
+                        parseObject.saveInBackground();
                     }
                     results.add(true);
                 }

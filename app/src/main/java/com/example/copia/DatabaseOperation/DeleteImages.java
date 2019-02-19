@@ -11,25 +11,21 @@ import java.util.List;
 public class DeleteImages
 {
     boolean finished = false;
-    public List<Boolean> client_images_delete(ParseQuery<ParseObject> reference)
+    public List<Boolean> client_images_delete(String reference)
     {
         List<Boolean> results = new ArrayList<>();
         finished = false;
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Images");
-        query.include("ClientPointer");
-        query.whereMatchesQuery("ClientPointer", reference);
+        query.whereEqualTo("Parent", reference);
+        query.whereEqualTo("Deleted", false);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> objects, ParseException e) {
                 if(e == null && objects != null)
                 {
-                    for(ParseObject parseObject : objects)
-                    {
-                        try {
-                            parseObject.delete();
-                        } catch (ParseException e1) {
-                            e1.printStackTrace();
-                        }
+                    for(ParseObject parseObject : objects) {
+                        parseObject.put("Deleted", true);
+                        parseObject.saveInBackground();
                     }
                     results.add(true);
                 }
