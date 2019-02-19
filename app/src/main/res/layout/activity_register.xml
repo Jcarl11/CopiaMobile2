@@ -12,15 +12,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="REGISTER"
-            android:textColor="@android:color/white"
-            android:textSize="50sp"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"/>
-
         <EditText
             android:id="@+id/editext_email"
             android:layout_width="match_parent"
@@ -29,6 +20,17 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:hint="Valid Email"
+            android:textColor="@android:color/white"
+            android:textColorHint="@android:color/white" />
+
+        <EditText
+            android:id="@+id/editext_fullname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="10dp"
+            android:hint="Full name"
             android:textColor="@android:color/white"
             android:textColorHint="@android:color/white" />
 

@@ -11,8 +11,13 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseQuery;
+import com.parse.ParseRelation;
+import com.parse.ParseRole;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
 
 import dmax.dialog.SpotsDialog;
@@ -20,7 +25,7 @@ import dmax.dialog.SpotsDialog;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText email, username, password,repassword;
+    private EditText email, username, password,repassword, fullname;
     private Button submit;
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -32,6 +37,7 @@ public class RegisterActivity extends AppCompatActivity {
         password = (EditText)findViewById(R.id.edittext_password);
         repassword = (EditText)findViewById(R.id.edittext_repassword);
         submit = (Button)findViewById(R.id.btn_register_submit);
+        fullname = (EditText)findViewById(R.id.editext_fullname);
     }
 
     public void submitOnclick(View view)
@@ -39,9 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
         if(isFieldsValid())
         {
             if(isPasswordMatched())
-            {
                 new TaskExecute(this).execute((Void)null);
-            }
             else
                 Toast.makeText(this, "Password does not match", Toast.LENGTH_SHORT).show();
         }
@@ -55,7 +59,8 @@ public class RegisterActivity extends AppCompatActivity {
         String usernameField = username.getText().toString().trim();
         String passwordField = password.getText().toString().trim();
         String repasswordField = repassword.getText().toString().trim();
-        if(!TextUtils.isEmpty(emailField) && !TextUtils.isEmpty(usernameField) && !TextUtils.isEmpty(passwordField) && !TextUtils.isEmpty(repasswordField))
+        String full_name = fullname.getText().toString().trim();
+        if(!TextUtils.isEmpty(emailField) && !TextUtils.isEmpty(usernameField) && !TextUtils.isEmpty(passwordField) && !TextUtils.isEmpty(repasswordField) && !TextUtils.isEmpty(full_name))
             valid = true;
         return valid;
     }
@@ -90,17 +95,17 @@ public class RegisterActivity extends AppCompatActivity {
             user.setUsername(username.getText().toString().trim());
             user.setPassword(password.getText().toString().trim());
             user.setEmail(email.getText().toString().trim());
-
-            user.signUpInBackground(new SignUpCallback() {
-                public void done(ParseException e) {
+            user.put("Verified", false);
+            user.put("Fullname", fullname.getText().toString().trim());
+            user.signUpInBackground(new SignUpCallback()
+            {
+                public void done(ParseException e)
+                {
                     if (e == null) {
-                        ParseUser.logOut();
                         successful = true;
-                        finished = true;
-                    } else {
-                        finished = true;
-                        successful = false;
+                        ParseUser.logOut();
                     }
+                    finished = true;
                 }
             });
             while(finished == false)
@@ -123,7 +128,7 @@ public class RegisterActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean aBoolean) {
             dialog.dismiss();
             Utilities.getInstance().showAlertBox("Important",
-                    "A confirmation Email was sent to your email, Please confirm to be able to login",
+                    "A confirmation link was sent to your email. Your account is still pending until verified by administrator",
                     RegisterActivity.this);
         }
     }

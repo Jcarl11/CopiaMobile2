@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:name="com.orm.SugarApp"
         android:theme="@style/AppTheme">
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".RegisterActivity"
+            android:label="Register"></activity>
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />

@@ -46,19 +46,22 @@ public class LoginActivity extends AppCompatActivity {
     {
         startActivity(new Intent(this, RegisterActivity.class));
     }
-    private class TaskExecute extends AsyncTask<Void, Void, Boolean> {
+    private class TaskExecute extends AsyncTask<Void, Void, String> {
         LoginActivity context;
         String userName;
         String passWord;
+        String response = null;
         boolean finished = false;
-        boolean successful;
         AlertDialog dialog;
+        String pending = "PENDING";
+        String success = "SUCCESSFUL";
+        String exception = "EXCEPTION";
+        String wrong_credentials = "ERROR";
         public TaskExecute(LoginActivity context, String userName, String passWord)
         {
             this.context = context;
             this.userName = userName;
             this.passWord = passWord;
-            setSuccessful(false);
             finished = false;
             dialog = new SpotsDialog.Builder()
                     .setMessage("Logging in")
@@ -67,17 +70,24 @@ public class LoginActivity extends AppCompatActivity {
                     .build();
         }
         @Override
-        protected Boolean doInBackground(Void... strings) {
+        protected String doInBackground(Void... strings) {
 
             ParseUser.logInInBackground(userName, passWord, new LogInCallback() {
                 public void done(ParseUser user, ParseException e) {
-                    if (user != null && e == null){
-                        setSuccessful(true);
-                        finished = true;
-                    } else {
-                        setSuccessful(false);
-                        finished = true;
+                    if (user != null)
+                    {
+                        if(user.getBoolean("Verified") == true)
+                            response = success;
+                        else {
+                            response = pending;
+                        }
                     }
+                    else if(user == null)
+                        response = wrong_credentials;
+                    else if(e != null)
+                        response = e.getMessage();
+
+                    finished = true;
                 }
             });
             while(finished == false)
@@ -88,7 +98,7 @@ public class LoginActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            return isSuccessful();
+            return response;
         }
 
         @Override
@@ -97,17 +107,22 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Boolean aBoolean) {
+        protected void onPostExecute(String response) {
             dialog.dismiss();
-            if(aBoolean == true)
+            if(response.equalsIgnoreCase(success))
             {
                 context.startActivity(new Intent(context.getBaseContext(), MainActivity.class));
                 context.finish();
             }
+            else if(response.equalsIgnoreCase(pending)){
+                Utilities.getInstance().showAlertBox("Pending", response, LoginActivity.this);
+                ParseUser.logOut();
+            }
+            else if(response.equalsIgnoreCase(wrong_credentials))
+                Utilities.getInstance().showAlertBox("Wrong credentials", "Account not found", LoginActivity.this);
             else
-                Toast.makeText(context.getBaseContext(), "Wrong credentials, Please try again", Toast.LENGTH_SHORT).show();
+                Utilities.getInstance().showAlertBox("Something went wrong", response, LoginActivity.this);
+
         }
-        private boolean isSuccessful() {return successful;}
-        private void setSuccessful(boolean successful) {this.successful = successful;}
     }
 }

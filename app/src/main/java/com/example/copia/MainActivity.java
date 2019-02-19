@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -23,10 +24,12 @@ import com.example.copia.Fragments.FragmentSpecifications;
 import com.example.copia.Fragments.FragmentSuppliers;
 import com.example.copia.Fragments.FragmentWelcome;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseRole;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
@@ -55,8 +58,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             finish();
         }
         else if(user != null) {
-            new RetrieveComboBoxTask().execute((Void) null);
 
+            new RetrieveComboBoxTask().execute((Void) null);
+            //new RetrieveRoleTask().execute((Void) null);
 
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             View headerView = navigationView.getHeaderView(0);
@@ -70,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             textview_email = (TextView) headerView.findViewById(R.id.textview_email);
             textview_username.setText("Logged in as: " + user.getUsername());
             textview_email.setText(user.getEmail());
-
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                     R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.addDrawerListener(toggle);
@@ -191,7 +194,60 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if(comboboxEntities.size() <= 0)
                 Utilities.getInstance().showAlertBox("Empty", "No data were retrieved", MainActivity.this);
         }
+    }
 
+    private class RetrieveRoleTask extends AsyncTask<Void, Void, String>
+    {
+        AlertDialog dialog;
+        boolean finished = false;
+        String role = null;
+        public RetrieveRoleTask() {
+            finished = false;
+            dialog = new SpotsDialog.Builder()
+                    .setMessage("Retrieving user's role")
+                    .setContext(MainActivity.this)
+                    .setCancelable(false)
+                    .build();
+        }
 
+        @Override
+        protected String doInBackground(Void... voids) {
+            ParseQuery<ParseRole> query = ParseRole.getQuery();
+            query.include("users");
+            query.whereEqualTo("users", ParseUser.getCurrentUser());
+            query.getFirstInBackground(new GetCallback<ParseRole>() {
+                @Override
+                public void done(ParseRole object, ParseException e) {
+                    if(e == null && object != null)
+                    {
+                        role = object.getName();
+                    }
+                    finished = true;
+                }
+            });
+            while (finished == false)
+            {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return role;
+        }
+
+        @Override
+        protected void onPreExecute() {dialog.show();}
+
+        @Override
+        protected void onPostExecute(String s) {
+            dialog.dismiss();
+            if(s.length() > 0)
+            {
+                Log.d("Result", "RESULT IS: " + s);
+            }
+            else
+                Log.d("Result", "RESULT IS: SOMETHING WENT WRONG");
+        }
     }
 }
