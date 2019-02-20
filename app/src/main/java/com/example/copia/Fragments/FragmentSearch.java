@@ -21,25 +21,23 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.copia.Adapters.ClientAdapter;
+import com.example.copia.Adapters.SuppliersAdapter;
 import com.example.copia.Entities.ComboboxEntity;
 import com.example.copia.DatabaseOperation.DeleteFiles;
 import com.example.copia.DatabaseOperation.DeleteImages;
 import com.example.copia.DatabaseOperation.DeleteNotes;
-import com.example.copia.DatabaseOperation.RetreiveReference;
+import com.example.copia.DatabaseOperation.DeleteReference;
 import com.example.copia.Entities.ClientEntity;
+import com.example.copia.Entities.SuppliersEntity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
-import com.example.copia.SearchTasks.ClientSearchTask;
+import com.example.copia.Tasks.ClientSearchTask;
+import com.example.copia.Tasks.DeleteClientTask;
+import com.example.copia.Tasks.SuppliersSearchTask;
 import com.example.copia.Utilities;
-import com.parse.FindCallback;
-import com.parse.GetCallback;
-import com.parse.ParseException;
-import com.parse.ParseObject;
-import com.parse.ParseQuery;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -51,7 +49,10 @@ import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTo
 public class FragmentSearch extends Fragment
 {
     private ClientAdapter clientAdapter;
+    private SuppliersAdapter suppliersAdapter;
+    String searchin = null;
     private List<ClientEntity> clientEntities;
+    private List<SuppliersEntity> suppliersEntities;
     EditText search_edittext_search;
     Spinner search_spinner_searchin;
     RecyclerView search_recyclerview;
@@ -80,14 +81,20 @@ public class FragmentSearch extends Fragment
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     String keyword = search_edittext_search.getText().toString().trim().toUpperCase();
-                    String searchin = search_spinner_searchin.getSelectedItem().toString();
+                    searchin = search_spinner_searchin.getSelectedItem().toString();
                     if(searchin.equalsIgnoreCase("Client"))
                     {
                         ClientSearchTask clientSearchTask = new ClientSearchTask(getContext(), keyword, search_recyclerview);
                         clientSearchTask.execute((Void)null);
                         clientAdapter = new ClientAdapter(getContext(), clientSearchTask.getClientEntities());
                         clientEntities = clientSearchTask.getClientEntities();
-                        //clientAdapter = clientSearchTask.getClientAdapter();
+                    }
+                    else if(searchin.equalsIgnoreCase("Suppliers"))
+                    {
+                        SuppliersSearchTask suppliersSearchTask = new SuppliersSearchTask(search_recyclerview, getContext(), keyword);
+                        suppliersSearchTask.execute((Void)null);
+                        suppliersAdapter = new SuppliersAdapter(getContext(), suppliersSearchTask.getSuppliersEntities());
+                        suppliersEntities = suppliersSearchTask.getSuppliersEntities();
                     }
 
                 }
@@ -100,7 +107,10 @@ public class FragmentSearch extends Fragment
     @Override
     public void onResume() {
         super.onResume();
-        search_recyclerview.setAdapter(clientAdapter);
+        if(clientAdapter != null)
+            search_recyclerview.setAdapter(clientAdapter);
+        else if(suppliersAdapter != null)
+            search_recyclerview.setAdapter(suppliersAdapter);
     }
 
     private SwipeDismissRecyclerViewTouchListener listener()
@@ -121,7 +131,15 @@ public class FragmentSearch extends Fragment
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which){
                                     case DialogInterface.BUTTON_POSITIVE:
-                                        new DeleteClientTask(clientEntities.get(pos).getObjectId()).execute((Void)null);
+                                        if(searchin.equalsIgnoreCase("Client"))
+                                        {
+                                            DeleteClientTask deleteClientTask = new DeleteClientTask(clientEntities.get(pos).getObjectId(), getContext());
+                                            deleteClientTask.setPos(pos);
+                                            deleteClientTask.setClientAdapter(clientAdapter);
+                                            deleteClientTask.setClientEntities(clientEntities);
+                                            deleteClientTask.execute((Void)null);
+                                        }
+
                                         break;
 
                                     case DialogInterface.BUTTON_NEGATIVE:
@@ -154,19 +172,23 @@ public class FragmentSearch extends Fragment
                         builder.setItems(choices, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                String adapterClass = search_recyclerview.getAdapter().getClass().getSimpleName();
+                                String objectid = null;
+                                if(adapterClass.equalsIgnoreCase("ClientAdapter"))
+                                    objectid = clientEntities.get(pos).getObjectId();
+                                else if(adapterClass.equalsIgnoreCase("SuppliersAdapter"))
+                                    objectid = suppliersEntities.get(pos).getObjectId();
                                 if(which == 0) {
-                                    dialog.dismiss();
-                                    ((MainActivity)getActivity()).setObjectId(clientEntities.get(pos).getObjectId());
+                                    ((MainActivity)getActivity()).setObjectId(objectid);
                                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentNotes()).addToBackStack(null).commit();
                                 }
                                 else if(which == 1) {
-                                    dialog.dismiss();
-                                    ((MainActivity)getActivity()).setObjectId(clientEntities.get(pos).getObjectId());
+                                    ((MainActivity)getActivity()).setObjectId(objectid);
                                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentImages()).addToBackStack(null).commit();
                                 }
                                 else if(which == 2) {
-                                    dialog.dismiss();
-                                    ((MainActivity)getActivity()).setObjectId(clientEntities.get(pos).getObjectId());
+                                    ((MainActivity)getActivity()).setObjectId(objectid);
                                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentPdf()).addToBackStack(null).commit();
                                 }
                             }
@@ -178,67 +200,5 @@ public class FragmentSearch extends Fragment
                 })
                 .create();
         return listener;
-    }
-    private class DeleteClientTask extends AsyncTask<Void, Void, Boolean>
-    {
-        RetreiveReference retreiveReference = new RetreiveReference();
-        DeleteImages deleteImages = new DeleteImages();
-        DeleteNotes deleteNotes = new DeleteNotes();
-        DeleteFiles deleteFiles = new DeleteFiles();
-        String objID;
-        AlertDialog dialog;
-        public DeleteClientTask(String objID) {
-            this.objID = objID;
-            dialog = new SpotsDialog.Builder()
-                    .setMessage("Deleting references")
-                    .setContext(getContext())
-                    .setCancelable(false)
-                    .build();
-        }
-
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            List<Boolean> results = new ArrayList<>();
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                CompletableFuture<List<Boolean>> cf = CompletableFuture.runAsync(()->retreiveReference.client_retrieve(objID))
-                                            .supplyAsync(()->deleteImages.client_images_delete(objID))
-                                            .thenApplyAsync(data->deleteNotes.client_notes_delete(objID,data))
-                                            .thenApplyAsync(data->deleteFiles.client_files_delete(objID,data));
-                try {
-                   results = cf.get();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            else
-            {
-                List<Boolean> first = deleteImages.client_images_delete(objID);
-                List<Boolean> second = deleteNotes.client_notes_delete(objID, first);
-                results = deleteFiles.client_files_delete(objID,second);
-            }
-
-            return results.contains(false);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            dialog.show();
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            dialog.dismiss();
-            if(aBoolean == false)
-            {
-                clientEntities.remove(pos);
-                clientAdapter.notifyItemRemoved(pos);
-                Utilities.getInstance().showAlertBox("Successful", "Record deleted", getContext());
-            }
-            else
-                Utilities.getInstance().showAlertBox("Error", "Some of the references were not\ndeleted properly. Please retry the deletion process", getContext());
-        }
     }
 }

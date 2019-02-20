@@ -5,10 +5,10 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
-public class RetreiveReference
+public class DeleteReference
 {
     boolean finished = false;
-    public void client_retrieve(String objectId)
+    public void client_delete(String objectId)
     {
         finished = false;
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Client");

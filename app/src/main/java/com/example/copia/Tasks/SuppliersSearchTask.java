@@ -1,13 +1,12 @@
-package com.example.copia.SearchTasks;
+package com.example.copia.Tasks;
 
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
-import com.example.copia.Adapters.ClientAdapter;
-import com.example.copia.Entities.ClientEntity;
+import com.example.copia.Adapters.SuppliersAdapter;
+import com.example.copia.Entities.SuppliersEntity;
 import com.example.copia.Utilities;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -20,20 +19,20 @@ import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 
-public class ClientSearchTask extends AsyncTask<Void, Void, List<ClientEntity>>
-{
+public class SuppliersSearchTask extends AsyncTask<Void, Void, List<SuppliersEntity>> {
     private RecyclerView search_recyclerview;
-    private ClientAdapter clientAdapter;
-    private List<ClientEntity> clientEntityList;
+    private SuppliersAdapter suppliersAdapter;
+    private List<SuppliersEntity> suppliersEntities;
     private boolean finished = false;
     private Context context;
     private String keyword;
     private AlertDialog dialog;
-    public ClientSearchTask(Context context, String keyword, RecyclerView search_recyclerview) {
-        clientEntityList = new ArrayList<>();
+
+    public SuppliersSearchTask(RecyclerView search_recyclerview, Context context, String keyword) {
+        suppliersEntities = new ArrayList<>();
         this.search_recyclerview = search_recyclerview;
-        this.keyword = keyword;
         this.context = context;
+        this.keyword = keyword;
         dialog = new SpotsDialog.Builder()
                 .setMessage("Searching clients")
                 .setContext(context)
@@ -41,19 +40,10 @@ public class ClientSearchTask extends AsyncTask<Void, Void, List<ClientEntity>>
                 .build();
     }
 
-
-    public ClientAdapter getClientAdapter() {
-        return clientAdapter;
-    }
-
-    public List<ClientEntity> getClientEntities() {
-        return clientEntityList;
-    }
-
     @Override
-    protected List<ClientEntity> doInBackground(Void... voids) {
+    protected List<SuppliersEntity> doInBackground(Void... voids) {
         String[] parameters = keyword.split(",");
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Client");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Suppliers");
         query.whereContainedIn("Tags", Arrays.asList(parameters));
         query.whereEqualTo("Deleted", false);
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -63,14 +53,15 @@ public class ClientSearchTask extends AsyncTask<Void, Void, List<ClientEntity>>
                 {
                     for(ParseObject object : objects)
                     {
-                        ClientEntity clientEntity = new ClientEntity();
-                        clientEntity.setObjectId(object.getObjectId());
-                        clientEntity.setRepresentative(object.getString("Representative"));
-                        clientEntity.setPosition(object.getString("Position"));
-                        clientEntity.setCompany(object.getString("Company"));
-                        clientEntity.setIndustry(object.getString("Industry"));
-                        clientEntity.setType(object.getString("Type"));
-                        clientEntityList.add(clientEntity);
+                        SuppliersEntity suppliersEntity = new SuppliersEntity();
+                        suppliersEntity.setObjectId(object.getObjectId());
+                        suppliersEntity.setRepresentative(object.getString("Representative"));
+                        suppliersEntity.setPosition(object.getString("Position"));
+                        suppliersEntity.setCompany(object.getString("Company_Name"));
+                        suppliersEntity.setBrand(object.getString("Brand"));
+                        suppliersEntity.setIndustry(object.getString("Industry"));
+                        suppliersEntity.setType(object.getString("Type"));
+                        suppliersEntities.add(suppliersEntity);
                     }
                 }
                 finished = true;
@@ -84,21 +75,24 @@ public class ClientSearchTask extends AsyncTask<Void, Void, List<ClientEntity>>
                 e.printStackTrace();
             }
         }
-        return clientEntityList;
+        return suppliersEntities;
     }
 
     @Override
     protected void onPreExecute() {dialog.show();}
 
     @Override
-    protected void onPostExecute(List<ClientEntity> clientEntities) {
+    protected void onPostExecute(List<SuppliersEntity> suppliersEntities) {
         dialog.dismiss();
-        if(clientEntities.size() > 0)
+        if(suppliersEntities.size() > 0)
         {
-            clientAdapter = new ClientAdapter(context, clientEntities);
-            search_recyclerview.setAdapter(clientAdapter);
+            suppliersAdapter = new SuppliersAdapter(context, suppliersEntities);
+            search_recyclerview.setAdapter(suppliersAdapter);
         }
         else
             Utilities.getInstance().showAlertBox("Reponse", "0 records found", context);
     }
+
+    public SuppliersAdapter getSuppliersAdapter() {return suppliersAdapter;}
+    public List<SuppliersEntity> getSuppliersEntities() {return suppliersEntities;}
 }
