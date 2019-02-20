@@ -34,7 +34,7 @@ public class SuppliersSearchTask extends AsyncTask<Void, Void, List<SuppliersEnt
         this.context = context;
         this.keyword = keyword;
         dialog = new SpotsDialog.Builder()
-                .setMessage("Searching clients")
+                .setMessage("Searching suppliers")
                 .setContext(context)
                 .setCancelable(false)
                 .build();

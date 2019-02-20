@@ -33,6 +33,7 @@ import com.example.copia.MainActivity;
 import com.example.copia.R;
 import com.example.copia.Tasks.ClientSearchTask;
 import com.example.copia.Tasks.DeleteClientTask;
+import com.example.copia.Tasks.DeleteSuppliersTask;
 import com.example.copia.Tasks.SuppliersSearchTask;
 import com.example.copia.Utilities;
 
@@ -131,7 +132,7 @@ public class FragmentSearch extends Fragment
                             public void onClick(DialogInterface dialog, int which) {
                                 switch (which){
                                     case DialogInterface.BUTTON_POSITIVE:
-                                        if(searchin.equalsIgnoreCase("Client"))
+                                        if(search_recyclerview.getAdapter().getClass().getSimpleName().equalsIgnoreCase("ClientAdapter"))
                                         {
                                             DeleteClientTask deleteClientTask = new DeleteClientTask(clientEntities.get(pos).getObjectId(), getContext());
                                             deleteClientTask.setPos(pos);
@@ -139,7 +140,14 @@ public class FragmentSearch extends Fragment
                                             deleteClientTask.setClientEntities(clientEntities);
                                             deleteClientTask.execute((Void)null);
                                         }
-
+                                        else if(search_recyclerview.getAdapter().getClass().getSimpleName().equalsIgnoreCase("SuppliersAdapter"))
+                                        {
+                                            DeleteSuppliersTask deleteSuppliersTask = new DeleteSuppliersTask(suppliersEntities.get(pos).getObjectId(), getContext());
+                                            deleteSuppliersTask.setPos(pos);
+                                            deleteSuppliersTask.setSuppliersAdapter(suppliersAdapter);
+                                            deleteSuppliersTask.setSuppliersEntities(suppliersEntities);
+                                            deleteSuppliersTask.execute((Void)null);
+                                        }
                                         break;
 
                                     case DialogInterface.BUTTON_NEGATIVE:
