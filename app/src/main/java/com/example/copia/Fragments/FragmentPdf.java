@@ -73,6 +73,7 @@ public class FragmentPdf extends Fragment
         protected List<PDFEntity> doInBackground(Void... voids) {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("PDFFiles");
             query.whereEqualTo("Parent", objectId);
+            query.whereEqualTo("Deleted", false);
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {

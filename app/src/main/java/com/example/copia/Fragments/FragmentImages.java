@@ -66,6 +66,7 @@ public class FragmentImages extends Fragment {
 
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Images");
             query.whereEqualTo("Parent", objectId);
+            query.whereEqualTo("Deleted", false);
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {

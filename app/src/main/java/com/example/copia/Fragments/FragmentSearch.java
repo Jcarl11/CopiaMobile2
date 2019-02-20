@@ -43,6 +43,7 @@ import com.example.copia.Tasks.ContractorsSearchTask;
 import com.example.copia.Tasks.DeleteClientTask;
 import com.example.copia.Tasks.DeleteConsultantsTask;
 import com.example.copia.Tasks.DeleteContractorsTask;
+import com.example.copia.Tasks.DeleteSpecificationsTask;
 import com.example.copia.Tasks.DeleteSuppliersTask;
 import com.example.copia.Tasks.SpecificationsSearchTask;
 import com.example.copia.Tasks.SuppliersSearchTask;
@@ -154,6 +155,8 @@ public class FragmentSearch extends Fragment
             search_recyclerview.setAdapter(contractorsAdapter);
         else if(consultantsAdapter != null)
             search_recyclerview.setAdapter(consultantsAdapter);
+        else if(specificationsAdapter != null)
+            search_recyclerview.setAdapter(specificationsAdapter);
     }
 
     private SwipeDismissRecyclerViewTouchListener listener()
@@ -206,6 +209,14 @@ public class FragmentSearch extends Fragment
                                             deleteConsultantsTask.setConsultantsEntities(consultantsEntities);
                                             deleteConsultantsTask.execute((Void)null);
                                         }
+                                        else if(search_recyclerview.getAdapter().getClass().getSimpleName().equalsIgnoreCase("SpecificationsAdapter"))
+                                        {
+                                            DeleteSpecificationsTask deleteSpecificationsTask = new DeleteSpecificationsTask(specificationsEntities.get(pos).getObjectid(), getContext());
+                                            deleteSpecificationsTask.setPos(pos);
+                                            deleteSpecificationsTask.setSpecificationsAdapter(specificationsAdapter);
+                                            deleteSpecificationsTask.setSpecificationsEntities(specificationsEntities);
+                                            deleteSpecificationsTask.execute((Void)null);
+                                        }
                                         break;
 
                                     case DialogInterface.BUTTON_NEGATIVE:
@@ -249,6 +260,8 @@ public class FragmentSearch extends Fragment
                                     objectid = contractorsEntities.get(pos).getObjectId();
                                 else if(adapterClass.equalsIgnoreCase("ConsultantsAdapter"))
                                     objectid = consultantsEntities.get(pos).getObjectId();
+                                else if(adapterClass.equalsIgnoreCase("SpecificationsAdapter"))
+                                    objectid = specificationsEntities.get(pos).getObjectid();
                                 if(which == 0) {
                                     ((MainActivity)getActivity()).setObjectId(objectid);
                                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentNotes()).addToBackStack(null).commit();

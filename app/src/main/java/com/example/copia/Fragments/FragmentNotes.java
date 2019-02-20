@@ -73,6 +73,7 @@ public class FragmentNotes extends Fragment {
         protected List<NotesEntity> doInBackground(Void... voids) {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Notes");
             query.whereEqualTo("Parent", objectId);
+            query.whereEqualTo("Deleted", false);
             query.findInBackground(new FindCallback<ParseObject>() {
                 @Override
                 public void done(List<ParseObject> objects, ParseException e) {
