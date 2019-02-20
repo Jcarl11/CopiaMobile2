@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.example.copia.DatabaseOperation.RetreiveReference;
 import com.example.copia.Entities.ClientEntity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
+import com.example.copia.SearchTasks.ClientSearchTask;
 import com.example.copia.Utilities;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
@@ -48,9 +50,8 @@ import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTo
 
 public class FragmentSearch extends Fragment
 {
-    ClientAdapter clientAdapter;
-    List<ClientEntity> clientEntities;
-
+    private ClientAdapter clientAdapter;
+    private List<ClientEntity> clientEntities;
     EditText search_edittext_search;
     Spinner search_spinner_searchin;
     RecyclerView search_recyclerview;
@@ -77,8 +78,19 @@ public class FragmentSearch extends Fragment
         search_edittext_search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE)
-                    new SearchTask().execute((Void)null);
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    String keyword = search_edittext_search.getText().toString().trim().toUpperCase();
+                    String searchin = search_spinner_searchin.getSelectedItem().toString();
+                    if(searchin.equalsIgnoreCase("Client"))
+                    {
+                        ClientSearchTask clientSearchTask = new ClientSearchTask(getContext(), keyword, search_recyclerview);
+                        clientSearchTask.execute((Void)null);
+                        clientAdapter = new ClientAdapter(getContext(), clientSearchTask.getClientEntities());
+                        clientEntities = clientSearchTask.getClientEntities();
+                        //clientAdapter = clientSearchTask.getClientAdapter();
+                    }
+
+                }
                 return false;
             }
         });
@@ -166,77 +178,6 @@ public class FragmentSearch extends Fragment
                 })
                 .create();
         return listener;
-    }
-    private class SearchTask extends AsyncTask<Void, Void, List<ClientEntity>>
-    {
-
-        boolean finished = false;
-        AlertDialog dialog;
-        public SearchTask() {
-            clientEntities = new ArrayList<>();
-            dialog = new SpotsDialog.Builder()
-                    .setMessage("Searching clients")
-                    .setContext(getContext())
-                    .setCancelable(false)
-                    .build();
-        }
-
-        @Override
-        protected List<ClientEntity> doInBackground(Void... voids) {
-            String searchIn = search_spinner_searchin.getSelectedItem().toString();
-            String searchKeywords = search_edittext_search.getText().toString().trim().toUpperCase();
-            String[] parameters = searchKeywords.split(",");
-            ParseQuery<ParseObject> query = ParseQuery.getQuery(searchIn);
-            query.whereContainedIn("Tags", Arrays.asList(parameters));
-            query.whereEqualTo("Deleted", false);
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> objects, ParseException e) {
-                    if(e == null && objects != null)
-                    {
-                        for(ParseObject object : objects) {
-                            ClientEntity clientEntity = new ClientEntity();
-                            clientEntity.setObjectId(object.getObjectId());
-                            clientEntity.setRepresentative(object.getString("Representative"));
-                            clientEntity.setPosition(object.getString("Position"));
-                            clientEntity.setCompany(object.getString("Company"));
-                            clientEntity.setIndustry(object.getString("Industry"));
-                            clientEntity.setType(object.getString("Type"));
-                            clientEntities.add(clientEntity);
-                        }
-                        finished = true;
-                    }
-                    else
-                        finished = true;
-                }
-            });
-            while(finished == false)
-            {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            return clientEntities;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            dialog.show();
-        }
-
-        @Override
-        protected void onPostExecute(List<ClientEntity> clientEntities) {
-            dialog.dismiss();
-            if(clientEntities.size() > 0)
-            {
-                clientAdapter = new ClientAdapter(getContext(), clientEntities);
-                search_recyclerview.setAdapter(clientAdapter);
-            }
-            else
-                Utilities.getInstance().showAlertBox("Response", "0 records found", getContext());
-        }
     }
     private class DeleteClientTask extends AsyncTask<Void, Void, Boolean>
     {
