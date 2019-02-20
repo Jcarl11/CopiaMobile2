@@ -137,9 +137,6 @@ public class FragmentClient extends Fragment implements View.OnClickListener
             case R.id.client_button_upload:
                 if(hasNullFields() == false)
                 {
-                    /*File compressedFile = new FileCompressor().compressImage(new File(imageList.get(0).getPath()), getContext());
-                    String newSize = String.valueOf(compressedFile.length() / 1024);
-                    Utilities.getInstance().showAlertBox("Size", newSize, getContext());*/
                     new ClientUploadTask().execute((Void)null);
                 }
                 else

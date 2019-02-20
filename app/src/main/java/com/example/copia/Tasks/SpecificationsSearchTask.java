@@ -5,8 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 
-import com.example.copia.Adapters.SuppliersAdapter;
-import com.example.copia.Entities.SuppliersEntity;
+import com.example.copia.Adapters.SpecificationsAdapter;
+import com.example.copia.Entities.SpecificationsEntity;
 import com.example.copia.Utilities;
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -19,29 +19,28 @@ import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 
-public class SuppliersSearchTask extends AsyncTask<Void, Void, List<SuppliersEntity>> {
+public class SpecificationsSearchTask extends AsyncTask<Void, Void, List<SpecificationsEntity>> {
     private RecyclerView search_recyclerview;
-    private SuppliersAdapter suppliersAdapter;
-    private List<SuppliersEntity> suppliersEntities;
+    private SpecificationsAdapter specificationsAdapter;
+    private List<SpecificationsEntity> specificationsEntities;
     private boolean finished = false;
     private Context context;
     private String keyword;
     private AlertDialog dialog;
 
-    public SuppliersSearchTask(RecyclerView search_recyclerview, Context context, String keyword) {
-        suppliersEntities = new ArrayList<>();
+    public SpecificationsSearchTask(RecyclerView search_recyclerview, Context context, String keyword) {
+        specificationsEntities = new ArrayList<>();
         this.search_recyclerview = search_recyclerview;
         this.context = context;
         this.keyword = keyword;
         dialog = new SpotsDialog.Builder()
-                .setMessage("Searching suppliers")
+                .setMessage("Searching specifications")
                 .setContext(context)
                 .setCancelable(false)
                 .build();
     }
-
     @Override
-    protected List<SuppliersEntity> doInBackground(Void... voids) {
+    protected List<SpecificationsEntity> doInBackground(Void... voids) {
         String[] parameters = keyword.split(",");
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Specifications");
         query.whereContainedIn("Tags", Arrays.asList(parameters));
@@ -53,15 +52,14 @@ public class SuppliersSearchTask extends AsyncTask<Void, Void, List<SuppliersEnt
                 {
                     for(ParseObject object : objects)
                     {
-                        SuppliersEntity suppliersEntity = new SuppliersEntity();
-                        suppliersEntity.setObjectId(object.getObjectId());
-                        suppliersEntity.setRepresentative(object.getString("Representative"));
-                        suppliersEntity.setPosition(object.getString("Position"));
-                        suppliersEntity.setCompany(object.getString("Company_Name"));
-                        suppliersEntity.setBrand(object.getString("Brand"));
-                        suppliersEntity.setIndustry(object.getString("Industry"));
-                        suppliersEntity.setType(object.getString("Type"));
-                        suppliersEntities.add(suppliersEntity);
+                        SpecificationsEntity specificationsEntity = new SpecificationsEntity();
+                        specificationsEntity.setObjectid(object.getObjectId());
+                        specificationsEntity.setTitle(object.getString("Title"));
+                        specificationsEntity.setDivision(object.getString("Division"));
+                        specificationsEntity.setSection(object.getString("Section"));
+                        specificationsEntity.setType(object.getString("Type"));
+                        specificationsEntity.setDocument(specificationsEntity.getDivision() + " - " + specificationsEntity.getSection() + " - " + specificationsEntity.getType());
+                        specificationsEntities.add(specificationsEntity);
                     }
                 }
                 finished = true;
@@ -75,24 +73,29 @@ public class SuppliersSearchTask extends AsyncTask<Void, Void, List<SuppliersEnt
                 e.printStackTrace();
             }
         }
-        return suppliersEntities;
+        return specificationsEntities;
     }
 
     @Override
     protected void onPreExecute() {dialog.show();}
 
     @Override
-    protected void onPostExecute(List<SuppliersEntity> suppliersEntities) {
+    protected void onPostExecute(List<SpecificationsEntity> specificationsEntities) {
         dialog.dismiss();
-        if(suppliersEntities.size() > 0)
+        if(specificationsEntities.size() > 0)
         {
-            suppliersAdapter = new SuppliersAdapter(context, suppliersEntities);
-            search_recyclerview.setAdapter(suppliersAdapter);
+            specificationsAdapter = new SpecificationsAdapter(context, specificationsEntities);
+            search_recyclerview.setAdapter(specificationsAdapter);
         }
         else
             Utilities.getInstance().showAlertBox("Reponse", "0 records found", context);
     }
 
-    public SuppliersAdapter getSuppliersAdapter() {return suppliersAdapter;}
-    public List<SuppliersEntity> getSuppliersEntities() {return suppliersEntities;}
+    public SpecificationsAdapter getSpecificationsAdapter() {
+        return specificationsAdapter;
+    }
+
+    public List<SpecificationsEntity> getSpecificationsEntities() {
+        return specificationsEntities;
+    }
 }

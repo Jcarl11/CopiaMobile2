@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.example.copia.Adapters.ClientAdapter;
 import com.example.copia.Adapters.ConsultantsAdapter;
 import com.example.copia.Adapters.ContractorsAdapter;
+import com.example.copia.Adapters.SpecificationsAdapter;
 import com.example.copia.Adapters.SuppliersAdapter;
 import com.example.copia.Entities.ComboboxEntity;
 import com.example.copia.DatabaseOperation.DeleteFiles;
@@ -32,6 +33,7 @@ import com.example.copia.DatabaseOperation.DeleteReference;
 import com.example.copia.Entities.ClientEntity;
 import com.example.copia.Entities.ConsultantsEntity;
 import com.example.copia.Entities.ContractorsEntity;
+import com.example.copia.Entities.SpecificationsEntity;
 import com.example.copia.Entities.SuppliersEntity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
@@ -42,6 +44,7 @@ import com.example.copia.Tasks.DeleteClientTask;
 import com.example.copia.Tasks.DeleteConsultantsTask;
 import com.example.copia.Tasks.DeleteContractorsTask;
 import com.example.copia.Tasks.DeleteSuppliersTask;
+import com.example.copia.Tasks.SpecificationsSearchTask;
 import com.example.copia.Tasks.SuppliersSearchTask;
 import com.example.copia.Utilities;
 
@@ -61,11 +64,13 @@ public class FragmentSearch extends Fragment
     private SuppliersAdapter suppliersAdapter;
     private ContractorsAdapter contractorsAdapter;
     private ConsultantsAdapter consultantsAdapter;
+    private SpecificationsAdapter specificationsAdapter;
     String searchin = null;
     private List<ClientEntity> clientEntities;
     private List<SuppliersEntity> suppliersEntities;
     private List<ContractorsEntity> contractorsEntities;
     private List<ConsultantsEntity> consultantsEntities;
+    private List<SpecificationsEntity> specificationsEntities;
     EditText search_edittext_search;
     Spinner search_spinner_searchin;
     RecyclerView search_recyclerview;
@@ -122,6 +127,13 @@ public class FragmentSearch extends Fragment
                         consultantsSearchTask.execute((Void)null);
                         consultantsAdapter = new ConsultantsAdapter(getContext(), consultantsSearchTask.getConsultantsEntities());
                         consultantsEntities = consultantsSearchTask.getConsultantsEntities();
+                    }
+                    else if(searchin.equalsIgnoreCase("Specifications"))
+                    {
+                        SpecificationsSearchTask specificationsSearchTask = new SpecificationsSearchTask(search_recyclerview, getContext(), keyword);
+                        specificationsSearchTask.execute((Void)null);
+                        specificationsAdapter = new SpecificationsAdapter(getContext(), specificationsSearchTask.getSpecificationsEntities());
+                        specificationsEntities = specificationsSearchTask.getSpecificationsEntities();
                     }
 
                 }
