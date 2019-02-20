@@ -94,6 +94,7 @@ public class RemarksUpload
                         ParseObject query2 = new ParseObject("Notes");
                         query2.put("Remark", remark);
                         query2.put("SuppliersPointer", reference);
+                        query2.put("Deleted", false);
                         query2.put("Parent", reference.getObjectId());
                         query2.saveInBackground(new SaveCallback() {
                             @Override
@@ -150,6 +151,7 @@ public class RemarksUpload
                         ParseObject query2 = new ParseObject("Notes");
                         query2.put("Remark", remark);
                         query2.put("Parent", reference.getObjectId());
+                        query2.put("Deleted", false);
                         query2.put("ContractorsPointer", reference);
                         query2.saveInBackground(new SaveCallback() {
                             @Override
@@ -207,6 +209,7 @@ public class RemarksUpload
                         query2.put("Remark", remark);
                         query2.put("ConsultantsPointer", reference);
                         query2.put("Parent", reference.getObjectId());
+                        query2.put("Deleted", false);
                         query2.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
@@ -261,6 +264,7 @@ public class RemarksUpload
                         ParseObject query2 = new ParseObject("Notes");
                         query2.put("Remark", remark);
                         query2.put("SpecificationsPointer", reference);
+                        query2.put("Deleted", false);
                         query2.put("Parent", reference.getObjectId());
                         query2.saveInBackground(new SaveCallback() {
                             @Override

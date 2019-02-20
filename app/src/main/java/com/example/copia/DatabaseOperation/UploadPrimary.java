@@ -119,6 +119,7 @@ public class UploadPrimary
         query.put("Industry", consultantsData.get("Industry"));
         query.put("Classification", consultantsData.get("Classification"));
         query.put("Tags", new JSONArray(consultants_extractStringsToTags));
+        query.put("Deleted", false);
         query.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -147,6 +148,7 @@ public class UploadPrimary
         query.put("Section", specificationsData.get("Section"));
         query.put("Type", specificationsData.get("Type"));
         query.put("Tags", new JSONArray(specifications_extractStringsToTags));
+        query.put("Deleted", false);
         query.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {

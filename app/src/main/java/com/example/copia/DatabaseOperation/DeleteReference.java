@@ -77,4 +77,28 @@ public class DeleteReference
             }
         }
     }
+
+    public void consultants_delete(String objectId)
+    {
+        finished = false;
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Consultants");
+        query.getInBackground(objectId, new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject object, ParseException e) {
+                if(e == null && object != null)
+                {
+                    object.put("Deleted", true);
+                    object.saveInBackground();
+                }
+            }
+        });
+        while(finished == false)
+        {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

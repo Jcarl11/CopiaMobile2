@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.copia.Adapters.ClientAdapter;
+import com.example.copia.Adapters.ConsultantsAdapter;
 import com.example.copia.Adapters.ContractorsAdapter;
 import com.example.copia.Adapters.SuppliersAdapter;
 import com.example.copia.Entities.ComboboxEntity;
@@ -29,13 +30,16 @@ import com.example.copia.DatabaseOperation.DeleteImages;
 import com.example.copia.DatabaseOperation.DeleteNotes;
 import com.example.copia.DatabaseOperation.DeleteReference;
 import com.example.copia.Entities.ClientEntity;
+import com.example.copia.Entities.ConsultantsEntity;
 import com.example.copia.Entities.ContractorsEntity;
 import com.example.copia.Entities.SuppliersEntity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
 import com.example.copia.Tasks.ClientSearchTask;
+import com.example.copia.Tasks.ConsultantsSearchTask;
 import com.example.copia.Tasks.ContractorsSearchTask;
 import com.example.copia.Tasks.DeleteClientTask;
+import com.example.copia.Tasks.DeleteConsultantsTask;
 import com.example.copia.Tasks.DeleteContractorsTask;
 import com.example.copia.Tasks.DeleteSuppliersTask;
 import com.example.copia.Tasks.SuppliersSearchTask;
@@ -56,11 +60,12 @@ public class FragmentSearch extends Fragment
     private ClientAdapter clientAdapter;
     private SuppliersAdapter suppliersAdapter;
     private ContractorsAdapter contractorsAdapter;
+    private ConsultantsAdapter consultantsAdapter;
     String searchin = null;
     private List<ClientEntity> clientEntities;
     private List<SuppliersEntity> suppliersEntities;
     private List<ContractorsEntity> contractorsEntities;
-
+    private List<ConsultantsEntity> consultantsEntities;
     EditText search_edittext_search;
     Spinner search_spinner_searchin;
     RecyclerView search_recyclerview;
@@ -111,6 +116,13 @@ public class FragmentSearch extends Fragment
                         contractorsAdapter = new ContractorsAdapter(getContext(), contractorsSearchTask.getContractorsEntities());
                         contractorsEntities = contractorsSearchTask.getContractorsEntities();
                     }
+                    else if(searchin.equalsIgnoreCase("Consultants"))
+                    {
+                        ConsultantsSearchTask consultantsSearchTask = new ConsultantsSearchTask(search_recyclerview, getContext(), keyword);
+                        consultantsSearchTask.execute((Void)null);
+                        consultantsAdapter = new ConsultantsAdapter(getContext(), consultantsSearchTask.getConsultantsEntities());
+                        consultantsEntities = consultantsSearchTask.getConsultantsEntities();
+                    }
 
                 }
                 return false;
@@ -128,6 +140,8 @@ public class FragmentSearch extends Fragment
             search_recyclerview.setAdapter(suppliersAdapter);
         else if(contractorsAdapter != null)
             search_recyclerview.setAdapter(contractorsAdapter);
+        else if(consultantsAdapter != null)
+            search_recyclerview.setAdapter(consultantsAdapter);
     }
 
     private SwipeDismissRecyclerViewTouchListener listener()
@@ -172,6 +186,14 @@ public class FragmentSearch extends Fragment
                                             deleteContractorsTask.setContractorsEntities(contractorsEntities);
                                             deleteContractorsTask.execute((Void)null);
                                         }
+                                        else if(search_recyclerview.getAdapter().getClass().getSimpleName().equalsIgnoreCase("ConsultantsAdapter"))
+                                        {
+                                            DeleteConsultantsTask deleteConsultantsTask = new DeleteConsultantsTask(consultantsEntities.get(pos).getObjectId(), getContext());
+                                            deleteConsultantsTask.setPos(pos);
+                                            deleteConsultantsTask.setConsultantsAdapter(consultantsAdapter);
+                                            deleteConsultantsTask.setConsultantsEntities(consultantsEntities);
+                                            deleteConsultantsTask.execute((Void)null);
+                                        }
                                         break;
 
                                     case DialogInterface.BUTTON_NEGATIVE:
@@ -213,6 +235,8 @@ public class FragmentSearch extends Fragment
                                     objectid = suppliersEntities.get(pos).getObjectId();
                                 else if(adapterClass.equalsIgnoreCase("ContractorsAdapter"))
                                     objectid = contractorsEntities.get(pos).getObjectId();
+                                else if(adapterClass.equalsIgnoreCase("ConsultantsAdapter"))
+                                    objectid = consultantsEntities.get(pos).getObjectId();
                                 if(which == 0) {
                                     ((MainActivity)getActivity()).setObjectId(objectid);
                                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentNotes()).addToBackStack(null).commit();

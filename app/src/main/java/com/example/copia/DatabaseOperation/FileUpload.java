@@ -113,6 +113,7 @@ public class FileUpload
                         ParseObject query = new ParseObject("PDFFiles");
                         query.put("SuppliersPointer", reference);
                         query.put("Parent", reference.getObjectId());
+                        query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(normalFile.getName(), FileUtils.readFileToByteArray(normalFile)));
@@ -180,6 +181,7 @@ public class FileUpload
                         ParseObject query = new ParseObject("PDFFiles");
                         query.put("ContractorsPointer", reference);
                         query.put("Parent", reference.getObjectId());
+                        query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(normalFile.getName(), FileUtils.readFileToByteArray(normalFile)));
@@ -246,6 +248,7 @@ public class FileUpload
                         ParseObject query = new ParseObject("PDFFiles");
                         query.put("ConsultantsPointer", reference);
                         query.put("Parent", reference.getObjectId());
+                        query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(normalFile.getName(), FileUtils.readFileToByteArray(normalFile)));
@@ -313,6 +316,7 @@ public class FileUpload
                         ParseObject query = new ParseObject("PDFFiles");
                         query.put("SpecificationsPointer", reference);
                         query.put("Parent", reference.getObjectId());
+                        query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(normalFile.getName(), FileUtils.readFileToByteArray(normalFile)));

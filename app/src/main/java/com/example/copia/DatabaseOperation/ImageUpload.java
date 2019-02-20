@@ -122,6 +122,7 @@ public class ImageUpload
                         ParseObject query = new ParseObject("Images");
                         query.put("SuppliersPointer", reference);
                         query.put("Parent", reference.getObjectId());
+                        query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(imageFile.getName(), FileUtils.readFileToByteArray(imageFile)));
@@ -191,6 +192,7 @@ public class ImageUpload
                         ParseObject query = new ParseObject("Images");
                         query.put("ContractorsPointer", reference);
                         query.put("Parent", reference.getObjectId());
+                        query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(imageFile.getName(), FileUtils.readFileToByteArray(imageFile)));
@@ -259,6 +261,7 @@ public class ImageUpload
                         ParseObject query = new ParseObject("Images");
                         query.put("ConsultantsPointer", reference);
                         query.put("Parent", reference.getObjectId());
+                        query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
                             query.put("Files", new ParseFile(imageFile.getName(), FileUtils.readFileToByteArray(imageFile)));
