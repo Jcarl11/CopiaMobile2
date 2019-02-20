@@ -56,6 +56,7 @@ public class UploadPrimary
         query.put("Industry", suppliersData.get("Industry"));
         query.put("Type", suppliersData.get("Type"));
         query.put("Tags", new JSONArray(tags));
+        query.put("Deleted", false);
         query.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -86,6 +87,7 @@ public class UploadPrimary
         query.put("Industry", contractorsData.get("Industry"));
         query.put("Classification", contractorsData.get("Classification"));
         query.put("Tags", new JSONArray(tags));
+        query.put("Deleted", false);
         query.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
