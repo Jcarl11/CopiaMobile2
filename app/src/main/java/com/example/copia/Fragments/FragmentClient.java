@@ -59,10 +59,7 @@ public class FragmentClient extends Fragment implements View.OnClickListener
     EditText client_edittext_remark,client_edittext_representative,client_edittext_position,client_edittext_company;
     Spinner spinner_industry, spinner_type;
     ParseObject reference = null;
-    UploadPrimary uploadPrimary = new UploadPrimary();
-    RemarksUpload remarksUpload = new RemarksUpload();
-    ImageUpload imageUpload = new ImageUpload(getContext());
-    FileUpload fileUpload = new FileUpload();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -218,6 +215,10 @@ public class FragmentClient extends Fragment implements View.OnClickListener
 
     private class ClientUploadTask extends AsyncTask<Void, Void, Boolean>
     {
+        UploadPrimary uploadPrimary = new UploadPrimary();
+        RemarksUpload remarksUpload = new RemarksUpload();
+        ImageUpload imageUpload = new ImageUpload(getContext());
+        FileUpload fileUpload = new FileUpload();
         AlertDialog dialog;
         public ClientUploadTask()
         {

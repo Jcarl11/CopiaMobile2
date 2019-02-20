@@ -13,9 +13,10 @@ import id.zelory.compressor.Compressor;
 
 public class FileCompressor
 {
+    File compressed;
     public File compressImage(File originalFile, Context context)
     {
-        File compressed = null;
+
         try {
             compressed = new Compressor(context)
                     .setCompressFormat(Bitmap.CompressFormat.JPEG)

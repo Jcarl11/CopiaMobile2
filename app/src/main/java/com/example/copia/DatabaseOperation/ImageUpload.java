@@ -47,7 +47,7 @@ public class ImageUpload
                     public Boolean call() throws Exception
                     {
                         File originalFile = new File(file.getPath());
-                        //File imageFile = new FileCompressor().compressImage(originalFile,context);
+                        File imageFile = new FileCompressor().compressImage(originalFile,context);
 
                         ParseObject query = new ParseObject("Images");
                         query.put("ClientPointer", reference);
@@ -55,7 +55,7 @@ public class ImageUpload
                         query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
-                            query.put("Files", new ParseFile(originalFile.getName(), FileUtils.readFileToByteArray(originalFile)));
+                            query.put("Files", new ParseFile(originalFile.getName(), FileUtils.readFileToByteArray(imageFile)));
                         }
                         catch (IOException e) {e.printStackTrace();}
                         query.saveInBackground(new SaveCallback() {
@@ -125,7 +125,7 @@ public class ImageUpload
                         query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
-                            query.put("Files", new ParseFile(imageFile.getName(), FileUtils.readFileToByteArray(imageFile)));
+                            query.put("Files", new ParseFile(originalFile.getName(), FileUtils.readFileToByteArray(imageFile)));
                         }
                         catch (IOException e) {e.printStackTrace();}
                         query.saveInBackground(new SaveCallback() {
@@ -195,7 +195,7 @@ public class ImageUpload
                         query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
-                            query.put("Files", new ParseFile(imageFile.getName(), FileUtils.readFileToByteArray(imageFile)));
+                            query.put("Files", new ParseFile(originalFile.getName(), FileUtils.readFileToByteArray(imageFile)));
                         }
                         catch (IOException e) {e.printStackTrace();}
                         query.saveInBackground(new SaveCallback() {
@@ -264,7 +264,7 @@ public class ImageUpload
                         query.put("Deleted", false);
                         query.put("Name", file.getName());
                         try {
-                            query.put("Files", new ParseFile(imageFile.getName(), FileUtils.readFileToByteArray(imageFile)));
+                            query.put("Files", new ParseFile(originalFile.getName(), FileUtils.readFileToByteArray(imageFile)));
                         }
                         catch (IOException e) {e.printStackTrace();}
                         query.saveInBackground(new SaveCallback() {

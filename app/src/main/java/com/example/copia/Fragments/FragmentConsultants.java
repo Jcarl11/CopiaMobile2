@@ -45,10 +45,7 @@ import dmax.dialog.SpotsDialog;
 public class FragmentConsultants extends Fragment implements View.OnClickListener
 {
     ParseObject reference = null;
-    FileUpload fileUpload = new FileUpload();
-    ImageUpload imageUpload = new ImageUpload(getContext());
-    UploadPrimary uploadPrimary = new UploadPrimary();
-    RemarksUpload remarksUpload = new RemarksUpload();
+
     ArrayList<ImageFile> imageList = new ArrayList<>();
     ArrayList<NormalFile> filesList = new ArrayList<>();
     ArrayList<String> industryList = new ArrayList<>();
@@ -204,7 +201,10 @@ public class FragmentConsultants extends Fragment implements View.OnClickListene
     
     private class ConsultantsUploadTask extends AsyncTask<Void, Void, Boolean>
     {
-
+        FileUpload fileUpload = new FileUpload();
+        ImageUpload imageUpload = new ImageUpload(getContext());
+        UploadPrimary uploadPrimary = new UploadPrimary();
+        RemarksUpload remarksUpload = new RemarksUpload();
         AlertDialog dialog;
         public ConsultantsUploadTask()
         {
