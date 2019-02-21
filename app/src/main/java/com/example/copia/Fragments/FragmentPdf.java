@@ -30,8 +30,12 @@ import com.parse.SaveCallback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,7 +128,24 @@ public class FragmentPdf extends Fragment
                                 if(which == 0) {
                                 }
                                 else if(which == 1) {
-
+                                    String filename = pdfEntities.get(pos).getFilename() + ".pdf";
+                                    File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename);
+                                    try {
+                                        FileOutputStream fileOutputStream = new FileOutputStream(dir);
+                                        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+                                        bufferedOutputStream.write(pdfEntities.get(pos).getFile());
+                                        bufferedOutputStream.flush();
+                                        bufferedOutputStream.close();
+                                        fileOutputStream.flush();
+                                        fileOutputStream.close();
+                                    } catch (FileNotFoundException e) {
+                                        e.printStackTrace();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    finally {
+                                        Utilities.getInstance().showAlertBox("Result", "File saved", getContext());
+                                    }
                                 }
                             }
                         });
