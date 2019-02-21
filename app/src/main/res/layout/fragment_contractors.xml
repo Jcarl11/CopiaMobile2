@@ -8,12 +8,6 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="CONTRACTORS"
-            android:textSize="20sp"
-            android:textColor="@android:color/black"/>
         <EditText
             android:id="@+id/contractors_edittext_representative"
             android:layout_width="match_parent"

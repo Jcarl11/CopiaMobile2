@@ -22,6 +22,7 @@ import com.example.copia.DatabaseOperation.FileUpload;
 import com.example.copia.DatabaseOperation.ImageUpload;
 import com.example.copia.DatabaseOperation.RemarksUpload;
 import com.example.copia.DatabaseOperation.UploadPrimary;
+import com.example.copia.MainActivity;
 import com.example.copia.R;
 import com.example.copia.Utilities;
 import com.parse.ParseObject;
@@ -52,6 +53,7 @@ public class FragmentSpecifications extends Fragment implements View.OnClickList
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_specifications, container, false);
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle("Specifications");
         specifications_edittext_document = (EditText)view.findViewById(R.id.specifications_edittext_document);
         specifications_edittext_division = (EditText)view.findViewById(R.id.specifications_edittext_division);
         specifications_edittext_section = (EditText)view.findViewById(R.id.specifications_edittext_section);

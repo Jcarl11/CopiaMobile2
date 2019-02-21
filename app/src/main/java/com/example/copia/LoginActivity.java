@@ -21,13 +21,13 @@ import dmax.dialog.SpotsDialog;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText username,password;
-    private CheckBox checkBox;
     private Button register, login;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getSupportActionBar().setTitle("Login");
         username = (EditText) findViewById(R.id.edittext_username);
         password = (EditText) findViewById(R.id.edittext_password);
         register = (Button)findViewById(R.id.btn_register);

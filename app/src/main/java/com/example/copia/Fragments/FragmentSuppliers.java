@@ -25,6 +25,7 @@ import com.example.copia.DatabaseOperation.FileUpload;
 import com.example.copia.DatabaseOperation.ImageUpload;
 import com.example.copia.DatabaseOperation.RemarksUpload;
 import com.example.copia.DatabaseOperation.UploadPrimary;
+import com.example.copia.MainActivity;
 import com.example.copia.R;
 import com.example.copia.Utilities;
 import com.parse.ParseObject;
@@ -58,7 +59,7 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_suppliers, container, false);
-
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle("Suppliers");
         List<ComboboxEntity> industry = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Suppliers", "Industry");
         List<ComboboxEntity> type = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Suppliers", "Type");
         for(ComboboxEntity entity : industry)

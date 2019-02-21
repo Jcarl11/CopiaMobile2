@@ -81,6 +81,7 @@ public class FragmentSearch extends Fragment
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle("Search");
         ArrayList<String> searchCategories = new ArrayList<>();
         List<ComboboxEntity> comboboxEntities = ComboboxEntity.findWithQuery(ComboboxEntity.class, "Select distinct category from combobox_entity");
         for(ComboboxEntity entity : comboboxEntities)

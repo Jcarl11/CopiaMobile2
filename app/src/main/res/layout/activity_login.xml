@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoginActivity"
-    android:background="@color/colorPrimary">
+    android:background="@android:color/white"
+    tools:context=".LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,62 +17,65 @@
             android:id="@+id/imageView"
             android:layout_width="110dp"
             android:layout_height="100dp"
+            android:layout_marginVertical="50dp"
             android:layout_marginTop="8dp"
             android:scaleType="fitXY"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/whitelogo"
-            android:layout_marginVertical="50dp"/>
+            app:srcCompat="@drawable/whitelogo" />
 
         <EditText
             android:id="@+id/edittext_username"
+            style="@style/Widget.AppCompat.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:ems="10"
             android:hint="Username"
             android:inputType="textAutoComplete"
-            android:layout_margin="10dp"
-            android:textColorHint="@android:color/white"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black" />
 
         <EditText
             android:id="@+id/edittext_password"
+            style="@style/Widget.AppCompat.EditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:ems="10"
             android:hint="Password"
             android:inputType="textPassword"
-            android:layout_margin="10dp"
-            android:textColorHint="@android:color/white"
-            android:textColor="@android:color/white"/>
-        <CheckBox
-            android:id="@+id/checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stay Logged in"
-            android:layout_gravity="start"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="10dp"
-            android:textColor="@android:color/white"/>
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2"
-            android:layout_marginTop="10dp">
-            <Button
-                android:id="@+id/btn_register"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="REGISTER"
-                android:layout_weight="1"
-                android:onClick="registerOnClick"/>
+            android:layout_margin="10dp"
+            android:layout_marginTop="10dp"
+            android:orientation="vertical"
+            android:weightSum="2">
+
             <Button
                 android:id="@+id/btn_login"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LOGIN"
+                android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:onClick="loginOnClick"/>
+                android:background="@color/colorPrimary"
+                android:onClick="loginOnClick"
+                android:text="LOGIN"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/btn_register"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:background="@color/colorPrimary"
+                android:onClick="registerOnClick"
+                android:text="REGISTER"
+                android:textColor="@android:color/white" />
 
         </LinearLayout>
 

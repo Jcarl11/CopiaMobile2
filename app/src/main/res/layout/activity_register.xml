@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
     tools:context=".RegisterActivity">
 
     <LinearLayout
@@ -20,8 +19,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:hint="Valid Email"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white" />
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black" />
 
         <EditText
             android:id="@+id/editext_fullname"
@@ -31,8 +30,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:hint="Full name"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white" />
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black" />
 
         <EditText
             android:id="@+id/editext_username"
@@ -42,8 +41,8 @@
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
             android:hint="Username"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white" />
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black" />
 
         <EditText
             android:id="@+id/edittext_password"
@@ -55,8 +54,8 @@
             android:ems="10"
             android:hint="Password"
             android:inputType="textPassword"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white" />
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black" />
 
         <EditText
             android:id="@+id/edittext_repassword"
@@ -68,8 +67,8 @@
             android:ems="10"
             android:hint="Confirm Password"
             android:inputType="textPassword"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white" />
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/black" />
 
         <Button
             android:id="@+id/btn_register_submit"
@@ -78,7 +77,9 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="10dp"
+            android:background="@color/colorPrimary"
+            android:onClick="submitOnclick"
             android:text="Submit"
-            android:onClick="submitOnclick"/>
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </ScrollView>

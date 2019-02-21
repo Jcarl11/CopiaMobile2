@@ -25,6 +25,7 @@ import com.example.copia.DatabaseOperation.FileUpload;
 import com.example.copia.DatabaseOperation.ImageUpload;
 import com.example.copia.DatabaseOperation.RemarksUpload;
 import com.example.copia.DatabaseOperation.UploadPrimary;
+import com.example.copia.MainActivity;
 import com.example.copia.R;
 import com.example.copia.Utilities;
 import com.parse.ParseObject;
@@ -59,7 +60,7 @@ public class FragmentConsultants extends Fragment implements View.OnClickListene
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_consultants, container, false);
-
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle("Consultants");
         List<ComboboxEntity> industry = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Consultants", "Industry");
         List<ComboboxEntity> classification = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Consultants", "Classification");
         for(ComboboxEntity entity : industry)
