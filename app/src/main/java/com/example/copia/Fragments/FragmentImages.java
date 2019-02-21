@@ -1,14 +1,23 @@
 package com.example.copia.Fragments;
 
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,8 +33,12 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 import com.stfalcon.frescoimageviewer.ImageViewer;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,6 +136,31 @@ public class FragmentImages extends Fragment {
                                 else if(which == 1) {
                                 }
                                 else if(which == 2) {
+                                    String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
+                                    if (ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+                                    {
+                                        // Permission is not granted
+                                        // Should we show an explanation?
+                                        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
+                                        {
+                                            // Show an explanation to the user *asynchronously* -- don't block
+                                            // this thread waiting for the user's response! After the user
+                                            // sees the explanation, try again to request the permission.
+                                        }
+                                        else
+                                        {
+                                            // No explanation needed; request the permission
+                                            ActivityCompat.requestPermissions(getActivity(), permissions, 1);
+
+                                            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                                            // app-defined int constant. The callback method gets the
+                                            // result of the request.
+                                        }
+                                    } else {
+                                        Log.d("Dir", "Granted Already " + "Granted");
+                                        download();
+                                    }
+
                                 }
                             }
                         });
@@ -135,6 +173,54 @@ public class FragmentImages extends Fragment {
         return listener;
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode)
+        {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("Dir", "Onreq " + "Granted");
+                    download();
+                } else {
+                    Utilities.getInstance().showAlertBox("Important", "You need to accept the permission to be able to download", getContext());
+                }
+                break;
+        }
+    }
+    private void download()
+    {
+
+        Picasso.get()
+                .load(imagesEntities.get(pos).getUrl())
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                        try {
+                            String name = imagesEntities.get(pos).getImageName() + ".jpg";
+                            File newDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), name);
+                            FileOutputStream out = new FileOutputStream(newDir);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, out);
+                            out.flush();
+                            out.close();
+                        } catch(Exception e){
+                            e.printStackTrace();
+                        }
+                        finally{
+                            Utilities.getInstance().showAlertBox("Result", "Image saved", getContext());
+                        }
+                    }
+
+                    @Override
+                    public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+                        Utilities.getInstance().showAlertBox("Failed", "Saving failed", getContext());
+                    }
+
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                    }
+                });
+    }
     private class ImagesRetrieveTask extends AsyncTask<Void, Void, List<ImagesEntity>>
     {
         boolean finished = false;

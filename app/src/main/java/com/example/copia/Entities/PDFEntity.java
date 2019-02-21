@@ -8,14 +8,15 @@ public class PDFEntity
     private String filename;
     private byte[] file;
     private String createdAt;
-
+    private String url;
     public PDFEntity() {}
 
-    public PDFEntity(String objectId, String filename, byte[] file, String createdAt) {
+    public PDFEntity(String objectId, String filename, byte[] file, String createdAt, String url) {
         this.objectId = objectId;
         this.filename = filename;
         this.file = file;
         this.createdAt = createdAt;
+        this.url = url;
     }
 
     public String getObjectId() {
@@ -48,5 +49,13 @@ public class PDFEntity
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

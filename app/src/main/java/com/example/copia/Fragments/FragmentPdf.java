@@ -3,8 +3,11 @@ package com.example.copia.Fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +27,11 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -117,6 +124,7 @@ public class FragmentPdf extends Fragment
                                 if(which == 0) {
                                 }
                                 else if(which == 1) {
+
                                 }
                             }
                         });
@@ -160,6 +168,7 @@ public class FragmentPdf extends Fragment
                             PDFEntity pdfEntity = new PDFEntity();
                             pdfEntity.setObjectId(object.getObjectId());
                             pdfEntity.setFilename(object.getString("Name"));
+                            pdfEntity.setUrl(object.getParseFile("Files").getUrl());
                             pdfEntity.setCreatedAt(simpleDateFormat.format(object.getCreatedAt()));
                             try
                             {
