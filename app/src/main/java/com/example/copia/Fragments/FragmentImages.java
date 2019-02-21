@@ -2,6 +2,7 @@ package com.example.copia.Fragments;
 
 
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,17 +18,21 @@ import com.example.copia.MainActivity;
 import com.example.copia.R;
 import com.example.copia.Utilities;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import dmax.dialog.SpotsDialog;
+import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener;
 
 public class FragmentImages extends Fragment {
 
+    int pos = -1;
     ImagesAdapter imagesAdapter;
     List<ImagesEntity> imagesEntities;
     RecyclerView images_recyclerview;
@@ -41,9 +46,83 @@ public class FragmentImages extends Fragment {
         images_recyclerview = (RecyclerView)view.findViewById(R.id.images_recyclerview);
         images_recyclerview.setHasFixedSize(true);
         images_recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        images_recyclerview.setOnTouchListener(listener());
         String objectId = ((MainActivity)getActivity()).getObjectId();
         new ImagesRetrieveTask(objectId).execute((Void)null);
         return view;
+    }
+
+
+    private SwipeDismissRecyclerViewTouchListener listener()
+    {
+        SwipeDismissRecyclerViewTouchListener listener = new SwipeDismissRecyclerViewTouchListener.Builder(
+                images_recyclerview,
+                new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
+                    @Override
+                    public boolean canDismiss(int position) {
+                        pos = position;
+                        return true;
+                    }
+
+                    @Override
+                    public void onDismiss(View view) {
+                        DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                switch (which)
+                                {
+                                    case DialogInterface.BUTTON_POSITIVE:
+                                        new DeleteSingleImage(imagesEntities.get(pos).getObjectId()).execute((Void)null);
+                                        break;
+
+                                    case DialogInterface.BUTTON_NEGATIVE:
+                                        break;
+                                }
+                            }
+                        };
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setMessage("This record will be deleted").setPositiveButton("Yes", dialogClickListener)
+                                .setNegativeButton("No", dialogClickListener).show();
+
+                    }
+                })
+                .setIsVertical(false)
+                .setItemTouchCallback(
+                        new SwipeDismissRecyclerViewTouchListener.OnItemTouchCallBack() {
+                            @Override
+                            public void onTouch(int index) {
+                                // Do what you want when item be touched
+                            }
+                        })
+                .setItemClickCallback(new SwipeDismissRecyclerViewTouchListener.OnItemClickCallBack() {
+                    @Override
+                    public void onClick(int i) {
+                        String[] choices = new String[]{"Preview", "Edit", "Download"};
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Choose what to to: ");
+                        builder.setCancelable(true);
+                        builder.setItems(choices, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+
+                                if(which == 0) {
+                                }
+                                else if(which == 1) {
+                                }
+                                else if(which == 2) {
+                                }
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+
+                    }
+                })
+                .create();
+        return listener;
     }
 
     private class ImagesRetrieveTask extends AsyncTask<Void, Void, List<ImagesEntity>>
@@ -112,6 +191,71 @@ public class FragmentImages extends Fragment {
             }
             else
                 Utilities.getInstance().showAlertBox("Response", "0 Records Found", getContext());
+        }
+    }
+
+    private class DeleteSingleImage extends AsyncTask<Void, Void, Boolean>
+    {
+        boolean successful = false;
+        boolean finished = false;
+        AlertDialog dialog;
+        String objectId;
+
+        public DeleteSingleImage(String objectId) {
+            this.objectId = objectId;
+            dialog = new SpotsDialog.Builder()
+                    .setMessage("Deleting record")
+                    .setContext(getContext())
+                    .setCancelable(false)
+                    .build();
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Images");
+            query.getInBackground(objectId, new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject object, ParseException e) {
+                    if(e == null && object != null)
+                    {
+                        object.put("Deleted", true);
+                        object.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(ParseException e) {
+                                if(e == null)
+                                    successful = true;
+                                finished = true;
+                            }
+                        });
+                    }
+
+                }
+            });
+            while (finished == false)
+            {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return successful;
+        }
+
+        @Override
+        protected void onPreExecute() {dialog.show();}
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            dialog.dismiss();
+            if(aBoolean == true)
+            {
+                imagesEntities.remove(pos);
+                imagesAdapter.notifyItemRemoved(pos);
+                Utilities.getInstance().showAlertBox("Response", "Record deleted successfully", getContext());
+            }
+            else
+                Utilities.getInstance().showAlertBox("Error", "Record was not deleted successfully", getContext());
         }
     }
 }

@@ -226,7 +226,6 @@ public class FragmentNotes extends Fragment {
                             }
                         });
                     }
-
                 }
             });
             while (finished == false)
