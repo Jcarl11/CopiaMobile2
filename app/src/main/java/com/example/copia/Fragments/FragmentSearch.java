@@ -174,8 +174,10 @@ public class FragmentSearch extends Fragment
                     public void onDismiss(View view) {
                         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                switch (which)
+                                {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         if(search_recyclerview.getAdapter().getClass().getSimpleName().equalsIgnoreCase("ClientAdapter"))
                                         {
