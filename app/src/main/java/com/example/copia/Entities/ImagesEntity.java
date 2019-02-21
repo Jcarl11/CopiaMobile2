@@ -8,12 +8,14 @@ public class ImagesEntity
     private String imageName;
     private String size;
     private byte[] image;
+    private String url;
 
-    public ImagesEntity(String objectId, String imageName, String size, byte[] image) {
+    public ImagesEntity(String objectId, String imageName, String size, byte[] image, String url) {
         this.objectId = objectId;
         this.imageName = imageName;
         this.size = size;
         this.image = image;
+        this.url = url;
     }
 
     public ImagesEntity() {}
@@ -48,5 +50,13 @@ public class ImagesEntity
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

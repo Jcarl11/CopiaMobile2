@@ -23,6 +23,7 @@ import com.example.copia.Fragments.FragmentSearch;
 import com.example.copia.Fragments.FragmentSpecifications;
 import com.example.copia.Fragments.FragmentSuppliers;
 import com.example.copia.Fragments.FragmentWelcome;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.Parse;
@@ -61,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             new RetrieveComboBoxTask().execute((Void) null);
             //new RetrieveRoleTask().execute((Void) null);
-
+            Fresco.initialize(this);
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             View headerView = navigationView.getHeaderView(0);
             navigationView.setNavigationItemSelectedListener(this);

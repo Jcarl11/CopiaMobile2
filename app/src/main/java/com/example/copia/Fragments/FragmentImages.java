@@ -3,6 +3,7 @@ package com.example.copia.Fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,6 +24,7 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
+import com.stfalcon.frescoimageviewer.ImageViewer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -109,6 +111,14 @@ public class FragmentImages extends Fragment {
                                 dialog.dismiss();
 
                                 if(which == 0) {
+                                    new ImageViewer.Builder<ImagesEntity>(getContext(), imagesEntities)
+                                            .setFormatter(new ImageViewer.Formatter<ImagesEntity>() {
+                                                @Override
+                                                public String format(ImagesEntity custom) {
+                                                    return custom.getUrl();
+                                                }
+                                            })
+                                            .show();
                                 }
                                 else if(which == 1) {
                                 }
@@ -160,6 +170,7 @@ public class FragmentImages extends Fragment {
                                 imagesEntity.setImageName(object.getString("Name"));
                                 imagesEntity.setObjectId(object.getObjectId());
                                 imagesEntity.setSize(String.valueOf(data.length/1024));
+                                imagesEntity.setUrl(object.getParseFile("Files").getUrl());
                                 imagesEntities.add(imagesEntity);
                             } catch (ParseException e1) {e1.printStackTrace();}
                         }
