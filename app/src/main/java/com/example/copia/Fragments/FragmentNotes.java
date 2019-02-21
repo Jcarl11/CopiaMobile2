@@ -46,6 +46,7 @@ public class FragmentNotes extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_fragment_notes, container, false);
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle("Notes");
         notesEntities = new ArrayList<>();
         notes_recyclerview = (RecyclerView)view.findViewById(R.id.notes_recyclerview);
         notes_recyclerview.setHasFixedSize(true);

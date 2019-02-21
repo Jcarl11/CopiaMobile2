@@ -6,10 +6,13 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.LogInCallback;
@@ -32,6 +35,21 @@ public class LoginActivity extends AppCompatActivity {
         password = (EditText) findViewById(R.id.edittext_password);
         register = (Button)findViewById(R.id.btn_register);
         login = (Button)findViewById(R.id.btn_login);
+        password.setOnEditorActionListener(listener());
+        username.setOnEditorActionListener(listener());
+    }
+    private TextView.OnEditorActionListener listener()
+    {
+        TextView.OnEditorActionListener listener = new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    loginOnClick(null);
+                }
+                return false;
+            }
+        };
+        return listener;
     }
     public void loginOnClick(View view)
     {

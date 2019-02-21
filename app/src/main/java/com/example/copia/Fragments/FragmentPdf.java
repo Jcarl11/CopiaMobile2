@@ -60,6 +60,7 @@ public class FragmentPdf extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_fragment_pdf, container, false);
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle("Files");
         pdfEntities = new ArrayList<>();
         pdf_recyclerview = (RecyclerView)view.findViewById(R.id.pdf_recyclerview);
         pdf_recyclerview.setHasFixedSize(true);

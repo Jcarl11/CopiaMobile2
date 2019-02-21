@@ -63,6 +63,7 @@ public class FragmentImages extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_fragment_images, container, false);
+        ((MainActivity)getActivity()).getSupportActionBar().setTitle("Images list");
         imagesEntities = new ArrayList<>();
         images_recyclerview = (RecyclerView)view.findViewById(R.id.images_recyclerview);
         images_recyclerview.setHasFixedSize(true);
