@@ -27,6 +27,12 @@ import com.example.copia.Entities.ImagesEntity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
 import com.example.copia.Utilities;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionDeniedResponse;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
@@ -136,30 +142,25 @@ public class FragmentImages extends Fragment {
                                 else if(which == 1) {
                                 }
                                 else if(which == 2) {
-                                    String[] permissions = new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
-                                    if (ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
-                                    {
-                                        // Permission is not granted
-                                        // Should we show an explanation?
-                                        if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))
-                                        {
-                                            // Show an explanation to the user *asynchronously* -- don't block
-                                            // this thread waiting for the user's response! After the user
-                                            // sees the explanation, try again to request the permission.
-                                        }
-                                        else
-                                        {
-                                            // No explanation needed; request the permission
-                                            ActivityCompat.requestPermissions(getActivity(), permissions, 1);
+                                    Dexter.withActivity(getActivity())
+                                            .withPermissions(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                                            .withListener(new MultiplePermissionsListener() {
+                                                @Override
+                                                public void onPermissionsChecked(MultiplePermissionsReport report) {
+                                                    if(report.areAllPermissionsGranted())
+                                                        download();
+                                                    else
+                                                    {
+                                                        List<PermissionDeniedResponse> deniedPermissionResponses = report.getDeniedPermissionResponses();
+                                                        Utilities.getInstance().showAlertBox("Important", "Permission is need to be able to download files.", getContext());
+                                                    }
+                                                }
 
-                                            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                                            // app-defined int constant. The callback method gets the
-                                            // result of the request.
-                                        }
-                                    } else {
-                                        Log.d("Dir", "Granted Already " + "Granted");
-                                        download();
-                                    }
+                                                @Override
+                                                public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                                                    token.continuePermissionRequest();
+                                                }
+                                            }).check();
 
                                 }
                             }
@@ -173,20 +174,7 @@ public class FragmentImages extends Fragment {
         return listener;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode)
-        {
-            case 1:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("Dir", "Onreq " + "Granted");
-                    download();
-                } else {
-                    Utilities.getInstance().showAlertBox("Important", "You need to accept the permission to be able to download", getContext());
-                }
-                break;
-        }
-    }
+
     private void download()
     {
 

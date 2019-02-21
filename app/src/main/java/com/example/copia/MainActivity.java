@@ -1,5 +1,6 @@
 package com.example.copia;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -24,6 +25,11 @@ import com.example.copia.Fragments.FragmentSpecifications;
 import com.example.copia.Fragments.FragmentSuppliers;
 import com.example.copia.Fragments.FragmentWelcome;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.Parse;
