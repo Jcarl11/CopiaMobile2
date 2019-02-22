@@ -3,6 +3,7 @@ package com.example.copia.Fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -15,26 +16,33 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.copia.Adapters.PDFAdapter;
 import com.example.copia.Entities.PDFEntity;
+import com.example.copia.FilesEditActivity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
 import com.example.copia.Utilities;
 import com.parse.FindCallback;
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -49,6 +57,7 @@ import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTo
  */
 public class FragmentPdf extends Fragment
 {
+    public static String PDF_ENTITY = "PDF_ENTITY";
     int pos = -1;
     boolean finished = false;
     List<PDFEntity> pdfEntities;
@@ -127,26 +136,13 @@ public class FragmentPdf extends Fragment
                                 dialog.dismiss();
 
                                 if(which == 0) {
+                                    PDFEntity pdfEntity = pdfEntities.get(pos);
+                                    Intent intent = new Intent(getActivity(), FilesEditActivity.class);
+                                    intent.putExtra(PDF_ENTITY, pdfEntity);
+                                    startActivityForResult(intent, 3);
                                 }
                                 else if(which == 1) {
-                                    String filename = pdfEntities.get(pos).getFilename() + ".pdf";
-                                    File dir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename);
-                                    try {
-                                        FileOutputStream fileOutputStream = new FileOutputStream(dir);
-                                        BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-                                        bufferedOutputStream.write(pdfEntities.get(pos).getFile());
-                                        bufferedOutputStream.flush();
-                                        bufferedOutputStream.close();
-                                        fileOutputStream.flush();
-                                        fileOutputStream.close();
-                                    } catch (FileNotFoundException e) {
-                                        e.printStackTrace();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    finally {
-                                        Utilities.getInstance().showAlertBox("Result", "File saved", getContext());
-                                    }
+                                    new WriteFileToDownloads(pdfEntities.get(pos).getObjectId()).execute((Void)null);
                                 }
                             }
                         });
@@ -158,6 +154,26 @@ public class FragmentPdf extends Fragment
                 .create();
         return listener;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 3)
+        {
+            if(resultCode == MainActivity.RESULT_OK)
+            {
+                pdfEntities.remove(pos);
+                pdfAdapter.notifyItemRemoved(pos);
+                pdfEntities.add((PDFEntity) data.getSerializableExtra(PDF_ENTITY));
+                pdfAdapter = new PDFAdapter(getContext(), pdfEntities);
+                pdf_recyclerview.setAdapter(pdfAdapter);
+                Utilities.getInstance().showAlertBox("Response", "Record successfully updated", getContext());
+            }
+            else
+                Utilities.getInstance().showAlertBox("Response", "Update failed. Please try again", getContext());
+        }
+    }
+
     private class PDFRetrieveTask extends AsyncTask<Void, Void, List<PDFEntity>>
     {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM yyyy");
@@ -192,11 +208,7 @@ public class FragmentPdf extends Fragment
                             pdfEntity.setFilename(object.getString("Name"));
                             pdfEntity.setUrl(object.getParseFile("Files").getUrl());
                             pdfEntity.setCreatedAt(simpleDateFormat.format(object.getCreatedAt()));
-                            try
-                            {
-                                pdfEntity.setFile(object.getParseFile("Files").getData());
-                            }
-                            catch (ParseException e1) {e1.printStackTrace();}
+                            pdfEntity.setSize(String.valueOf(object.getNumber("Size")));
                             pdfEntities.add(pdfEntity);
                         }
                     }
@@ -290,6 +302,62 @@ public class FragmentPdf extends Fragment
             }
             else
                 Utilities.getInstance().showAlertBox("Error", "Record was not deleted successfully", getContext());
+        }
+    }
+    private class WriteFileToDownloads extends AsyncTask<Void, Void, Boolean>
+    {
+        AlertDialog dialog = Utilities.getInstance().showLoading(getContext(), "Downloading file", false);
+        String objectId;
+        boolean finished = false;
+        boolean successful = false;
+        public WriteFileToDownloads(String objectId) {
+            this.objectId = objectId;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... voids) {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("PDFFiles");
+            query.getInBackground(objectId, new GetCallback<ParseObject>() {
+                @Override
+                public void done(ParseObject object, ParseException e) {
+                    if(e == null && object != null)
+                    {
+                        try {
+                            byte[] data = object.getParseFile("Files").getData();
+                            String filename = object.getString("Name");
+                            File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename + ".pdf");
+                            FileUtils.writeByteArrayToFile(file, data);
+                        }
+                        catch (ParseException e1) {e1.printStackTrace();}
+                        catch (IOException e1) {e1.printStackTrace();}
+                        finally{successful = true;}
+                    }
+                    finished = true;
+                }
+            });
+            while (finished == false)
+            {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            return successful;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            dialog.show();
+        }
+
+        @Override
+        protected void onPostExecute(Boolean aBoolean) {
+            dialog.dismiss();
+            if(aBoolean)
+                Utilities.getInstance().showAlertBox("Response", "File downloaded", getContext());
+            else
+                Utilities.getInstance().showAlertBox("Response", "Download failed. Please try again", getContext());
         }
     }
 }

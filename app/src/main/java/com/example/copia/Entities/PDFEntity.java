@@ -1,22 +1,23 @@
 package com.example.copia.Entities;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class PDFEntity
+public class PDFEntity implements Serializable
 {
     private String objectId;
     private String filename;
-    private byte[] file;
     private String createdAt;
     private String url;
+    private String size;
     public PDFEntity() {}
 
-    public PDFEntity(String objectId, String filename, byte[] file, String createdAt, String url) {
+    public PDFEntity(String objectId, String filename, String createdAt, String url, String size) {
         this.objectId = objectId;
         this.filename = filename;
-        this.file = file;
         this.createdAt = createdAt;
         this.url = url;
+        this.size = size;
     }
 
     public String getObjectId() {
@@ -35,14 +36,6 @@ public class PDFEntity
         this.filename = filename;
     }
 
-    public byte[] getFile() {
-        return file;
-    }
-
-    public void setFile(byte[] file) {
-        this.file = file;
-    }
-
     public String getCreatedAt() {
         return createdAt;
     }
@@ -57,5 +50,13 @@ public class PDFEntity
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getSize() {
+        return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 }

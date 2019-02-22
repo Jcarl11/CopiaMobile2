@@ -35,8 +35,7 @@ public class PDFAdapter extends RecyclerView.Adapter<PDFAdapter.PDFViewHolder>
     public void onBindViewHolder(@NonNull PDFViewHolder pdfViewHolder, int i) {
         PDFEntity pdfEntity = pdfEntities.get(i);
         pdfViewHolder.pdf_textview_filename.setText(pdfEntity.getFilename());
-        double size = pdfEntity.getFile().length / 1024;
-        pdfViewHolder.pdf_textview_size.setText(String.valueOf(size) + " KB");
+        pdfViewHolder.pdf_textview_size.setText(pdfEntity.getSize() + "KB");
         pdfViewHolder.pdf_textview_createdAt.setText(pdfEntity.getCreatedAt());
     }
 

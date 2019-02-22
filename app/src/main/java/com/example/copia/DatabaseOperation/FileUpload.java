@@ -47,6 +47,7 @@ public class FileUpload
                         query.put("ClientPointer", reference);
                         query.put("Deleted", false);
                         query.put("Name", file.getName());
+                        query.put("Size", normalFile.length()/1024);
                         try {
                             query.put("Files", new ParseFile(normalFile.getName(), FileUtils.readFileToByteArray(normalFile)));
                         }
