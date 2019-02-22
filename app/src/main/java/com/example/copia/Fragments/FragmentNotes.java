@@ -12,10 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.copia.Adapters.NotesAdapter;
-import com.example.copia.EditActivity;
+import com.example.copia.NotesEditActivity;
 import com.example.copia.Entities.NotesEntity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
@@ -31,7 +30,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import dmax.dialog.SpotsDialog;
 import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener;
 
 
@@ -118,10 +116,11 @@ public class FragmentNotes extends Fragment {
                                 dialog.dismiss();
 
                                 if(which == 0) {
+                                    Utilities.getInstance().showAlertBox(notesEntities.get(pos).getCreatedAt(), notesEntities.get(pos).getRemark(), getContext());
                                 }
                                 else if(which == 1) {
                                     NotesEntity note = notesEntities.get(pos);
-                                    Intent intent = new Intent(getActivity(), EditActivity.class);
+                                    Intent intent = new Intent(getActivity(), NotesEditActivity.class);
                                     intent.putExtra(NOTES_ENTITY, note);
                                     startActivityForResult(intent, 1);
                                 }

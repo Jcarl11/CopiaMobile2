@@ -7,12 +7,8 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.copia.Entities.NotesEntity;
 import com.example.copia.Fragments.FragmentNotes;
@@ -22,7 +18,7 @@ import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
-public class EditActivity extends AppCompatActivity {
+public class NotesEditActivity extends AppCompatActivity {
     NotesEntity notesEntity = null;
     TextInputLayout notes_edit_remark;
     Button notes_edit_save;
@@ -52,7 +48,7 @@ public class EditActivity extends AppCompatActivity {
     }
     private class EditNotesTask extends AsyncTask<Void, Void, Boolean>
     {
-        AlertDialog dialog = Utilities.getInstance().showLoading(EditActivity.this, "Updating record", false);
+        AlertDialog dialog = Utilities.getInstance().showLoading(NotesEditActivity.this, "Updating record", false);
         boolean finished = false;
         boolean successful = false;
         @Override
@@ -101,7 +97,7 @@ public class EditActivity extends AppCompatActivity {
                 finish();
             }
             else {
-                Utilities.getInstance().showAlertBox("Response", "Failed", EditActivity.this);
+                Utilities.getInstance().showAlertBox("Response", "Failed", NotesEditActivity.this);
                 setResult(RESULT_CANCELED);
                 finish();
             }

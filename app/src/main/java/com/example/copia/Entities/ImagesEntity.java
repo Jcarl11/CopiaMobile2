@@ -1,8 +1,9 @@
 package com.example.copia.Entities;
 
 import java.io.File;
+import java.io.Serializable;
 
-public class ImagesEntity
+public class ImagesEntity implements Serializable
 {
     private String objectId;
     private String imageName;

@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import com.example.copia.Adapters.ImagesAdapter;
 import com.example.copia.Entities.ImagesEntity;
 import com.example.copia.Entities.NotesEntity;
+import com.example.copia.ImagesEditActivity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
 import com.example.copia.Utilities;
@@ -54,7 +55,7 @@ import dmax.dialog.SpotsDialog;
 import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener;
 
 public class FragmentImages extends Fragment {
-
+    public static String IMAGES_ENTITY = "IMAGES_ENTITY";
     int pos = -1;
     ImagesAdapter imagesAdapter;
     List<ImagesEntity> imagesEntities;
@@ -143,7 +144,10 @@ public class FragmentImages extends Fragment {
                                             .show();
                                 }
                                 else if(which == 1) {
-
+                                    ImagesEntity entity = imagesEntities.get(pos);
+                                    Intent intent = new Intent(getActivity(), ImagesEditActivity.class);
+                                    intent.putExtra(IMAGES_ENTITY, entity);
+                                    startActivityForResult(intent, 2);
                                 }
                                 else if(which == 2) {
                                     Dexter.withActivity(getActivity())
@@ -178,6 +182,23 @@ public class FragmentImages extends Fragment {
         return listener;
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 2)
+        {
+            if(resultCode == MainActivity.RESULT_OK)
+            {
+                imagesEntities.remove(pos);
+                imagesAdapter.notifyItemRemoved(pos);
+                imagesEntities.add((ImagesEntity) data.getSerializableExtra(IMAGES_ENTITY));
+                imagesAdapter = new ImagesAdapter(getContext(), imagesEntities);
+                images_recyclerview.setAdapter(imagesAdapter);
+            }
+            else
+                Utilities.getInstance().showAlertBox("Response", "Update failed. Please try again", getContext());
+        }
+    }
 
     private void download()
     {
