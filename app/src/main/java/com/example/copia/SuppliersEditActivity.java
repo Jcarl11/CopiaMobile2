@@ -153,7 +153,7 @@ public class SuppliersEditActivity extends AppCompatActivity {
                 suppliersEntity.setRepresentative(representative.getEditText().getText().toString().trim().toUpperCase());
                 suppliersEntity.setPosition(position.getEditText().getText().toString().trim().toUpperCase());
                 suppliersEntity.setCompany(company.getEditText().getText().toString().trim().toUpperCase());
-                suppliersEntity.setBrand(company.getEditText().getText().toString().trim().toUpperCase());
+                suppliersEntity.setBrand(brand.getEditText().getText().toString().trim().toUpperCase());
                 suppliersEntity.setIndustry(industry.getSelectedItem().toString().toUpperCase());
                 suppliersEntity.setType(type.getSelectedItem().toString().toUpperCase());
                 Intent intent = new Intent();
