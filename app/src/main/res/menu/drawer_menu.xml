@@ -18,12 +18,19 @@
         <item android:id="@+id/category_specifications"
             android:icon="@drawable/ic_arrow"
             android:title="Specifications" />
+        <item android:id="@+id/category_manageusers"
+            android:icon="@drawable/users"
+            android:title="Manage Users" />
         <item android:id="@+id/category_search"
             android:icon="@drawable/ic_search"
             android:title="Search" />
     </group>
     <item android:title="Misc">
         <menu>
+            <item
+                android:id="@+id/deleted_files"
+                android:icon="@drawable/deleted"
+                android:title="Deleted Files" />
             <item
                 android:id="@+id/logout"
                 android:icon="@drawable/ic_signout"
