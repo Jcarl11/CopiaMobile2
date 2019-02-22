@@ -3,6 +3,7 @@ package com.example.copia.Fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -11,8 +12,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.copia.Adapters.NotesAdapter;
+import com.example.copia.EditActivity;
 import com.example.copia.Entities.NotesEntity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
@@ -36,6 +39,7 @@ import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTo
  * A simple {@link Fragment} subclass.
  */
 public class FragmentNotes extends Fragment {
+    public static String NOTES_ENTITY = "NOTES_ENTITY";
     NotesAdapter notesAdapter;
     List<NotesEntity> notesEntities;
     RecyclerView notes_recyclerview;
@@ -116,6 +120,10 @@ public class FragmentNotes extends Fragment {
                                 if(which == 0) {
                                 }
                                 else if(which == 1) {
+                                    NotesEntity note = notesEntities.get(pos);
+                                    Intent intent = new Intent(getActivity(), EditActivity.class);
+                                    intent.putExtra(NOTES_ENTITY, note);
+                                    startActivityForResult(intent, 1);
                                 }
                             }
                         });
@@ -127,22 +135,36 @@ public class FragmentNotes extends Fragment {
                 .create();
         return listener;
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1)
+        {
+            if(resultCode == MainActivity.RESULT_OK )
+            {
+                notesEntities.remove(pos);
+                notesAdapter.notifyItemRemoved(pos);
+                notesEntities.add((NotesEntity) data.getSerializableExtra(NOTES_ENTITY));
+                notesAdapter = new NotesAdapter(getContext(), notesEntities);
+                notes_recyclerview.setAdapter(notesAdapter);
+            }
+            else
+                Utilities.getInstance().showAlertBox("Response", "Update failed. Please try again", getContext());
+        }
+    }
+
     private class NotesRetrieveTask extends AsyncTask<Void, Void, List<NotesEntity>>
     {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMMM yyyy");
         boolean finished = false;
-        AlertDialog dialog;
+        AlertDialog dialog = Utilities.getInstance().showLoading(getContext(), "Loading Notes", false);
         String objectId = null;
 
         public NotesRetrieveTask(String objectId) {
             finished = false;
             this.objectId = objectId;
             notesEntities = new ArrayList<>();
-            dialog = new SpotsDialog.Builder()
-                    .setMessage("Loading Notes")
-                    .setContext(getContext())
-                    .setCancelable(false)
-                    .build();
         }
 
         @Override
@@ -197,16 +219,11 @@ public class FragmentNotes extends Fragment {
     {
         boolean successful = false;
         boolean finished = false;
-        AlertDialog dialog;
+        AlertDialog dialog = Utilities.getInstance().showLoading(getContext(), "Deleting record", false);
         String objectId;
 
         public DeleteSingleNote(String objectId) {
             this.objectId = objectId;
-            dialog = new SpotsDialog.Builder()
-                    .setMessage("Deleting record")
-                    .setContext(getContext())
-                    .setCancelable(false)
-                    .build();
         }
 
         @Override

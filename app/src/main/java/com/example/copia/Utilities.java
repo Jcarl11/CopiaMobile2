@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
+import dmax.dialog.SpotsDialog;
+
 public class Utilities
 {
     private Utilities(){}
@@ -32,5 +34,14 @@ public class Utilities
 
         AlertDialog alert11 = builder.create();
         alert11.show();
+    }
+    public AlertDialog showLoading(Context context, String title, Boolean cancellable)
+    {
+        AlertDialog dialog = new SpotsDialog.Builder()
+                .setMessage(title)
+                .setContext(context)
+                .setCancelable(cancellable)
+                .build();
+        return dialog;
     }
 }

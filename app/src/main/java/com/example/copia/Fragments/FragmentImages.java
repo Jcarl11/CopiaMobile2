@@ -4,6 +4,7 @@ package com.example.copia.Fragments;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -24,6 +25,7 @@ import android.view.ViewGroup;
 
 import com.example.copia.Adapters.ImagesAdapter;
 import com.example.copia.Entities.ImagesEntity;
+import com.example.copia.Entities.NotesEntity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
 import com.example.copia.Utilities;
@@ -141,6 +143,7 @@ public class FragmentImages extends Fragment {
                                             .show();
                                 }
                                 else if(which == 1) {
+
                                 }
                                 else if(which == 2) {
                                     Dexter.withActivity(getActivity())

@@ -18,13 +18,15 @@
             android:layout_height="wrap_content"
             android:prompt="@string/prompt_searchin"
             android:spinnerMode="dialog"/>
+
         <EditText
             android:id="@+id/search_edittext_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Search"
-            android:textColor="@android:color/black"
-            android:inputType="text"/>
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:textColor="@android:color/black" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/search_recyclerview"

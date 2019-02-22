@@ -1,6 +1,8 @@
 package com.example.copia.Entities;
 
-public class NotesEntity {
+import java.io.Serializable;
+
+public class NotesEntity implements Serializable {
     private String objectId;
     private String remark;
     private String createdAt;
