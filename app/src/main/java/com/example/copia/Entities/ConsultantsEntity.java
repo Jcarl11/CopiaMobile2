@@ -1,6 +1,8 @@
 package com.example.copia.Entities;
 
-public class ConsultantsEntity {
+import java.io.Serializable;
+
+public class ConsultantsEntity implements Serializable {
     private String objectId;
     private String representative;
     private String position;

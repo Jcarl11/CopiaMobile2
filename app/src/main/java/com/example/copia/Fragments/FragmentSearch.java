@@ -27,6 +27,7 @@ import com.example.copia.Adapters.ContractorsAdapter;
 import com.example.copia.Adapters.SpecificationsAdapter;
 import com.example.copia.Adapters.SuppliersAdapter;
 import com.example.copia.ClientEditActivity;
+import com.example.copia.ConsultantsEditActivity;
 import com.example.copia.ContractorsEditActivity;
 import com.example.copia.Entities.ComboboxEntity;
 import com.example.copia.DatabaseOperation.DeleteFiles;
@@ -305,13 +306,13 @@ public class FragmentSearch extends Fragment
                                         intent.putExtra(CONTRACTORS, contractorsEntities.get(pos));
                                         startActivityForResult(intent, 3);
                                     }
-                                    /*else if(adapterClass.equalsIgnoreCase("ConsultantsAdapter"))
+                                    else if(adapterClass.equalsIgnoreCase("ConsultantsAdapter"))
                                     {
-                                        Intent intent = new Intent(getActivity(), ClientEditActivity.class);
-                                        intent.putExtra(CLIENT, clientEntities.get(pos));
+                                        Intent intent = new Intent(getActivity(), ConsultantsEditActivity.class);
+                                        intent.putExtra(CONSULTANTS, consultantsEntities.get(pos));
                                         startActivityForResult(intent, 4);
                                     }
-                                    else if(adapterClass.equalsIgnoreCase("SpecificationsAdapter"))
+                                    /*else if(adapterClass.equalsIgnoreCase("SpecificationsAdapter"))
                                     {
                                         Intent intent = new Intent(getActivity(), ClientEditActivity.class);
                                         intent.putExtra(CLIENT, clientEntities.get(pos));
@@ -368,6 +369,20 @@ public class FragmentSearch extends Fragment
                     contractorsEntities.add((ContractorsEntity) data.getSerializableExtra(CONTRACTORS));
                     contractorsAdapter = new ContractorsAdapter(getContext(), contractorsEntities);
                     search_recyclerview.setAdapter(contractorsAdapter);
+                    Utilities.getInstance().showAlertBox("Response", "Record updated", getContext());
+                }
+                else
+                    Utilities.getInstance().showAlertBox("Response", "Update failed. Please try again", getContext());
+
+                break;
+            case 4:
+                if(resultCode == MainActivity.RESULT_OK)
+                {
+                    consultantsEntities.remove(pos);
+                    consultantsAdapter.notifyItemRemoved(pos);
+                    consultantsEntities.add((ConsultantsEntity) data.getSerializableExtra(CONSULTANTS));
+                    consultantsAdapter = new ConsultantsAdapter(getContext(), consultantsEntities);
+                    search_recyclerview.setAdapter(consultantsAdapter);
                     Utilities.getInstance().showAlertBox("Response", "Record updated", getContext());
                 }
                 else
