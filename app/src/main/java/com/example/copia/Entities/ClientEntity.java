@@ -1,7 +1,11 @@
 package com.example.copia.Entities;
 
 
-public class ClientEntity
+import org.json.JSONArray;
+
+import java.io.Serializable;
+
+public class ClientEntity implements Serializable
 {
     String objectId;
     String representative;
@@ -9,7 +13,6 @@ public class ClientEntity
     String company;
     String industry;
     String type;
-
     public ClientEntity() {}
 
     public ClientEntity(String objectId, String representative, String position, String company, String industry, String type) {

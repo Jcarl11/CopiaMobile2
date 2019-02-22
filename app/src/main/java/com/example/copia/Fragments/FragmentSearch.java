@@ -2,6 +2,7 @@ package com.example.copia.Fragments;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,6 +26,7 @@ import com.example.copia.Adapters.ConsultantsAdapter;
 import com.example.copia.Adapters.ContractorsAdapter;
 import com.example.copia.Adapters.SpecificationsAdapter;
 import com.example.copia.Adapters.SuppliersAdapter;
+import com.example.copia.ClientEditActivity;
 import com.example.copia.Entities.ComboboxEntity;
 import com.example.copia.DatabaseOperation.DeleteFiles;
 import com.example.copia.DatabaseOperation.DeleteImages;
@@ -77,6 +79,11 @@ public class FragmentSearch extends Fragment
     RecyclerView search_recyclerview;
     boolean option;
     int pos = -1;
+    public static String CLIENT = "CLIENT";
+    public static String SUPPLIERS = "SUPPLIERS";
+    public static String CONTRACTORS = "CONTRACTORS";
+    public static String CONSULTANTS = "CONSULTANTS";
+    public static String SPECIFICATIONS = "SPECIFICATIONS";
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -245,7 +252,7 @@ public class FragmentSearch extends Fragment
                 .setItemClickCallback(new SwipeDismissRecyclerViewTouchListener.OnItemClickCallBack() {
                     @Override
                     public void onClick(int i) {
-                        String[] choices = new String[]{"Notes", "Image Files", "PDF Files"};
+                        String[] choices = new String[]{"Notes", "Image Files", "PDF Files", "Edit"};
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Choose what to show: ");
                         builder.setCancelable(true);
@@ -277,6 +284,38 @@ public class FragmentSearch extends Fragment
                                     ((MainActivity)getActivity()).setObjectId(objectid);
                                     getFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentPdf()).addToBackStack(null).commit();
                                 }
+                                else if(which == 3) {
+                                    if(adapterClass.equalsIgnoreCase("ClientAdapter"))
+                                    {
+                                        Intent intent = new Intent(getActivity(), ClientEditActivity.class);
+                                        intent.putExtra(CLIENT, clientEntities.get(pos));
+                                        startActivityForResult(intent, 1);
+                                    }
+                                    /*else if(adapterClass.equalsIgnoreCase("SuppliersAdapter"))
+                                    {
+                                        Intent intent = new Intent(getActivity(), ClientEditActivity.class);
+                                        intent.putExtra(CLIENT, clientEntities.get(pos));
+                                        startActivityForResult(intent, 1);
+                                    }
+                                    else if(adapterClass.equalsIgnoreCase("ContractorsAdapter"))
+                                    {
+                                        Intent intent = new Intent(getActivity(), ClientEditActivity.class);
+                                        intent.putExtra(CLIENT, clientEntities.get(pos));
+                                        startActivityForResult(intent, 1);
+                                    }
+                                    else if(adapterClass.equalsIgnoreCase("ConsultantsAdapter"))
+                                    {
+                                        Intent intent = new Intent(getActivity(), ClientEditActivity.class);
+                                        intent.putExtra(CLIENT, clientEntities.get(pos));
+                                        startActivityForResult(intent, 1);
+                                    }
+                                    else if(adapterClass.equalsIgnoreCase("SpecificationsAdapter"))
+                                    {
+                                        Intent intent = new Intent(getActivity(), ClientEditActivity.class);
+                                        intent.putExtra(CLIENT, clientEntities.get(pos));
+                                        startActivityForResult(intent, 1);
+                                    }*/
+                                }
                             }
                         });
                         AlertDialog dialog = builder.create();
@@ -286,5 +325,26 @@ public class FragmentSearch extends Fragment
                 })
                 .create();
         return listener;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode)
+        {
+            case 1:
+                if(resultCode == MainActivity.RESULT_OK)
+                {
+                    clientEntities.remove(pos);
+                    clientAdapter.notifyItemRemoved(pos);
+                    clientEntities.add((ClientEntity) data.getSerializableExtra(CLIENT));
+                    clientAdapter = new ClientAdapter(getContext(), clientEntities);
+                    search_recyclerview.setAdapter(clientAdapter);
+                    Utilities.getInstance().showAlertBox("Response", "Record updated", getContext());
+                }
+                else
+                    Utilities.getInstance().showAlertBox("Response", "Update failed. Please try again", getContext());
+                break;
+        }
     }
 }

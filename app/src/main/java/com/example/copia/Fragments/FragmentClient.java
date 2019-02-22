@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.dpizarro.autolabel.library.AutoLabelUI;
 import com.dpizarro.autolabel.library.AutoLabelUISettings;
 import com.dpizarro.autolabel.library.Label;
+import com.example.copia.Entities.ClientEntity;
 import com.example.copia.Entities.ComboboxEntity;
 import com.example.copia.DatabaseOperation.FileUpload;
 import com.example.copia.DatabaseOperation.ImageUpload;
