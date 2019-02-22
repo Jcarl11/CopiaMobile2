@@ -39,6 +39,7 @@ import com.example.copia.Entities.SpecificationsEntity;
 import com.example.copia.Entities.SuppliersEntity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
+import com.example.copia.SuppliersEditActivity;
 import com.example.copia.Tasks.ClientSearchTask;
 import com.example.copia.Tasks.ConsultantsSearchTask;
 import com.example.copia.Tasks.ContractorsSearchTask;
@@ -291,29 +292,29 @@ public class FragmentSearch extends Fragment
                                         intent.putExtra(CLIENT, clientEntities.get(pos));
                                         startActivityForResult(intent, 1);
                                     }
-                                    /*else if(adapterClass.equalsIgnoreCase("SuppliersAdapter"))
+                                    else if(adapterClass.equalsIgnoreCase("SuppliersAdapter"))
                                     {
-                                        Intent intent = new Intent(getActivity(), ClientEditActivity.class);
-                                        intent.putExtra(CLIENT, clientEntities.get(pos));
-                                        startActivityForResult(intent, 1);
+                                        Intent intent = new Intent(getActivity(), SuppliersEditActivity.class);
+                                        intent.putExtra(SUPPLIERS, suppliersEntities.get(pos));
+                                        startActivityForResult(intent, 2);
                                     }
-                                    else if(adapterClass.equalsIgnoreCase("ContractorsAdapter"))
+                                    /*else if(adapterClass.equalsIgnoreCase("ContractorsAdapter"))
                                     {
                                         Intent intent = new Intent(getActivity(), ClientEditActivity.class);
                                         intent.putExtra(CLIENT, clientEntities.get(pos));
-                                        startActivityForResult(intent, 1);
+                                        startActivityForResult(intent, 3);
                                     }
                                     else if(adapterClass.equalsIgnoreCase("ConsultantsAdapter"))
                                     {
                                         Intent intent = new Intent(getActivity(), ClientEditActivity.class);
                                         intent.putExtra(CLIENT, clientEntities.get(pos));
-                                        startActivityForResult(intent, 1);
+                                        startActivityForResult(intent, 4);
                                     }
                                     else if(adapterClass.equalsIgnoreCase("SpecificationsAdapter"))
                                     {
                                         Intent intent = new Intent(getActivity(), ClientEditActivity.class);
                                         intent.putExtra(CLIENT, clientEntities.get(pos));
-                                        startActivityForResult(intent, 1);
+                                        startActivityForResult(intent, 5);
                                     }*/
                                 }
                             }
@@ -340,6 +341,19 @@ public class FragmentSearch extends Fragment
                     clientEntities.add((ClientEntity) data.getSerializableExtra(CLIENT));
                     clientAdapter = new ClientAdapter(getContext(), clientEntities);
                     search_recyclerview.setAdapter(clientAdapter);
+                    Utilities.getInstance().showAlertBox("Response", "Record updated", getContext());
+                }
+                else
+                    Utilities.getInstance().showAlertBox("Response", "Update failed. Please try again", getContext());
+                break;
+            case 2:
+                if(resultCode == MainActivity.RESULT_OK)
+                {
+                    suppliersEntities.remove(pos);
+                    suppliersAdapter.notifyItemRemoved(pos);
+                    suppliersEntities.add((SuppliersEntity) data.getSerializableExtra(SUPPLIERS));
+                    suppliersAdapter = new SuppliersAdapter(getContext(), suppliersEntities);
+                    search_recyclerview.setAdapter(suppliersAdapter);
                     Utilities.getInstance().showAlertBox("Response", "Record updated", getContext());
                 }
                 else

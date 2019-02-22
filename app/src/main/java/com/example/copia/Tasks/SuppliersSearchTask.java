@@ -43,7 +43,7 @@ public class SuppliersSearchTask extends AsyncTask<Void, Void, List<SuppliersEnt
     @Override
     protected List<SuppliersEntity> doInBackground(Void... voids) {
         String[] parameters = keyword.split(",");
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Specifications");
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Suppliers");
         query.whereContainedIn("Tags", Arrays.asList(parameters));
         query.whereEqualTo("Deleted", false);
         query.findInBackground(new FindCallback<ParseObject>() {

@@ -147,6 +147,7 @@ public class FragmentNotes extends Fragment {
                 notesEntities.add((NotesEntity) data.getSerializableExtra(NOTES_ENTITY));
                 notesAdapter = new NotesAdapter(getContext(), notesEntities);
                 notes_recyclerview.setAdapter(notesAdapter);
+                Utilities.getInstance().showAlertBox("Response", "Record updated", getContext());
             }
             else
                 Utilities.getInstance().showAlertBox("Response", "Update failed. Please try again", getContext());
