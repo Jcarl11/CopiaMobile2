@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".ConsultantsEditActivity"></activity>
+        <activity android:name=".SpecificationsEditActivity"></activity>
+        <activity android:name=".ConsultantsEditActivity" />
         <activity android:name=".ContractorsEditActivity" />
         <activity android:name=".SuppliersEditActivity" />
         <activity android:name=".ClientEditActivity" />

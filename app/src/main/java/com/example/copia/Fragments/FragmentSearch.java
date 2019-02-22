@@ -41,6 +41,7 @@ import com.example.copia.Entities.SpecificationsEntity;
 import com.example.copia.Entities.SuppliersEntity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
+import com.example.copia.SpecificationsEditActivity;
 import com.example.copia.SuppliersEditActivity;
 import com.example.copia.Tasks.ClientSearchTask;
 import com.example.copia.Tasks.ConsultantsSearchTask;
@@ -312,12 +313,12 @@ public class FragmentSearch extends Fragment
                                         intent.putExtra(CONSULTANTS, consultantsEntities.get(pos));
                                         startActivityForResult(intent, 4);
                                     }
-                                    /*else if(adapterClass.equalsIgnoreCase("SpecificationsAdapter"))
+                                    else if(adapterClass.equalsIgnoreCase("SpecificationsAdapter"))
                                     {
-                                        Intent intent = new Intent(getActivity(), ClientEditActivity.class);
-                                        intent.putExtra(CLIENT, clientEntities.get(pos));
+                                        Intent intent = new Intent(getActivity(), SpecificationsEditActivity.class);
+                                        intent.putExtra(SPECIFICATIONS, specificationsEntities.get(pos));
                                         startActivityForResult(intent, 5);
-                                    }*/
+                                    }
                                 }
                             }
                         });
@@ -383,6 +384,20 @@ public class FragmentSearch extends Fragment
                     consultantsEntities.add((ConsultantsEntity) data.getSerializableExtra(CONSULTANTS));
                     consultantsAdapter = new ConsultantsAdapter(getContext(), consultantsEntities);
                     search_recyclerview.setAdapter(consultantsAdapter);
+                    Utilities.getInstance().showAlertBox("Response", "Record updated", getContext());
+                }
+                else
+                    Utilities.getInstance().showAlertBox("Response", "Update failed. Please try again", getContext());
+
+                break;
+            case 5:
+                if(resultCode == MainActivity.RESULT_OK)
+                {
+                    specificationsEntities.remove(pos);
+                    specificationsAdapter.notifyItemRemoved(pos);
+                    specificationsEntities.add((SpecificationsEntity) data.getSerializableExtra(SPECIFICATIONS));
+                    specificationsAdapter = new SpecificationsAdapter(getContext(), specificationsEntities);
+                    search_recyclerview.setAdapter(specificationsAdapter);
                     Utilities.getInstance().showAlertBox("Response", "Record updated", getContext());
                 }
                 else
