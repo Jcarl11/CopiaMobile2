@@ -1,10 +1,9 @@
-package com.example.copia;
+package com.example.copia.EditActivities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,12 +11,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.dpizarro.autolabel.library.AutoLabelUI;
-import com.dpizarro.autolabel.library.Label;
 import com.example.copia.Entities.PDFEntity;
 import com.example.copia.Fragments.FragmentPdf;
+import com.example.copia.R;
+import com.example.copia.Utilities;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -26,7 +25,6 @@ import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.activity.NormalFilePickActivity;
-import com.vincent.filepicker.filter.entity.ImageFile;
 import com.vincent.filepicker.filter.entity.NormalFile;
 
 import org.apache.commons.io.FileUtils;

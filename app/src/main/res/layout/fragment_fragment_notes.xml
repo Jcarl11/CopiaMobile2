@@ -5,6 +5,14 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <Button
+        android:id="@+id/notes_add_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="ADD NEW REMARK"
+        android:textColor="@android:color/white" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/notes_recyclerview"
         android:layout_width="match_parent"

@@ -12,9 +12,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.copia.Adapters.NotesAdapter;
-import com.example.copia.NotesEditActivity;
+import com.example.copia.EditActivities.NotesEditActivity;
 import com.example.copia.Entities.NotesEntity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
@@ -36,11 +37,12 @@ import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTo
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentNotes extends Fragment {
+public class FragmentNotes extends Fragment implements View.OnClickListener {
     public static String NOTES_ENTITY = "NOTES_ENTITY";
     NotesAdapter notesAdapter;
     List<NotesEntity> notesEntities;
     RecyclerView notes_recyclerview;
+    Button notes_add_add;
     int pos = -1;
     public FragmentNotes() {}
 
@@ -50,11 +52,13 @@ public class FragmentNotes extends Fragment {
         View view = inflater.inflate(R.layout.fragment_fragment_notes, container, false);
         ((MainActivity)getActivity()).getSupportActionBar().setTitle("Notes");
         notesEntities = new ArrayList<>();
+        notes_add_add = (Button)view.findViewById(R.id.notes_add_add);
         notes_recyclerview = (RecyclerView)view.findViewById(R.id.notes_recyclerview);
         notes_recyclerview.setHasFixedSize(true);
         notes_recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         notes_recyclerview.setOnTouchListener(notes_listener());
         String objectId = ((MainActivity)getActivity()).getObjectId();
+        notes_add_add.setOnClickListener(this);
         new NotesRetrieveTask(objectId).execute((Void)null);
         return view;
     }
@@ -151,6 +155,16 @@ public class FragmentNotes extends Fragment {
             }
             else
                 Utilities.getInstance().showAlertBox("Response", "Update failed. Please try again", getContext());
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId())
+        {
+            case R.id.notes_add_add:
+
+                break;
         }
     }
 

@@ -1,4 +1,4 @@
-package com.example.copia;
+package com.example.copia.EditActivities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -16,6 +16,8 @@ import com.dpizarro.autolabel.library.AutoLabelUI;
 import com.dpizarro.autolabel.library.Label;
 import com.example.copia.Entities.SpecificationsEntity;
 import com.example.copia.Fragments.FragmentSearch;
+import com.example.copia.R;
+import com.example.copia.Utilities;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;

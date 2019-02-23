@@ -1,4 +1,4 @@
-package com.example.copia;
+package com.example.copia.EditActivities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -17,10 +16,11 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.example.copia.Entities.ImagesEntity;
 import com.example.copia.Fragments.FragmentImages;
+import com.example.copia.R;
+import com.example.copia.Utilities;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -32,11 +32,8 @@ import com.vincent.filepicker.Constant;
 import com.vincent.filepicker.activity.ImagePickActivity;
 import com.vincent.filepicker.filter.entity.ImageFile;
 
-import org.apache.commons.io.FileUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class ImagesEditActivity extends AppCompatActivity {

@@ -1,4 +1,4 @@
-package com.example.copia;
+package com.example.copia.EditActivities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -12,8 +12,10 @@ import android.widget.Button;
 import android.widget.Spinner;
 
 import com.example.copia.Entities.ComboboxEntity;
-import com.example.copia.Entities.ConsultantsEntity;
+import com.example.copia.Entities.ContractorsEntity;
 import com.example.copia.Fragments.FragmentSearch;
+import com.example.copia.R;
+import com.example.copia.Utilities;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -23,10 +25,11 @@ import com.parse.SaveCallback;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConsultantsEditActivity extends AppCompatActivity {
-    ConsultantsEntity consultantsEntity;
-    TextInputLayout consultants_representative, consultants_position, consultants_company, consultants_specialization;
-    Spinner consultants_industry, consultants_classification;
+public class ContractorsEditActivity extends AppCompatActivity
+{
+    ContractorsEntity contractorsEntity;
+    TextInputLayout contractors_representative, contractors_position, contractors_company, contractors_specialization;
+    Spinner contractors_industry, contractors_classification;
     Button save;
     ArrayList<String> industryLists = new ArrayList<>();
     ArrayList<String> classificationLists = new ArrayList<>();
@@ -35,12 +38,12 @@ public class ConsultantsEditActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_consultants_edit);
-        getSupportActionBar().setTitle("Consultants Edit");
+        setContentView(R.layout.activity_contractors_edit);
+        getSupportActionBar().setTitle("Contractors Edit");
         Intent intent = getIntent();
-        consultantsEntity = (ConsultantsEntity) intent.getSerializableExtra(FragmentSearch.CONSULTANTS);
-        List<ComboboxEntity> industryList = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Consultants", "Industry");
-        List<ComboboxEntity> classificationsList = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Consultants", "Classification");
+        contractorsEntity = (ContractorsEntity) intent.getSerializableExtra(FragmentSearch.CONTRACTORS);
+        List<ComboboxEntity> industryList = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Contractors", "Industry");
+        List<ComboboxEntity> classificationsList = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Contractors", "Classification");
         for(ComboboxEntity entity : industryList)
             industryLists.add(entity.getTitle().toUpperCase());
         for(ComboboxEntity entity : classificationsList)
@@ -49,26 +52,26 @@ public class ConsultantsEditActivity extends AppCompatActivity {
         dataAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, classificationLists);
         dataAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        consultants_representative = (TextInputLayout)findViewById(R.id.consultants_edit_representative);
-        consultants_position = (TextInputLayout)findViewById(R.id.consultants_edit_position);
-        consultants_company = (TextInputLayout)findViewById(R.id.consultants_edit_company);
-        consultants_specialization = (TextInputLayout)findViewById(R.id.consultants_edit_specialization);
-        consultants_industry = (Spinner)findViewById(R.id.consultants_edit_industry);
-        consultants_classification = (Spinner)findViewById(R.id.consultants_edit_classification);
-        save = (Button)findViewById(R.id.consultants_edit_save);
-        consultants_industry.setAdapter(dataAdapter1);
-        consultants_classification.setAdapter(dataAdapter2);
+        contractors_representative = (TextInputLayout)findViewById(R.id.contractors_edit_representative);
+        contractors_position = (TextInputLayout)findViewById(R.id.contractors_edit_position);
+        contractors_company = (TextInputLayout)findViewById(R.id.contractors_edit_company);
+        contractors_specialization = (TextInputLayout)findViewById(R.id.contractors_edit_specialization);
+        contractors_industry = (Spinner)findViewById(R.id.contractors_edit_industry);
+        contractors_classification = (Spinner)findViewById(R.id.contractors_edit_classification);
+        save = (Button)findViewById(R.id.contractors_edit_save);
+        contractors_industry.setAdapter(dataAdapter1);
+        contractors_classification.setAdapter(dataAdapter2);
         setDefaultValues();
     }
-    public void consultantsSaveClicked(View view)
+    public void contractorsSaveClicked(View view)
     {
         checkforNull();
     }
     public void checkforNull()
     {
-        if(!validateNull(consultants_representative) | !validateNull(consultants_position) | !validateNull(consultants_company) | !validateNull(consultants_specialization))
+        if(!validateNull(contractors_representative) | !validateNull(contractors_position) | !validateNull(contractors_company) | !validateNull(contractors_specialization))
             return;
-        new ConsultantsUpdateTask().execute((Void)null);
+        new ContractorsUpdateTask().execute((Void)null);
     }
 
     private boolean validateNull(TextInputLayout textInputLayout) {
@@ -84,28 +87,28 @@ public class ConsultantsEditActivity extends AppCompatActivity {
     }
     private void setDefaultValues()
     {
-        consultants_representative.getEditText().setText(consultantsEntity.getRepresentative());
-        consultants_position.getEditText().setText(consultantsEntity.getPosition());
-        consultants_company.getEditText().setText(consultantsEntity.getCompany());
-        consultants_specialization.getEditText().setText(consultantsEntity.getSpecialization());
-        consultants_industry.setSelection(dataAdapter1.getPosition(consultantsEntity.getIndustry()));
-        consultants_classification.setSelection(dataAdapter2.getPosition(consultantsEntity.getClassification()));
+        contractors_representative.getEditText().setText(contractorsEntity.getRepresentative());
+        contractors_position.getEditText().setText(contractorsEntity.getPosition());
+        contractors_company.getEditText().setText(contractorsEntity.getCompany());
+        contractors_specialization.getEditText().setText(contractorsEntity.getSpecialization());
+        contractors_industry.setSelection(dataAdapter1.getPosition(contractorsEntity.getIndustry()));
+        contractors_classification.setSelection(dataAdapter2.getPosition(contractorsEntity.getClassification()));
     }
-    private class ConsultantsUpdateTask extends AsyncTask<Void, Void, Boolean>
+    private class ContractorsUpdateTask extends AsyncTask<Void, Void, Boolean>
     {
         boolean finished = false;
         boolean successfull = false;
-        AlertDialog dialog = Utilities.getInstance().showLoading(ConsultantsEditActivity.this, "Updating record", false);
+        AlertDialog dialog = Utilities.getInstance().showLoading(ContractorsEditActivity.this, "Updating record", false);
         @Override
         protected Boolean doInBackground(Void... voids) {
-            String representative = consultants_representative.getEditText().getText().toString().trim();
-            String position = consultants_position.getEditText().getText().toString().trim();
-            String company = consultants_company.getEditText().getText().toString().trim();
-            String specialization = consultants_specialization.getEditText().getText().toString().trim();
-            String industry = consultants_industry.getSelectedItem().toString();
-            String classification = consultants_classification.getSelectedItem().toString();
-            ParseQuery<ParseObject> query = ParseQuery.getQuery("Consultants");
-            query.getInBackground(consultantsEntity.getObjectId(), new GetCallback<ParseObject>() {
+            String representative = contractors_representative.getEditText().getText().toString().trim();
+            String position = contractors_position.getEditText().getText().toString().trim();
+            String company = contractors_company.getEditText().getText().toString().trim();
+            String specialization = contractors_specialization.getEditText().getText().toString().trim();
+            String industry = contractors_industry.getSelectedItem().toString();
+            String classification = contractors_classification.getSelectedItem().toString();
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Contractors");
+            query.getInBackground(contractorsEntity.getObjectId(), new GetCallback<ParseObject>() {
                 @Override
                 public void done(ParseObject object, ParseException e) {
                     if(e == null && object != null)
@@ -116,7 +119,7 @@ public class ConsultantsEditActivity extends AppCompatActivity {
                         object.put("Specialization", specialization.toUpperCase());
                         object.put("Industry", industry.toUpperCase());
                         object.put("Classification", classification.toUpperCase());
-                        object.put("Tags", consultants_extractStringsToTags());
+                        object.put("Tags", contractors_extractStringsToTags());
                         object.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(ParseException e) {
@@ -147,14 +150,14 @@ public class ConsultantsEditActivity extends AppCompatActivity {
             dialog.dismiss();
             if(aBoolean)
             {
-                consultantsEntity.setRepresentative(consultants_representative.getEditText().getText().toString().trim().toUpperCase());
-                consultantsEntity.setPosition(consultants_position.getEditText().getText().toString().trim().toUpperCase());
-                consultantsEntity.setCompany(consultants_company.getEditText().getText().toString().trim().toUpperCase());
-                consultantsEntity.setSpecialization(consultants_specialization.getEditText().getText().toString().trim().toUpperCase());
-                consultantsEntity.setIndustry(consultants_industry.getSelectedItem().toString().toUpperCase());
-                consultantsEntity.setClassification(consultants_classification.getSelectedItem().toString().toUpperCase());
+                contractorsEntity.setRepresentative(contractors_representative.getEditText().getText().toString().trim().toUpperCase());
+                contractorsEntity.setPosition(contractors_position.getEditText().getText().toString().trim().toUpperCase());
+                contractorsEntity.setCompany(contractors_company.getEditText().getText().toString().trim().toUpperCase());
+                contractorsEntity.setSpecialization(contractors_specialization.getEditText().getText().toString().trim().toUpperCase());
+                contractorsEntity.setIndustry(contractors_industry.getSelectedItem().toString().toUpperCase());
+                contractorsEntity.setClassification(contractors_classification.getSelectedItem().toString().toUpperCase());
                 Intent intent = new Intent();
-                intent.putExtra(FragmentSearch.CONSULTANTS, consultantsEntity);
+                intent.putExtra(FragmentSearch.CONTRACTORS, contractorsEntity);
                 setResult(RESULT_OK, intent);
                 finish();
             }
@@ -165,14 +168,14 @@ public class ConsultantsEditActivity extends AppCompatActivity {
             }
         }
     }
-    public ArrayList<String> consultants_extractStringsToTags()
+    public ArrayList<String> contractors_extractStringsToTags()
     {
-        String representative = consultants_representative.getEditText().getText().toString().trim().toUpperCase();
-        String position = consultants_position.getEditText().getText().toString().trim().toUpperCase();
-        String company = consultants_company.getEditText().getText().toString().trim().toUpperCase();
-        String specializations = consultants_specialization.getEditText().getText().toString().trim().toUpperCase();
-        String industry = consultants_industry.getSelectedItem().toString().toUpperCase();
-        String classification = consultants_classification.getSelectedItem().toString().toUpperCase();
+        String representative = contractors_representative.getEditText().getText().toString().trim().toUpperCase();
+        String position = contractors_position.getEditText().getText().toString().trim().toUpperCase();
+        String company = contractors_company.getEditText().getText().toString().trim().toUpperCase();
+        String specializations = contractors_specialization.getEditText().getText().toString().trim().toUpperCase();
+        String industry = contractors_industry.getSelectedItem().toString().toUpperCase();
+        String classification = contractors_classification.getSelectedItem().toString().toUpperCase();
 
         ArrayList<String> tags = new ArrayList<>();
         tags.add(representative);
@@ -203,4 +206,6 @@ public class ConsultantsEditActivity extends AppCompatActivity {
         }
         return tags;
     }
+
+
 }

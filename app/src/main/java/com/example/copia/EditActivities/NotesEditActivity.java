@@ -1,4 +1,4 @@
-package com.example.copia;
+package com.example.copia.EditActivities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -12,6 +12,8 @@ import android.widget.Button;
 
 import com.example.copia.Entities.NotesEntity;
 import com.example.copia.Fragments.FragmentNotes;
+import com.example.copia.R;
+import com.example.copia.Utilities;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;

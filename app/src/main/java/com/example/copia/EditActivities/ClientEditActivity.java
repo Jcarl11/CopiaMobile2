@@ -1,4 +1,4 @@
-package com.example.copia;
+package com.example.copia.EditActivities;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -10,11 +10,12 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.example.copia.Entities.ClientEntity;
 import com.example.copia.Entities.ComboboxEntity;
 import com.example.copia.Fragments.FragmentSearch;
+import com.example.copia.R;
+import com.example.copia.Utilities;
 import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
