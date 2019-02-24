@@ -6,6 +6,13 @@
     android:orientation="vertical"
     tools:context=".Fragments.FragmentImages">
 
+    <Button
+        android:id="@+id/images_add_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="ADD NEW IMAGE"
+        android:textColor="@android:color/white" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/images_recyclerview"

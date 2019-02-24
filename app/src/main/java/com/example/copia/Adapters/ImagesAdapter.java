@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.copia.Entities.ImagesEntity;
 import com.example.copia.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -37,8 +38,9 @@ public class ImagesAdapter extends RecyclerView.Adapter<ImagesAdapter.ImagesView
     @Override
     public void onBindViewHolder(@NonNull ImagesViewHolder imagesViewHolder, int i) {
         ImagesEntity imagesEntity = imagesEntities.get(i);
-        Bitmap bmp = BitmapFactory.decodeByteArray(imagesEntity.getImage(), 0, imagesEntity.getImage().length);
-        imagesViewHolder.imageHolder.setImageBitmap(Bitmap.createBitmap(bmp));
+        //Bitmap bmp = BitmapFactory.decodeByteArray(imagesEntity.getImage(), 0, imagesEntity.getImage().length);
+        //imagesViewHolder.imageHolder.setImageBitmap(Bitmap.createBitmap(bmp));
+        Picasso.get().load(imagesEntity.getUrl()).into(imagesViewHolder.imageHolder);
         imagesViewHolder.imageName.setText(imagesEntity.getImageName());
         imagesViewHolder.imageSize.setText(imagesEntity.getSize() + "KB");
     }

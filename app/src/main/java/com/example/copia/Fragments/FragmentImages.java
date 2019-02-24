@@ -16,8 +16,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.copia.Adapters.ImagesAdapter;
+import com.example.copia.EditActivities.ImagesAddActivity;
 import com.example.copia.Entities.ImagesEntity;
 import com.example.copia.EditActivities.ImagesEditActivity;
 import com.example.copia.MainActivity;
@@ -47,10 +49,13 @@ import java.util.List;
 import dmax.dialog.SpotsDialog;
 import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTouchListener;
 
-public class FragmentImages extends Fragment {
+public class FragmentImages extends Fragment implements View.OnClickListener {
     public static String IMAGES_ENTITY = "IMAGES_ENTITY";
+    public static String IMAGES_ENTITY_PARENT = "IMAGES_ENTITY_PARENT";
+    String objectId;
     int pos = -1;
     ImagesAdapter imagesAdapter;
+    Button images_add_add;
     List<ImagesEntity> imagesEntities;
     RecyclerView images_recyclerview;
     public FragmentImages() {}
@@ -61,11 +66,13 @@ public class FragmentImages extends Fragment {
         View view = inflater.inflate(R.layout.fragment_fragment_images, container, false);
         ((MainActivity)getActivity()).getSupportActionBar().setTitle("Images list");
         imagesEntities = new ArrayList<>();
+        images_add_add = (Button)view.findViewById(R.id.images_add_add);
         images_recyclerview = (RecyclerView)view.findViewById(R.id.images_recyclerview);
         images_recyclerview.setHasFixedSize(true);
         images_recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         images_recyclerview.setOnTouchListener(listener());
-        String objectId = ((MainActivity)getActivity()).getObjectId();
+        images_add_add.setOnClickListener(this);
+        objectId = ((MainActivity)getActivity()).getObjectId();
         new ImagesRetrieveTask(objectId).execute((Void)null);
         return view;
     }
@@ -191,6 +198,17 @@ public class FragmentImages extends Fragment {
             else
                 Utilities.getInstance().showAlertBox("Response", "Update failed. Please try again", getContext());
         }
+        else if(requestCode == 4)
+        {
+            if(resultCode == MainActivity.RESULT_OK)
+            {
+                imagesEntities.add((ImagesEntity) data.getSerializableExtra(ImagesAddActivity.IMAGE_ENTITY_NEWRECORD));
+                imagesAdapter = new ImagesAdapter(getContext(), imagesEntities);
+                images_recyclerview.setAdapter(imagesAdapter);
+            }
+            else
+                Utilities.getInstance().showAlertBox("Response", "No records were added", getContext());
+        }
     }
 
     private void download()
@@ -205,7 +223,7 @@ public class FragmentImages extends Fragment {
                             String name = imagesEntities.get(pos).getImageName() + ".jpg";
                             File newDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), name);
                             FileOutputStream out = new FileOutputStream(newDir);
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, out);
+                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
                             out.flush();
                             out.close();
                         } catch(Exception e){
@@ -227,9 +245,21 @@ public class FragmentImages extends Fragment {
                     }
                 });
     }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId())
+        {
+            case R.id.images_add_add:
+                Intent intent = new Intent(getActivity(), ImagesAddActivity.class);
+                intent.putExtra(IMAGES_ENTITY_PARENT, objectId);
+                startActivityForResult(intent, 4);
+                break;
+        }
+    }
+
     private class ImagesRetrieveTask extends AsyncTask<Void, Void, List<ImagesEntity>>
     {
-        boolean finished = false;
         AlertDialog dialog;
         String objectId = null;
         public ImagesRetrieveTask(String objectId) {
@@ -248,35 +278,19 @@ public class FragmentImages extends Fragment {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Images");
             query.whereEqualTo("Parent", objectId);
             query.whereEqualTo("Deleted", false);
-            query.findInBackground(new FindCallback<ParseObject>() {
-                @Override
-                public void done(List<ParseObject> objects, ParseException e) {
-                    if(e == null && objects != null)
-                    {
-                        for(ParseObject object : objects)
-                        {
-                            ImagesEntity imagesEntity = new ImagesEntity();
-                            try {
-                                byte[] data = object.getParseFile("Files").getData();
-                                imagesEntity.setImage(data);
-                                imagesEntity.setImageName(object.getString("Name"));
-                                imagesEntity.setObjectId(object.getObjectId());
-                                imagesEntity.setSize(String.valueOf(data.length/1024));
-                                imagesEntity.setUrl(object.getParseFile("Files").getUrl());
-                                imagesEntities.add(imagesEntity);
-                            } catch (ParseException e1) {e1.printStackTrace();}
-                        }
-                    }
-                    finished = true;
+            try {
+                List<ParseObject> objects = query.find();
+                for(ParseObject object : objects)
+                {
+                    ImagesEntity imagesEntity = new ImagesEntity();
+                    imagesEntity.setImageName(object.getString("Name"));
+                    imagesEntity.setObjectId(object.getObjectId());
+                    imagesEntity.setSize(String.valueOf(object.getNumber("Size")));
+                    imagesEntity.setUrl(object.getParseFile("Files").getUrl());
+                    imagesEntities.add(imagesEntity);
                 }
-            });
-            while(finished == false)
-            {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
             return imagesEntities;
         }
