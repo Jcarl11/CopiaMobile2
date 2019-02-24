@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.copia.Adapters.NotesAdapter;
+import com.example.copia.EditActivities.NotesAddActivity;
 import com.example.copia.EditActivities.NotesEditActivity;
 import com.example.copia.Entities.NotesEntity;
 import com.example.copia.MainActivity;
@@ -39,11 +40,13 @@ import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTo
  */
 public class FragmentNotes extends Fragment implements View.OnClickListener {
     public static String NOTES_ENTITY = "NOTES_ENTITY";
+    public static String NOTES_ENTITY_PARENT = "NOTES_ENTITY_PARENT";
     NotesAdapter notesAdapter;
     List<NotesEntity> notesEntities;
     RecyclerView notes_recyclerview;
     Button notes_add_add;
     int pos = -1;
+    String objectId;
     public FragmentNotes() {}
 
     @Override
@@ -57,7 +60,7 @@ public class FragmentNotes extends Fragment implements View.OnClickListener {
         notes_recyclerview.setHasFixedSize(true);
         notes_recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         notes_recyclerview.setOnTouchListener(notes_listener());
-        String objectId = ((MainActivity)getActivity()).getObjectId();
+        objectId = ((MainActivity)getActivity()).getObjectId();
         notes_add_add.setOnClickListener(this);
         new NotesRetrieveTask(objectId).execute((Void)null);
         return view;
@@ -156,6 +159,17 @@ public class FragmentNotes extends Fragment implements View.OnClickListener {
             else
                 Utilities.getInstance().showAlertBox("Response", "Update failed. Please try again", getContext());
         }
+        else if(requestCode == 3)
+        {
+            if(resultCode == MainActivity.RESULT_OK)
+            {
+                notesEntities.add((NotesEntity) data.getSerializableExtra(NotesAddActivity.NOTE_ENTITY_NEWRECORD));
+                notesAdapter = new NotesAdapter(getContext(), notesEntities);
+                notes_recyclerview.setAdapter(notesAdapter);
+            }
+            else
+                Utilities.getInstance().showAlertBox("Response", "No records were added", getContext());
+        }
     }
 
     @Override
@@ -163,7 +177,9 @@ public class FragmentNotes extends Fragment implements View.OnClickListener {
         switch (v.getId())
         {
             case R.id.notes_add_add:
-
+                Intent intent = new Intent(getActivity(), NotesAddActivity.class);
+                intent.putExtra(NOTES_ENTITY_PARENT, objectId);
+                startActivityForResult(intent, 3);
                 break;
         }
     }
