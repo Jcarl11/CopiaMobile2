@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -31,6 +32,7 @@ import com.example.copia.MainActivity;
 import com.example.copia.R;
 import com.example.copia.Tasks.Client_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.RestoreRecordsTask;
+import com.example.copia.Tasks.Suppliers_Retrieve_Deleted_Task;
 import com.weiwangcn.betterspinner.library.BetterSpinner;
 
 import java.util.ArrayList;
@@ -112,6 +114,14 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
                     clientAdapter = client_retrieve_deleted_task.getClientAdapter();
                     clientEntities = client_retrieve_deleted_task.getClientEntities();
                 }
+                else if(selectedItem.equalsIgnoreCase("Suppliers"))
+                {
+                    Suppliers_Retrieve_Deleted_Task suppliers_retrieve_deleted_task = new Suppliers_Retrieve_Deleted_Task(getContext());
+                    suppliers_retrieve_deleted_task.setRecyclerview(deleted_recyclerview);
+                    suppliers_retrieve_deleted_task.execute((Void)null);
+                    suppliersAdapter = suppliers_retrieve_deleted_task.getSuppliersAdapter();
+                    suppliersEntities = suppliers_retrieve_deleted_task.getSuppliersEntities();
+                }
                 break;
         }
     }
@@ -148,7 +158,15 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
                             if(selectedItem.equalsIgnoreCase("Client"))
                             {
                                 RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),clientEntities.get(pos).getObjectId(), "Client");
-                                restoreRecordsTask.setClientEntities(clientEntities);
+                                restoreRecordsTask.setEntities(clientEntities);
+                                restoreRecordsTask.setPos(pos);
+                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+                                restoreRecordsTask.execute((Void)null);
+                            }
+                            else if(selectedItem.equalsIgnoreCase("Suppliers"))
+                            {
+                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),suppliersEntities.get(pos).getObjectId(), "Suppliers");
+                                restoreRecordsTask.setEntities(suppliersEntities);
                                 restoreRecordsTask.setPos(pos);
                                 restoreRecordsTask.setRecyclerView(deleted_recyclerview);
                                 restoreRecordsTask.execute((Void)null);

@@ -20,6 +20,7 @@ public class RestoreRecordsTask extends AsyncTask<Void, Void, Boolean>
 {
     RecyclerView recyclerView;
     int pos;
+    List<?> entities;
     List<ClientEntity> clientEntities;
     boolean successful = false;
     private Context context;
@@ -45,7 +46,6 @@ public class RestoreRecordsTask extends AsyncTask<Void, Void, Boolean>
             successful = true;
         } catch (ParseException e) {
             e.printStackTrace();
-            Toast.makeText(context, "Goes here", Toast.LENGTH_SHORT).show();
         }
         return successful;
     }
@@ -60,11 +60,21 @@ public class RestoreRecordsTask extends AsyncTask<Void, Void, Boolean>
         dialog.dismiss();
         if(aBoolean == true)
         {
-            getClientEntities().remove(getPos());
+            getEntities().remove(getPos());
+            //getClientEntities().remove(getPos());
             getRecyclerView().getAdapter().notifyItemRemoved(getPos());
         }
         else
             Utilities.getInstance().showAlertBox("Reponse", "Failed restoring record", context);
+    }
+
+
+    public List<?> getEntities() {
+        return entities;
+    }
+
+    public void setEntities(List<?> entities) {
+        this.entities = entities;
     }
 
     public List<ClientEntity> getClientEntities() {
