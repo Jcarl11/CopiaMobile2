@@ -6,6 +6,13 @@
     android:orientation="vertical"
     tools:context=".Fragments.FragmentPdf">
 
+    <Button
+        android:id="@+id/file_add_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/colorPrimary"
+        android:text="ADD NEW FILE"
+        android:textColor="@android:color/white" />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/pdf_recyclerview"
         android:layout_width="match_parent"

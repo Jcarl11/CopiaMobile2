@@ -13,8 +13,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.copia.Adapters.PDFAdapter;
+import com.example.copia.EditActivities.FileAddActivity;
 import com.example.copia.Entities.PDFEntity;
 import com.example.copia.EditActivities.FilesEditActivity;
 import com.example.copia.MainActivity;
@@ -42,14 +44,17 @@ import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTo
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentPdf extends Fragment
+public class FragmentPdf extends Fragment implements View.OnClickListener
 {
+    String objectId;
     public static String PDF_ENTITY = "PDF_ENTITY";
+    public static String PDF_ENTITY_PARENT = "PDF_ENTITY_PARENT";
     int pos = -1;
     boolean finished = false;
     List<PDFEntity> pdfEntities;
     RecyclerView pdf_recyclerview;
     PDFAdapter pdfAdapter;
+    Button file_add_add;
     public FragmentPdf() {}
 
     @Override
@@ -58,11 +63,13 @@ public class FragmentPdf extends Fragment
         View view = inflater.inflate(R.layout.fragment_fragment_pdf, container, false);
         ((MainActivity)getActivity()).getSupportActionBar().setTitle("Files");
         pdfEntities = new ArrayList<>();
+        file_add_add = (Button)view.findViewById(R.id.file_add_add);
         pdf_recyclerview = (RecyclerView)view.findViewById(R.id.pdf_recyclerview);
         pdf_recyclerview.setHasFixedSize(true);
         pdf_recyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
         pdf_recyclerview.setOnTouchListener(listener());
-        String objectId = ((MainActivity)getActivity()).getObjectId();
+        file_add_add.setOnClickListener(this);
+        objectId = ((MainActivity)getActivity()).getObjectId();
         new PDFRetrieveTask(objectId).execute((Void)null);
         return view;
     }
@@ -158,6 +165,29 @@ public class FragmentPdf extends Fragment
             }
             else
                 Utilities.getInstance().showAlertBox("Response", "Update failed. Please try again", getContext());
+        }
+        else if(requestCode == 6)
+        {
+            if(resultCode == MainActivity.RESULT_OK)
+            {
+                pdfEntities.add((PDFEntity) data.getSerializableExtra(FileAddActivity.PDF_ENTITY_NEWRECORD));
+                pdfAdapter = new PDFAdapter(getContext(), pdfEntities);
+                pdf_recyclerview.setAdapter(pdfAdapter);
+            }
+            else
+                Utilities.getInstance().showAlertBox("Response", "No records were added", getContext());
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId())
+        {
+            case R.id.file_add_add:
+                Intent intent = new Intent(getActivity(), FileAddActivity.class);
+                intent.putExtra(PDF_ENTITY_PARENT, objectId);
+                startActivityForResult(intent, 6);
+                break;
         }
     }
 
