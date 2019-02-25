@@ -31,6 +31,7 @@ import com.example.copia.Entities.SuppliersEntity;
 import com.example.copia.MainActivity;
 import com.example.copia.R;
 import com.example.copia.Tasks.Client_Retrieve_Deleted_Task;
+import com.example.copia.Tasks.Contractors_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.RestoreRecordsTask;
 import com.example.copia.Tasks.Suppliers_Retrieve_Deleted_Task;
 import com.weiwangcn.betterspinner.library.BetterSpinner;
@@ -122,6 +123,14 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
                     suppliersAdapter = suppliers_retrieve_deleted_task.getSuppliersAdapter();
                     suppliersEntities = suppliers_retrieve_deleted_task.getSuppliersEntities();
                 }
+                else if(selectedItem.equalsIgnoreCase("Contractors"))
+                {
+                    Contractors_Retrieve_Deleted_Task contractors_retrieve_deleted_task = new Contractors_Retrieve_Deleted_Task(getContext());
+                    contractors_retrieve_deleted_task.setRecyclerview(deleted_recyclerview);
+                    contractors_retrieve_deleted_task.execute((Void)null);
+                    contractorsAdapter = contractors_retrieve_deleted_task.getContractorsAdapter();
+                    contractorsEntities = contractors_retrieve_deleted_task.getContractorsEntities();
+                }
                 break;
         }
     }
@@ -167,6 +176,14 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
                             {
                                 RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),suppliersEntities.get(pos).getObjectId(), "Suppliers");
                                 restoreRecordsTask.setEntities(suppliersEntities);
+                                restoreRecordsTask.setPos(pos);
+                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+                                restoreRecordsTask.execute((Void)null);
+                            }
+                            else if(selectedItem.equalsIgnoreCase("Contractors"))
+                            {
+                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),contractorsEntities.get(pos).getObjectId(), "Contractors");
+                                restoreRecordsTask.setEntities(contractorsEntities);
                                 restoreRecordsTask.setPos(pos);
                                 restoreRecordsTask.setRecyclerView(deleted_recyclerview);
                                 restoreRecordsTask.execute((Void)null);

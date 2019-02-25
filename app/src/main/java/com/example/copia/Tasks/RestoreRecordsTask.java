@@ -61,7 +61,6 @@ public class RestoreRecordsTask extends AsyncTask<Void, Void, Boolean>
         if(aBoolean == true)
         {
             getEntities().remove(getPos());
-            //getClientEntities().remove(getPos());
             getRecyclerView().getAdapter().notifyItemRemoved(getPos());
         }
         else
@@ -76,22 +75,6 @@ public class RestoreRecordsTask extends AsyncTask<Void, Void, Boolean>
     public void setEntities(List<?> entities) {
         this.entities = entities;
     }
-
-    public List<ClientEntity> getClientEntities() {
-        return clientEntities;
-    }
-
-    public void setClientEntities(List<ClientEntity> clientEntities) {
-        this.clientEntities = clientEntities;
-    }
-
-    /*public ClientAdapter getClientAdapter() {
-        return clientAdapter;
-    }
-
-    public void setClientAdapter(ClientAdapter clientAdapter) {
-        this.clientAdapter = clientAdapter;
-    }*/
 
     public int getPos() {
         return pos;
