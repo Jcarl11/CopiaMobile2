@@ -20,12 +20,18 @@ import android.widget.Toast;
 import com.example.copia.Adapters.ClientAdapter;
 import com.example.copia.Adapters.ConsultantsAdapter;
 import com.example.copia.Adapters.ContractorsAdapter;
+import com.example.copia.Adapters.ImagesAdapter;
+import com.example.copia.Adapters.NotesAdapter;
+import com.example.copia.Adapters.PDFAdapter;
 import com.example.copia.Adapters.SpecificationsAdapter;
 import com.example.copia.Adapters.SuppliersAdapter;
 import com.example.copia.Entities.ClientEntity;
 import com.example.copia.Entities.ComboboxEntity;
 import com.example.copia.Entities.ConsultantsEntity;
 import com.example.copia.Entities.ContractorsEntity;
+import com.example.copia.Entities.ImagesEntity;
+import com.example.copia.Entities.NotesEntity;
+import com.example.copia.Entities.PDFEntity;
 import com.example.copia.Entities.SpecificationsEntity;
 import com.example.copia.Entities.SuppliersEntity;
 import com.example.copia.MainActivity;
@@ -33,6 +39,7 @@ import com.example.copia.R;
 import com.example.copia.Tasks.Client_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Consultants_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Contractors_Retrieve_Deleted_Task;
+import com.example.copia.Tasks.Notes_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.RestoreRecordsTask;
 import com.example.copia.Tasks.Specifications_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Suppliers_Retrieve_Deleted_Task;
@@ -52,11 +59,18 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
     ContractorsAdapter contractorsAdapter;
     ConsultantsAdapter consultantsAdapter;
     SpecificationsAdapter specificationsAdapter;
+    NotesAdapter notesAdapter;
+    ImagesAdapter imagesAdapter;
+    PDFAdapter pdfAdapter;
+
     List<ClientEntity> clientEntities;
     List<SuppliersEntity> suppliersEntities;
     List<ContractorsEntity> contractorsEntities;
     List<ConsultantsEntity> consultantsEntities;
     List<SpecificationsEntity> specificationsEntities;
+    List<NotesEntity> notesEntities;
+    List<ImagesEntity> imagesEntities;
+    List<PDFEntity> pdfEntities;
     RecyclerView deleted_recyclerview;
     BetterSpinner deleted_spinner;
     Button deleted_go;
@@ -149,6 +163,14 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
                     specificationsAdapter = specifications_retrieve_deleted_task.getSpecificationsAdapter();
                     specificationsEntities = specifications_retrieve_deleted_task.getSpecificationsEntities();
                 }
+                else if(selectedItem.equalsIgnoreCase("Notes"))
+                {
+                    Notes_Retrieve_Deleted_Task notes_retrieve_deleted_task = new Notes_Retrieve_Deleted_Task(getContext());
+                    notes_retrieve_deleted_task.setRecyclerview(deleted_recyclerview);
+                    notes_retrieve_deleted_task.execute((Void)null);
+                    notesAdapter = notes_retrieve_deleted_task.getNotesAdapter();
+                    notesEntities = notes_retrieve_deleted_task.getNotesEntities();
+                }
                 break;
         }
     }
@@ -218,6 +240,14 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
                             {
                                 RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),specificationsEntities.get(pos).getObjectid(), "Specifications");
                                 restoreRecordsTask.setEntities(specificationsEntities);
+                                restoreRecordsTask.setPos(pos);
+                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+                                restoreRecordsTask.execute((Void)null);
+                            }
+                            else if(selectedItem.equalsIgnoreCase("Notes"))
+                            {
+                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),notesEntities.get(pos).getObjectId(), "Notes");
+                                restoreRecordsTask.setEntities(notesEntities);
                                 restoreRecordsTask.setPos(pos);
                                 restoreRecordsTask.setRecyclerView(deleted_recyclerview);
                                 restoreRecordsTask.execute((Void)null);
