@@ -39,6 +39,7 @@ import com.example.copia.R;
 import com.example.copia.Tasks.Client_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Consultants_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Contractors_Retrieve_Deleted_Task;
+import com.example.copia.Tasks.Files_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Images_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Notes_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.RestoreRecordsTask;
@@ -180,6 +181,14 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
                     imagesAdapter = images_retrieve_deleted_task.getImagesAdapter();
                     imagesEntities = images_retrieve_deleted_task.getImagesEntities();
                 }
+                else if(selectedItem.equalsIgnoreCase("PDF Files"))
+                {
+                    Files_Retrieve_Deleted_Task files_retrieve_deleted_task = new Files_Retrieve_Deleted_Task(getContext());
+                    files_retrieve_deleted_task.setRecyclerview(deleted_recyclerview);
+                    files_retrieve_deleted_task.execute((Void)null);
+                    pdfAdapter = files_retrieve_deleted_task.getPdfAdapter();
+                    pdfEntities = files_retrieve_deleted_task.getPdfEntities();
+                }
                 break;
         }
     }
@@ -265,6 +274,14 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
                             {
                                 RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),imagesEntities.get(pos).getObjectId(), "Images");
                                 restoreRecordsTask.setEntities(imagesEntities);
+                                restoreRecordsTask.setPos(pos);
+                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+                                restoreRecordsTask.execute((Void)null);
+                            }
+                            else if(selectedItem.equalsIgnoreCase("PDF Files"))
+                            {
+                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),pdfEntities.get(pos).getObjectId(), "PDFFiles");
+                                restoreRecordsTask.setEntities(pdfEntities);
                                 restoreRecordsTask.setPos(pos);
                                 restoreRecordsTask.setRecyclerView(deleted_recyclerview);
                                 restoreRecordsTask.execute((Void)null);
