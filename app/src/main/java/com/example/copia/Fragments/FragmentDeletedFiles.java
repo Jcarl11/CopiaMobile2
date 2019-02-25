@@ -25,6 +25,8 @@ import com.example.copia.Adapters.NotesAdapter;
 import com.example.copia.Adapters.PDFAdapter;
 import com.example.copia.Adapters.SpecificationsAdapter;
 import com.example.copia.Adapters.SuppliersAdapter;
+import com.example.copia.DatabaseOperation.PermanentDeleteFiles;
+import com.example.copia.DatabaseOperation.PermanentDeleteFilesTask;
 import com.example.copia.Entities.ClientEntity;
 import com.example.copia.Entities.ComboboxEntity;
 import com.example.copia.Entities.ConsultantsEntity;
@@ -42,6 +44,7 @@ import com.example.copia.Tasks.Contractors_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Files_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Images_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Notes_Retrieve_Deleted_Task;
+import com.example.copia.Tasks.PermanentDeleteRecordsTask;
 import com.example.copia.Tasks.RestoreRecordsTask;
 import com.example.copia.Tasks.Specifications_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Suppliers_Retrieve_Deleted_Task;
@@ -222,74 +225,10 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
                     {
                         dialog.dismiss();
                         if(which == 0){
-                            if(selectedItem.equalsIgnoreCase("Client"))
-                            {
-                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),clientEntities.get(pos).getObjectId(), "Client");
-                                restoreRecordsTask.setEntities(clientEntities);
-                                restoreRecordsTask.setPos(pos);
-                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
-                                restoreRecordsTask.execute((Void)null);
-                            }
-                            else if(selectedItem.equalsIgnoreCase("Suppliers"))
-                            {
-                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),suppliersEntities.get(pos).getObjectId(), "Suppliers");
-                                restoreRecordsTask.setEntities(suppliersEntities);
-                                restoreRecordsTask.setPos(pos);
-                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
-                                restoreRecordsTask.execute((Void)null);
-                            }
-                            else if(selectedItem.equalsIgnoreCase("Contractors"))
-                            {
-                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),contractorsEntities.get(pos).getObjectId(), "Contractors");
-                                restoreRecordsTask.setEntities(contractorsEntities);
-                                restoreRecordsTask.setPos(pos);
-                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
-                                restoreRecordsTask.execute((Void)null);
-                            }
-                            else if(selectedItem.equalsIgnoreCase("Consultants"))
-                            {
-                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),consultantsEntities.get(pos).getObjectId(), "Consultants");
-                                restoreRecordsTask.setEntities(consultantsEntities);
-                                restoreRecordsTask.setPos(pos);
-                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
-                                restoreRecordsTask.execute((Void)null);
-                            }
-                            else if(selectedItem.equalsIgnoreCase("Specifications"))
-                            {
-                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),specificationsEntities.get(pos).getObjectid(), "Specifications");
-                                restoreRecordsTask.setEntities(specificationsEntities);
-                                restoreRecordsTask.setPos(pos);
-                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
-                                restoreRecordsTask.execute((Void)null);
-                            }
-                            else if(selectedItem.equalsIgnoreCase("Notes"))
-                            {
-                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),notesEntities.get(pos).getObjectId(), "Notes");
-                                restoreRecordsTask.setEntities(notesEntities);
-                                restoreRecordsTask.setPos(pos);
-                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
-                                restoreRecordsTask.execute((Void)null);
-                            }
-                            else if(selectedItem.equalsIgnoreCase("Images"))
-                            {
-                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),imagesEntities.get(pos).getObjectId(), "Images");
-                                restoreRecordsTask.setEntities(imagesEntities);
-                                restoreRecordsTask.setPos(pos);
-                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
-                                restoreRecordsTask.execute((Void)null);
-                            }
-                            else if(selectedItem.equalsIgnoreCase("PDF Files"))
-                            {
-                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),pdfEntities.get(pos).getObjectId(), "PDFFiles");
-                                restoreRecordsTask.setEntities(pdfEntities);
-                                restoreRecordsTask.setPos(pos);
-                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
-                                restoreRecordsTask.execute((Void)null);
-                            }
-
+                            restore();
                         }
                         else if(which == 1){
-
+                            deletePermanently();
                         }
 
                     }
@@ -301,6 +240,142 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
             .setIsVertical(false)
             .create();
         return listener;
+    }
+    private void restore()
+    {
+        if(selectedItem.equalsIgnoreCase("Client"))
+        {
+            RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),clientEntities.get(pos).getObjectId(), "Client");
+            restoreRecordsTask.setEntities(clientEntities);
+            restoreRecordsTask.setPos(pos);
+            restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+            restoreRecordsTask.execute((Void)null);
+        }
+        else if(selectedItem.equalsIgnoreCase("Suppliers"))
+        {
+            RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),suppliersEntities.get(pos).getObjectId(), "Suppliers");
+            restoreRecordsTask.setEntities(suppliersEntities);
+            restoreRecordsTask.setPos(pos);
+            restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+            restoreRecordsTask.execute((Void)null);
+        }
+        else if(selectedItem.equalsIgnoreCase("Contractors"))
+        {
+            RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),contractorsEntities.get(pos).getObjectId(), "Contractors");
+            restoreRecordsTask.setEntities(contractorsEntities);
+            restoreRecordsTask.setPos(pos);
+            restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+            restoreRecordsTask.execute((Void)null);
+        }
+        else if(selectedItem.equalsIgnoreCase("Consultants"))
+        {
+            RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),consultantsEntities.get(pos).getObjectId(), "Consultants");
+            restoreRecordsTask.setEntities(consultantsEntities);
+            restoreRecordsTask.setPos(pos);
+            restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+            restoreRecordsTask.execute((Void)null);
+        }
+        else if(selectedItem.equalsIgnoreCase("Specifications"))
+        {
+            RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),specificationsEntities.get(pos).getObjectid(), "Specifications");
+            restoreRecordsTask.setEntities(specificationsEntities);
+            restoreRecordsTask.setPos(pos);
+            restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+            restoreRecordsTask.execute((Void)null);
+        }
+        else if(selectedItem.equalsIgnoreCase("Notes"))
+        {
+            RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),notesEntities.get(pos).getObjectId(), "Notes");
+            restoreRecordsTask.setEntities(notesEntities);
+            restoreRecordsTask.setPos(pos);
+            restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+            restoreRecordsTask.execute((Void)null);
+        }
+        else if(selectedItem.equalsIgnoreCase("Images"))
+        {
+            RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),imagesEntities.get(pos).getObjectId(), "Images");
+            restoreRecordsTask.setEntities(imagesEntities);
+            restoreRecordsTask.setPos(pos);
+            restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+            restoreRecordsTask.execute((Void)null);
+        }
+        else if(selectedItem.equalsIgnoreCase("PDF Files"))
+        {
+            RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),pdfEntities.get(pos).getObjectId(), "PDFFiles");
+            restoreRecordsTask.setEntities(pdfEntities);
+            restoreRecordsTask.setPos(pos);
+            restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+            restoreRecordsTask.execute((Void)null);
+        }
+    }
+
+    private void deletePermanently()
+    {
+        if(!selectedItem.equalsIgnoreCase("Notes") && !selectedItem.equalsIgnoreCase("Images") && !selectedItem.equalsIgnoreCase("PDF Files"))
+        {
+            if (selectedItem.equalsIgnoreCase("Client")) {
+                PermanentDeleteRecordsTask permanentDeleteRecordsTask = new PermanentDeleteRecordsTask(getContext(), clientEntities.get(pos).getObjectId(), "Client");
+                permanentDeleteRecordsTask.setEntity(clientEntities);
+                permanentDeleteRecordsTask.setPos(pos);
+                permanentDeleteRecordsTask.setRecyclerView(deleted_recyclerview);
+                permanentDeleteRecordsTask.execute((Void) null);
+            }
+            else if (selectedItem.equalsIgnoreCase("Suppliers")) {
+                PermanentDeleteRecordsTask permanentDeleteRecordsTask = new PermanentDeleteRecordsTask(getContext(), suppliersEntities.get(pos).getObjectId(), "Suppliers");
+                permanentDeleteRecordsTask.setEntity(suppliersEntities);
+                permanentDeleteRecordsTask.setPos(pos);
+                permanentDeleteRecordsTask.setRecyclerView(deleted_recyclerview);
+                permanentDeleteRecordsTask.execute((Void) null);
+            }
+            else if (selectedItem.equalsIgnoreCase("Contractors")) {
+                PermanentDeleteRecordsTask permanentDeleteRecordsTask = new PermanentDeleteRecordsTask(getContext(), contractorsEntities.get(pos).getObjectId(), "Contractors");
+                permanentDeleteRecordsTask.setEntity(contractorsEntities);
+                permanentDeleteRecordsTask.setPos(pos);
+                permanentDeleteRecordsTask.setRecyclerView(deleted_recyclerview);
+                permanentDeleteRecordsTask.execute((Void) null);
+            }
+            else if (selectedItem.equalsIgnoreCase("Consultants")) {
+                PermanentDeleteRecordsTask permanentDeleteRecordsTask = new PermanentDeleteRecordsTask(getContext(), consultantsEntities.get(pos).getObjectId(), "Consultants");
+                permanentDeleteRecordsTask.setEntity(consultantsEntities);
+                permanentDeleteRecordsTask.setPos(pos);
+                permanentDeleteRecordsTask.setRecyclerView(deleted_recyclerview);
+                permanentDeleteRecordsTask.execute((Void) null);
+            }
+            else if (selectedItem.equalsIgnoreCase("Specifications")) {
+                PermanentDeleteRecordsTask permanentDeleteRecordsTask = new PermanentDeleteRecordsTask(getContext(), consultantsEntities.get(pos).getObjectId(), "Specifications");
+                permanentDeleteRecordsTask.setEntity(specificationsEntities);
+                permanentDeleteRecordsTask.setPos(pos);
+                permanentDeleteRecordsTask.setRecyclerView(deleted_recyclerview);
+                permanentDeleteRecordsTask.execute((Void) null);
+            }
+
+        }
+        else
+        {
+            if (selectedItem.equalsIgnoreCase("Notes")) {
+                PermanentDeleteFilesTask permanentDeleteFilesTask = new PermanentDeleteFilesTask(getContext(), notesEntities.get(pos).getObjectId(), "Notes");
+                permanentDeleteFilesTask.setEntity(notesEntities);
+                permanentDeleteFilesTask.setPos(pos);
+                permanentDeleteFilesTask.setRecyclerView(deleted_recyclerview);
+                permanentDeleteFilesTask.execute((Void)null);
+            }
+            else if (selectedItem.equalsIgnoreCase("Images")) {
+                PermanentDeleteFilesTask permanentDeleteFilesTask = new PermanentDeleteFilesTask(getContext(), imagesEntities.get(pos).getObjectId(), "Images");
+                permanentDeleteFilesTask.setEntity(imagesEntities);
+                permanentDeleteFilesTask.setPos(pos);
+                permanentDeleteFilesTask.setRecyclerView(deleted_recyclerview);
+                permanentDeleteFilesTask.execute((Void)null);
+            }
+            else if (selectedItem.equalsIgnoreCase("PDF Files")) {
+                PermanentDeleteFilesTask permanentDeleteFilesTask = new PermanentDeleteFilesTask(getContext(), pdfEntities.get(pos).getObjectId(), "PDFFiles");
+                permanentDeleteFilesTask.setEntity(pdfEntities);
+                permanentDeleteFilesTask.setPos(pos);
+                permanentDeleteFilesTask.setRecyclerView(deleted_recyclerview);
+                permanentDeleteFilesTask.execute((Void)null);
+            }
+        }
+
+
     }
 
 }
