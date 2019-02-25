@@ -39,6 +39,7 @@ import com.example.copia.R;
 import com.example.copia.Tasks.Client_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Consultants_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Contractors_Retrieve_Deleted_Task;
+import com.example.copia.Tasks.Images_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.Notes_Retrieve_Deleted_Task;
 import com.example.copia.Tasks.RestoreRecordsTask;
 import com.example.copia.Tasks.Specifications_Retrieve_Deleted_Task;
@@ -171,6 +172,14 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
                     notesAdapter = notes_retrieve_deleted_task.getNotesAdapter();
                     notesEntities = notes_retrieve_deleted_task.getNotesEntities();
                 }
+                else if(selectedItem.equalsIgnoreCase("Images"))
+                {
+                    Images_Retrieve_Deleted_Task images_retrieve_deleted_task = new Images_Retrieve_Deleted_Task(getContext());
+                    images_retrieve_deleted_task.setRecyclerview(deleted_recyclerview);
+                    images_retrieve_deleted_task.execute((Void)null);
+                    imagesAdapter = images_retrieve_deleted_task.getImagesAdapter();
+                    imagesEntities = images_retrieve_deleted_task.getImagesEntities();
+                }
                 break;
         }
     }
@@ -248,6 +257,14 @@ public class FragmentDeletedFiles extends Fragment implements View.OnClickListen
                             {
                                 RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),notesEntities.get(pos).getObjectId(), "Notes");
                                 restoreRecordsTask.setEntities(notesEntities);
+                                restoreRecordsTask.setPos(pos);
+                                restoreRecordsTask.setRecyclerView(deleted_recyclerview);
+                                restoreRecordsTask.execute((Void)null);
+                            }
+                            else if(selectedItem.equalsIgnoreCase("Images"))
+                            {
+                                RestoreRecordsTask restoreRecordsTask = new RestoreRecordsTask(getContext(),imagesEntities.get(pos).getObjectId(), "Images");
+                                restoreRecordsTask.setEntities(imagesEntities);
                                 restoreRecordsTask.setPos(pos);
                                 restoreRecordsTask.setRecyclerView(deleted_recyclerview);
                                 restoreRecordsTask.execute((Void)null);
