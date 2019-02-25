@@ -20,6 +20,7 @@ import com.example.copia.Entities.ComboboxEntity;
 import com.example.copia.Fragments.FragmentClient;
 import com.example.copia.Fragments.FragmentConsultants;
 import com.example.copia.Fragments.FragmentContractors;
+import com.example.copia.Fragments.FragmentDeletedFiles;
 import com.example.copia.Fragments.FragmentManageUsers;
 import com.example.copia.Fragments.FragmentSearch;
 import com.example.copia.Fragments.FragmentSpecifications;
@@ -114,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentSearch()).commit();
                 break;
             case R.id.deleted_files:
-                //getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentSearch()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentDeletedFiles()).commit();
                 break;
             case R.id.logout:
                 new LogoutTask(this).execute((Void)null);
