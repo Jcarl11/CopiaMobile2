@@ -81,40 +81,24 @@ public class LoginActivity extends AppCompatActivity {
             this.userName = userName;
             this.passWord = passWord;
             finished = false;
-            dialog = new SpotsDialog.Builder()
-                    .setMessage("Logging in")
-                    .setContext(context)
-                    .setCancelable(false)
-                    .build();
+            dialog = Utilities.getInstance().showLoading(context, "Logging in", false);
         }
         @Override
         protected String doInBackground(Void... strings) {
 
-            ParseUser.logInInBackground(userName, passWord, new LogInCallback() {
-                public void done(ParseUser user, ParseException e) {
-                    if (user != null)
-                    {
-                        if(user.getBoolean("Verified") == true)
-                            response = success;
-                        else {
-                            response = pending;
-                        }
-                    }
-                    else if(user == null)
-                        response = wrong_credentials;
-                    else if(e != null)
-                        response = e.getMessage();
+            try {
+                ParseUser user = ParseUser.logIn(userName, passWord);
+                if(user != null) {
+                    if (user.getBoolean("Verified") == true)
+                        response = success;
+                    else
+                        response = pending;
+                }else if(user == null)
+                    response = wrong_credentials;
 
-                    finished = true;
-                }
-            });
-            while(finished == false)
-            {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+                response = e.getMessage();
             }
             return response;
         }

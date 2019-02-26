@@ -112,6 +112,7 @@ public class RegisterActivity extends AppCompatActivity {
             user.setUsername(username.getText().toString().trim());
             user.setPassword(password.getText().toString().trim());
             user.setEmail(email.getText().toString().trim());
+            user.put("emailAlt", email.getText().toString().trim());
             user.put("Verified", false);
             user.put("Fullname", fullname.getText().toString().trim());
             user.signUpInBackground(new SignUpCallback()
