@@ -49,7 +49,7 @@ import dmax.dialog.SpotsDialog;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private DrawerLayout drawer;
-    TextView textview_username, textview_email;
+    TextView textview_username, textview_email, textview_fullname, textView_position;
     private String objectId = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +81,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             drawer = findViewById(R.id.drawer_layout);
             textview_username = (TextView) headerView.findViewById(R.id.textview_username);
             textview_email = (TextView) headerView.findViewById(R.id.textview_email);
+            textview_fullname = (TextView)headerView.findViewById(R.id.textview_fullname);
+            textView_position = (TextView)headerView.findViewById(R.id.textview_position);
+
             textview_username.setText("Logged in as: " + user.getUsername());
             textview_email.setText(user.getEmail());
+            textview_fullname.setText(user.getString("Fullname"));
+            textView_position.setText(user.getString("Position"));
             ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
                     R.string.navigation_drawer_open, R.string.navigation_drawer_close);
             drawer.addDrawerListener(toggle);

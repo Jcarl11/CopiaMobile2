@@ -31,4 +31,20 @@
         android:textColor="@android:color/black"
         android:textSize="11dp"
         android:textStyle="bold|italic" />
+    <TextView
+        android:id="@+id/textview_fullname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="John Doe"
+        android:textColor="@android:color/black"
+        android:textSize="11dp"
+        android:textStyle="bold|italic" />
+    <TextView
+        android:id="@+id/textview_position"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Administrator"
+        android:textColor="@android:color/black"
+        android:textSize="11dp"
+        android:textStyle="bold|italic" />
 </LinearLayout>

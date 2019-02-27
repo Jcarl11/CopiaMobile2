@@ -150,7 +150,7 @@ public class FragmentManageUsers extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             if (which == 0)
-                                new RemoveApprenticeUsers(userEntityList.get(pos).getObjectId()).execute((Void)null);
+                                new RemoveApprenticeUsers(userEntityList.get(pos).getObjectId(), "Apprentice").execute((Void)null);
                             else if(which == 1)
                                 new ChangePosition(userEntityList.get(pos).getObjectId(), "Apprentice", "Administrator").execute((Void)null);
                         }
@@ -168,7 +168,7 @@ public class FragmentManageUsers extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             if (which == 0)
-                                new RemoveApprenticeUsers(userEntityList.get(pos).getObjectId()).execute((Void)null);
+                                new RemoveApprenticeUsers(userEntityList.get(pos).getObjectId(), "Administrator").execute((Void)null);
                             else if(which == 1)
                                 new ChangePosition(userEntityList.get(pos).getObjectId(), "Administrator", "Apprentice").execute((Void)null);
                         }
@@ -381,8 +381,10 @@ public class FragmentManageUsers extends Fragment {
         AlertDialog dialog;
         String objectId;
         boolean successful = false;
-        public RemoveApprenticeUsers(String objectId) {
+        String currentPosition;
+        public RemoveApprenticeUsers(String objectId, String currentPosition) {
             this.objectId = objectId;
+            this.currentPosition = currentPosition;
             dialog = Utilities.getInstance().showLoading(getContext(), "Please wait", false);
         }
 
@@ -392,7 +394,7 @@ public class FragmentManageUsers extends Fragment {
             ParseQuery<ParseObject> pendingUser = ParseQuery.getQuery("UserInfo");
             ParseQuery<ParseUser> userParseQuery = ParseUser.getQuery();
             pendingUser.whereEqualTo("userid", objectId);
-            query.whereEqualTo("name", "Apprentice");
+            query.whereEqualTo("name", currentPosition);
             try {
                 ParseRole role = query.getFirst();
                 role.getUsers().remove(userParseQuery.get(objectId));
