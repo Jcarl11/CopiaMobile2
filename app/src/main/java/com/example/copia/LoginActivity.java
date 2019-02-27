@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -17,6 +18,8 @@ import android.widget.Toast;
 
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import dmax.dialog.SpotsDialog;
@@ -86,20 +89,29 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... strings) {
 
-            try {
-                ParseUser user = ParseUser.logIn(userName, passWord);
-                if(user != null) {
-                    if (user.getBoolean("Verified") == true)
-                        response = success;
-                    else
-                        response = pending;
-                }else if(user == null)
-                    response = wrong_credentials;
-
-            } catch (ParseException e) {
+            ParseQuery<ParseObject> isPending = ParseQuery.getQuery("UserInfo");
+            ParseUser user = null;
+            try {user = ParseUser.logIn(userName, passWord);}
+                catch (ParseException e) {
                 e.printStackTrace();
-                response = e.getMessage();
+                response = wrong_credentials;
             }
+            try {
+                if (user != null) {
+                    isPending.whereEqualTo("userid", user.getObjectId());
+                    ParseObject object = isPending.getFirst();
+                    boolean isVerified = object.getBoolean("Verified");
+                    if(isVerified == false)
+                        response = pending;
+                    else {
+                        user.put("Verified", isVerified);
+                        user.put("Position", object.getString("Position"));
+                        user.save();
+                        response = success;
+                    }
+                }
+            }catch(ParseException e){e.printStackTrace();}
+
             return response;
         }
 
@@ -111,19 +123,18 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String response) {
             dialog.dismiss();
-            if(response.equalsIgnoreCase(success))
-            {
+            if(response.equalsIgnoreCase(success)) {
                 context.startActivity(new Intent(context.getBaseContext(), MainActivity.class));
                 context.finish();
             }
             else if(response.equalsIgnoreCase(pending)){
-                Utilities.getInstance().showAlertBox("Pending", response, LoginActivity.this);
+                Utilities.getInstance().showAlertBox("Pending", "Your account is still pending", LoginActivity.this);
                 ParseUser.logOut();
             }
             else if(response.equalsIgnoreCase(wrong_credentials))
-                Utilities.getInstance().showAlertBox("Wrong credentials", "Account not found", LoginActivity.this);
+                Utilities.getInstance().showAlertBox("Wrong credentials", "Account does not exist", LoginActivity.this);
             else
-                Utilities.getInstance().showAlertBox("Something went wrong", response, LoginActivity.this);
+                Utilities.getInstance().showAlertBox("Response", response, LoginActivity.this);
 
         }
     }

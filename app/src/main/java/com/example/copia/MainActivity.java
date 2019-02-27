@@ -22,6 +22,7 @@ import com.example.copia.Fragments.FragmentConsultants;
 import com.example.copia.Fragments.FragmentContractors;
 import com.example.copia.Fragments.FragmentDeletedFiles;
 import com.example.copia.Fragments.FragmentManageUsers;
+import com.example.copia.Fragments.FragmentRestricted;
 import com.example.copia.Fragments.FragmentSearch;
 import com.example.copia.Fragments.FragmentSpecifications;
 import com.example.copia.Fragments.FragmentSuppliers;
@@ -109,7 +110,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentSpecifications()).commit();
                 break;
             case R.id.category_manageusers:
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentManageUsers()).commit();
+                if(ParseUser.getCurrentUser().getString("Position").equalsIgnoreCase("Administrator"))
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentManageUsers()).commit();
+                else
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentRestricted()).commit();
                 break;
             case R.id.category_search:
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentSearch()).commit();

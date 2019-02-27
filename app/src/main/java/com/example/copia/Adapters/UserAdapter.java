@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,7 +41,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
             userViewHolder.email.setText(userEntity.getEmail());
         else
             userViewHolder.email.setText("N/A");
-        if(userEntity.getPosition() != null)
+        if(userEntity.getPosition() != null && userEntity.getPosition().length() > 0)
             userViewHolder.position.setText(userEntity.getPosition());
         else
             userViewHolder.position.setText("None");

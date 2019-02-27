@@ -16,12 +16,15 @@ import android.widget.Toast;
 
 import com.parse.GetCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseRelation;
 import com.parse.ParseRole;
 import com.parse.ParseUser;
 import com.parse.SaveCallback;
 import com.parse.SignUpCallback;
+
+import org.json.JSONArray;
 
 import dmax.dialog.SpotsDialog;
 
@@ -99,11 +102,7 @@ public class RegisterActivity extends AppCompatActivity {
         public TaskExecute(RegisterActivity registerActivity)
         {
             this.registerActivity = registerActivity;
-            dialog = new SpotsDialog.Builder()
-                    .setMessage("Please wait")
-                    .setContext(registerActivity)
-                    .setCancelable(false)
-                    .build();
+            dialog = Utilities.getInstance().showLoading(RegisterActivity.this, "Please wait", false);
         }
 
         @Override
@@ -113,27 +112,22 @@ public class RegisterActivity extends AppCompatActivity {
             user.setPassword(password.getText().toString().trim());
             user.setEmail(email.getText().toString().trim());
             user.put("emailAlt", email.getText().toString().trim());
-            user.put("Verified", false);
             user.put("Fullname", fullname.getText().toString().trim());
-            user.signUpInBackground(new SignUpCallback()
-            {
-                public void done(ParseException e)
-                {
-                    if (e == null) {
-                        successful = true;
-                        ParseUser.logOut();
-                    }
-                    finished = true;
-                }
-            });
-            while(finished == false)
-            {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            try {
+                user.signUp();
+                user.put("arrayData", new JSONArray().put(user.getObjectId()));
+                user.save();
+                ParseObject pending = new ParseObject("UserInfo");
+                pending.put("userid", user.getObjectId());
+                pending.put("Verified", false);
+                pending.put("Position", "");
+                pending.save();
+                ParseUser.logOut();
+                successful = true;
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
+
             return successful;
         }
 
@@ -145,9 +139,15 @@ public class RegisterActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean aBoolean) {
             dialog.dismiss();
-            Utilities.getInstance().showAlertBox("Important",
-                    "A confirmation link was sent to your email. Your account is still pending until verified by administrator",
-                    RegisterActivity.this);
+            if(aBoolean == true) {
+                Utilities.getInstance().showAlertBox("Important",
+                        "A confirmation link was sent to your email. Your account is still pending until verified by administrator",
+                        RegisterActivity.this);
+            }
+            else
+                Utilities.getInstance().showAlertBox("Response",
+                        "Something went wrong",
+                        RegisterActivity.this);
         }
     }
 
