@@ -231,7 +231,7 @@ public class FragmentManageUsers extends Fragment {
         }
     }
 
-    private class DeletePendingUsers extends AsyncTask<Void, Void, Boolean> // test
+    private class DeletePendingUsers extends AsyncTask<Void, Void, Boolean>
     {
         AlertDialog dialog;
         String objectId;

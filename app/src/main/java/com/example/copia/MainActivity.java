@@ -1,6 +1,5 @@
 package com.example.copia;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -28,12 +27,7 @@ import com.example.copia.Fragments.FragmentSpecifications;
 import com.example.copia.Fragments.FragmentSuppliers;
 import com.example.copia.Fragments.FragmentWelcome;
 import com.facebook.drawee.backends.pipeline.Fresco;
-import com.karumi.dexter.Dexter;
-import com.karumi.dexter.MultiplePermissionsReport;
-import com.karumi.dexter.PermissionToken;
-import com.karumi.dexter.listener.PermissionRequest;
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
-import com.parse.FindCallback;
+import com.orm.SugarRecord;
 import com.parse.GetCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
@@ -151,29 +145,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     private class RetrieveComboBoxTask extends AsyncTask<Void, Void, ArrayList<ComboboxEntity>>
     {
-        boolean finished = false;
         AlertDialog dialog;
         public  RetrieveComboBoxTask()
         {
-            dialog = new SpotsDialog.Builder()
-                    .setMessage("Loading data")
-                    .setContext(MainActivity.this)
-                    .setCancelable(false)
-                    .build();
+            dialog = Utilities.getInstance().showLoading(MainActivity.this, "Please wait", false);
         }
         ArrayList<ComboboxEntity> comboboxEntities = new ArrayList<>();
         @Override
         protected ArrayList<ComboboxEntity> doInBackground(Void... voids) {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("ComboboxData");
-            List<ComboboxEntity> check = ComboboxEntity.listAll(ComboboxEntity.class);
-            if(check.size() <= 0)
-            {
-                query.findInBackground(new FindCallback<ParseObject>()
+            ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Changes");
+            query2.whereEqualTo("ClassName", "ComboboxData");
+            try {
+                ParseObject changeObject = query2.getFirst();
+                if(changeObject.getBoolean("hasChange") == true)
                 {
-                    @Override
-                    public void done(List<ParseObject> objects, ParseException e)
-                    {
-                        if(e == null && objects != null)
+                    SugarRecord.deleteAll(ComboboxEntity.class);
+                    try {
+                        List<ParseObject> objects = query.find();
+                        if(objects != null)
                         {
                             for(ParseObject object : objects)
                             {
@@ -181,29 +171,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                 comboboxEntity.save();
                                 comboboxEntities.add(comboboxEntity);
                             }
-                            finished = true;
+                            changeObject.put("hasChange", false);
+                            changeObject.save();
                         }
-                        else
-                            finished = true;
+                    } catch (ParseException e) {e.printStackTrace();}
+
+                }else {
+                    List<ComboboxEntity> check = ComboboxEntity.listAll(ComboboxEntity.class);
+                    if( check.size() <= 0 ){
+                        try {
+                            List<ParseObject> objects = query.find();
+                            if(objects != null)
+                            {
+                                for(ParseObject object : objects)
+                                {
+                                    ComboboxEntity comboboxEntity = new ComboboxEntity(object.getObjectId(),(String)object.get("Title"),(String)object.get("Category"),(String)object.get("Field"));
+                                    comboboxEntity.save();
+                                    comboboxEntities.add(comboboxEntity);
+                                }
+                            }
+                        } catch (ParseException e) {e.printStackTrace();}
                     }
-                });
-            }
-            else
-            {
-                for(ComboboxEntity entity : check)
-                    comboboxEntities.add(entity);
-                finished = true;
-            }
-
-
-            while(finished == false)
-            {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    else{
+                        for(ComboboxEntity entity : check)
+                            comboboxEntities.add(entity);
+                    }
                 }
-            }
+            } catch (ParseException e) { e.printStackTrace(); }
+
             return comboboxEntities;
         }
         @Override
