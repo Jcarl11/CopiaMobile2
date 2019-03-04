@@ -4,6 +4,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import dmax.dialog.SpotsDialog;
 
 public class Utilities
@@ -43,5 +46,11 @@ public class Utilities
                 .setCancelable(cancellable)
                 .build();
         return dialog;
+    }
+    public boolean isEmailValid(String email) {
+        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
+        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
     }
 }

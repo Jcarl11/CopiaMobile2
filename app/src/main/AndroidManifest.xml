@@ -31,10 +31,12 @@
         <activity android:name=".EditActivities.NotesEditActivity" />
         <activity
             android:name=".RegisterActivity"
-            android:label="Register" />
+            android:label="Register"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".LoginActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"

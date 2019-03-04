@@ -40,8 +40,6 @@ public class LoginActivity extends AppCompatActivity {
         password = (TextInputLayout) findViewById(R.id.edittext_password);
         register = (Button)findViewById(R.id.btn_register);
         login = (Button)findViewById(R.id.btn_login);
-        /*password.setOnEditorActionListener(listener());
-        username.setOnEditorActionListener(listener());*/
     }
     private TextView.OnEditorActionListener listener(){
         TextView.OnEditorActionListener listener = new TextView.OnEditorActionListener() {
@@ -64,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
         new TaskExecute(this, mUsername, mPassword).execute((Void)null);
     }
     public void registerOnClick(View view){
-        startActivity(new Intent(this, RegisterActivity.class));
+        startActivityForResult(new Intent(this, RegisterActivity.class), 1);
     }
     private boolean checkUsernameForNull()
     {
@@ -94,9 +92,24 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if( requestCode == 2 ){
-            if( resultCode == RESULT_OK ) {
-                Utilities.getInstance().showAlertBox("Response", "Check your email to reset your password", this);
+        if ( requestCode == 1) {
+            if ( resultCode == RESULT_OK) {
+                         Utilities.getInstance().showAlertBox(
+                        "Important",
+                        "A confirmation link was sent to your email. Your account is still pending until verified by administrator",
+                        LoginActivity.this);
+            } else if ( resultCode == RESULT_CANCELED && data != null) {
+                         Utilities.getInstance().showAlertBox(
+                        "Response",
+                        "Something went wrong",
+                        LoginActivity.this);
+            }
+        } else if ( requestCode == 2 ){
+            if ( resultCode == RESULT_OK ) {
+                         Utilities.getInstance().showAlertBox(
+                        "Response",
+                        "Check your email to reset your password",
+                        this);
             }
         }
     }

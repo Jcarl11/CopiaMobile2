@@ -34,7 +34,7 @@ public class PasswordResetActivity extends AppCompatActivity {
         String email = passwordreset_email.getEditText().getText().toString().trim();
         if(!email.isEmpty()) {
 
-            if(isEmailValid(email)){
+            if(Utilities.getInstance().isEmailValid(email)){
                 passwordreset_email.setError(null);
                 new PasswordResetTask(email).execute((Void)null);
             } else
@@ -42,12 +42,7 @@ public class PasswordResetActivity extends AppCompatActivity {
         } else
             passwordreset_email.setError("Email cannot be empty");
     }
-    private boolean isEmailValid(String email) {
-        String expression = "^[\\w\\.-]+@([\\w\\-]+\\.)+[A-Z]{2,4}$";
-        Pattern pattern = Pattern.compile(expression, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(email);
-        return matcher.matches();
-    }
+
 
     private class PasswordResetTask extends AsyncTask<Void, Void, String>
     {
