@@ -3,6 +3,8 @@ package com.example.copia;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -16,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.copia.EditActivities.PasswordResetActivity;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
@@ -26,23 +29,21 @@ import dmax.dialog.SpotsDialog;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText username,password;
+    private TextInputLayout username,password;
     private Button register, login;
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         getSupportActionBar().setTitle("Login");
-        username = (EditText) findViewById(R.id.edittext_username);
-        password = (EditText) findViewById(R.id.edittext_password);
+        username = (TextInputLayout) findViewById(R.id.edittext_username);
+        password = (TextInputLayout) findViewById(R.id.edittext_password);
         register = (Button)findViewById(R.id.btn_register);
         login = (Button)findViewById(R.id.btn_login);
-        password.setOnEditorActionListener(listener());
-        username.setOnEditorActionListener(listener());
+        /*password.setOnEditorActionListener(listener());
+        username.setOnEditorActionListener(listener());*/
     }
-    private TextView.OnEditorActionListener listener()
-    {
+    private TextView.OnEditorActionListener listener(){
         TextView.OnEditorActionListener listener = new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -54,19 +55,52 @@ public class LoginActivity extends AppCompatActivity {
         };
         return listener;
     }
-    public void loginOnClick(View view)
-    {
-        String mUsername = username.getText().toString().trim();
-        String mPassword = password.getText().toString().trim();
-        if(!TextUtils.isEmpty(mUsername) && !TextUtils.isEmpty(mPassword))
-            new TaskExecute(this, mUsername, mPassword).execute((Void)null);
-        else
-            Toast.makeText(this, "Don't leave blank fields", Toast.LENGTH_SHORT).show();
+    public void loginOnClick(View view){
+        if ( !checkUsernameForNull() | !checkPasswordForNull() ) {
+            return;
+        }
+        String mUsername = username.getEditText().getText().toString().trim();
+        String mPassword = password.getEditText().getText().toString().trim();
+        new TaskExecute(this, mUsername, mPassword).execute((Void)null);
     }
-    public void registerOnClick(View view)
-    {
+    public void registerOnClick(View view){
         startActivity(new Intent(this, RegisterActivity.class));
     }
+    private boolean checkUsernameForNull()
+    {
+        if(username.getEditText().getText().toString().isEmpty()) {
+            username.setError("Username cannot be empty");
+            return false;
+        } else {
+            username.setError(null);
+            return true;
+        }
+    }
+    private boolean checkPasswordForNull()
+    {
+        if(password.getEditText().getText().toString().isEmpty()) {
+            password.setError("Password cannot be empty");
+            return false;
+        } else {
+            password.setError(null);
+            return true;
+        }
+    }
+    public void resetOnClick(View view) {
+        Intent intent = new Intent(this, PasswordResetActivity.class);
+        startActivityForResult(intent, 2);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if( requestCode == 2 ){
+            if( resultCode == RESULT_OK ) {
+                Utilities.getInstance().showAlertBox("Response", "Check your email to reset your password", this);
+            }
+        }
+    }
+
     private class TaskExecute extends AsyncTask<Void, Void, String> {
         LoginActivity context;
         String userName;

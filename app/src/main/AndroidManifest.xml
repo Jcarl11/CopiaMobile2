@@ -17,7 +17,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
-        <activity android:name=".EditActivities.FileAddActivity"></activity>
+        <activity android:name=".EditActivities.PasswordResetActivity"></activity>
+        <activity android:name=".EditActivities.FileAddActivity" />
         <activity android:name=".EditActivities.ImagesAddActivity" />
         <activity android:name=".EditActivities.NotesAddActivity" />
         <activity android:name=".EditActivities.SpecificationsEditActivity" />
