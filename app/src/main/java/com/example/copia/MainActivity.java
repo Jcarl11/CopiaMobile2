@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentDeletedFiles()).commit();
                 break;
             case R.id.logout:
+                SugarRecord.deleteAll(ComboboxEntity.class);
                 new LogoutTask(this).execute((Void)null);
                 break;
         }
@@ -146,58 +147,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private class RetrieveComboBoxTask extends AsyncTask<Void, Void, ArrayList<ComboboxEntity>>
     {
         AlertDialog dialog;
-        public  RetrieveComboBoxTask()
-        {
+        public  RetrieveComboBoxTask(){
             dialog = Utilities.getInstance().showLoading(MainActivity.this, "Please wait", false);
         }
         ArrayList<ComboboxEntity> comboboxEntities = new ArrayList<>();
         @Override
         protected ArrayList<ComboboxEntity> doInBackground(Void... voids) {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("ComboboxData");
-            ParseQuery<ParseObject> query2 = ParseQuery.getQuery("Changes");
-            query2.whereEqualTo("ClassName", "ComboboxData");
-            try {
-                ParseObject changeObject = query2.getFirst();
-                if(changeObject.getBoolean("hasChange") == true)
-                {
-                    SugarRecord.deleteAll(ComboboxEntity.class);
-                    try {
-                        List<ParseObject> objects = query.find();
-                        if(objects != null)
+            List<ComboboxEntity> check = ComboboxEntity.listAll(ComboboxEntity.class);
+            if( check.size() <= 0 ){
+                try {
+                    List<ParseObject> objects = query.find();
+                    if(objects != null)
+                    {
+                        for(ParseObject object : objects)
                         {
-                            for(ParseObject object : objects)
-                            {
-                                ComboboxEntity comboboxEntity = new ComboboxEntity(object.getObjectId(),(String)object.get("Title"),(String)object.get("Category"),(String)object.get("Field"));
-                                comboboxEntity.save();
-                                comboboxEntities.add(comboboxEntity);
-                            }
-                            changeObject.put("hasChange", false);
-                            changeObject.save();
+                            ComboboxEntity comboboxEntity = new ComboboxEntity(object.getObjectId(),(String)object.get("Title"),(String)object.get("Category"),(String)object.get("Field"));
+                            comboboxEntity.save();
+                            comboboxEntities.add(comboboxEntity);
                         }
-                    } catch (ParseException e) {e.printStackTrace();}
+                    }
+                } catch (ParseException e) {e.printStackTrace();}
+            }
+            else{
+                for(ComboboxEntity entity : check)
+                    comboboxEntities.add(entity);
+            }
 
-                }else {
-                    List<ComboboxEntity> check = ComboboxEntity.listAll(ComboboxEntity.class);
-                    if( check.size() <= 0 ){
-                        try {
-                            List<ParseObject> objects = query.find();
-                            if(objects != null)
-                            {
-                                for(ParseObject object : objects)
-                                {
-                                    ComboboxEntity comboboxEntity = new ComboboxEntity(object.getObjectId(),(String)object.get("Title"),(String)object.get("Category"),(String)object.get("Field"));
-                                    comboboxEntity.save();
-                                    comboboxEntities.add(comboboxEntity);
-                                }
-                            }
-                        } catch (ParseException e) {e.printStackTrace();}
-                    }
-                    else{
-                        for(ComboboxEntity entity : check)
-                            comboboxEntities.add(entity);
-                    }
-                }
-            } catch (ParseException e) { e.printStackTrace(); }
 
             return comboboxEntities;
         }
