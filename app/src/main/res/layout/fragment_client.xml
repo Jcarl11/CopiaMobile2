@@ -65,9 +65,9 @@
             <Button
                 android:id="@+id/client_button_addremark"
                 android:layout_width="wrap_content"
-                android:layout_height="30dp"
+                android:layout_height="wrap_content"
                 android:text="Add"
-                android:background="@color/colorPrimary"
+                android:backgroundTint="@color/colorPrimary"
                 android:textColor="@android:color/white"
                 android:layout_weight="1"/>
         </LinearLayout>
@@ -80,18 +80,16 @@
             android:id="@+id/client_btn_uploadfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:backgroundTint="@color/colorPrimary"
             android:text="CHOOSE FILES"
-            android:textColor="@android:color/white"
-            android:layout_marginBottom="10dp"/>
+            android:textColor="@android:color/white" />
         <Button
             android:id="@+id/client_btn_uploadimage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:backgroundTint="@color/colorPrimary"
             android:text="CHOOSE IMAGE"
-            android:textColor="@android:color/white"
-            android:layout_marginBottom="10dp"/>
+            android:textColor="@android:color/white"/>
         <com.dpizarro.autolabel.library.AutoLabelUI
             android:id="@+id/label_files"
             android:layout_width="match_parent"
@@ -101,7 +99,7 @@
             android:id="@+id/client_button_upload"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:backgroundTint="@color/colorPrimary"
             android:textColor="@android:color/white"
             android:text="Upload"/>
 
