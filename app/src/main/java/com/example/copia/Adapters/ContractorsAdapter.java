@@ -40,6 +40,7 @@ public class ContractorsAdapter extends RecyclerView.Adapter<ContractorsAdapter.
         contractorsViewHolder.specialization.setText(contractorsEntity.getSpecialization());
         contractorsViewHolder.classification.setText(contractorsEntity.getClassification());
         contractorsViewHolder.industry.setText(contractorsEntity.getIndustry());
+        contractorsViewHolder.remarkCount.setText(contractorsEntity.getRemarkCount());
     }
 
     @Override
@@ -48,7 +49,7 @@ public class ContractorsAdapter extends RecyclerView.Adapter<ContractorsAdapter.
     }
 
     public class ContractorsViewHolder extends RecyclerView.ViewHolder{
-        TextView representative, position, company,specialization, classification, industry;
+        TextView representative, position, company,specialization, classification, industry, remarkCount;
         public ContractorsViewHolder(@NonNull View itemView) {
             super(itemView);
             representative = itemView.findViewById(R.id.search_contractors_textview_representative);
@@ -57,6 +58,7 @@ public class ContractorsAdapter extends RecyclerView.Adapter<ContractorsAdapter.
             specialization = itemView.findViewById(R.id.search_contractors_textview_specialization);
             classification = itemView.findViewById(R.id.search_contractors_textview_classification);
             industry = itemView.findViewById(R.id.search_contractors_textview_industry);
+            remarkCount = itemView.findViewById(R.id.search_contractors_textview_remark);
         }
     }
 }

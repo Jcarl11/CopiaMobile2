@@ -39,6 +39,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
         clientViewHolder.company.setText(clientEntity.getCompany());
         clientViewHolder.industry.setText(clientEntity.getIndustry());
         clientViewHolder.type.setText(clientEntity.getType());
+        clientViewHolder.remarkCount.setText(clientEntity.getRemarkCount());
     }
 
     @Override
@@ -47,7 +48,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
     }
 
     class ClientViewHolder extends RecyclerView.ViewHolder{
-        TextView representative, position, company, industry, type;
+        TextView representative, position, company, industry, type, remarkCount;
         public ClientViewHolder(@NonNull View itemView) {
             super(itemView);
             representative = itemView.findViewById(R.id.search_client_textview_representative);
@@ -55,6 +56,7 @@ public class ClientAdapter extends RecyclerView.Adapter<ClientAdapter.ClientView
             company = itemView.findViewById(R.id.search_client_textview_company);
             industry = itemView.findViewById(R.id.search_client_textview_industry);
             type = itemView.findViewById(R.id.search_client_textview_type);
+            remarkCount = itemView.findViewById(R.id.search_client_textview_remarks);
         }
     }
 }

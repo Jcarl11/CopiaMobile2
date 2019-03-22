@@ -10,10 +10,11 @@ public class SuppliersEntity implements Serializable {
     String brand;
     String industry;
     String type;
+    String remarkCount;
 
     public SuppliersEntity() {}
 
-    public SuppliersEntity(String objectId, String representative, String position, String company, String brand, String industry, String type) {
+    public SuppliersEntity(String objectId, String representative, String position, String company, String brand, String industry, String type, String remarkCount) {
         this.objectId = objectId;
         this.representative = representative;
         this.position = position;
@@ -21,6 +22,7 @@ public class SuppliersEntity implements Serializable {
         this.brand = brand;
         this.industry = industry;
         this.type = type;
+        this.remarkCount = remarkCount;
     }
 
     public String getObjectId() {
@@ -77,5 +79,13 @@ public class SuppliersEntity implements Serializable {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getRemarkCount() {
+        return remarkCount;
+    }
+
+    public void setRemarkCount(String remarkCount) {
+        this.remarkCount = remarkCount;
     }
 }

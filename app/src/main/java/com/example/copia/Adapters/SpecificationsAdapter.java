@@ -46,7 +46,7 @@ public class SpecificationsAdapter extends RecyclerView.Adapter<SpecificationsAd
     }
 
     public class SpecificationsViewHolder extends RecyclerView.ViewHolder{
-        TextView title, document, division, section, type;
+        TextView title, document, division, section, type, remarkCount;
         public SpecificationsViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.spec_textview_title);
@@ -54,6 +54,7 @@ public class SpecificationsAdapter extends RecyclerView.Adapter<SpecificationsAd
             division = itemView.findViewById(R.id.spec_textview_division);
             section = itemView.findViewById(R.id.spec_textview_section);
             type = itemView.findViewById(R.id.spec_textview_type);
+            remarkCount = itemView.findViewById(R.id.spec_textview_remark);
         }
     }
 }

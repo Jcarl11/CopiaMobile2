@@ -33,11 +33,7 @@ public class ClientSearchTask extends AsyncTask<Void, Void, List<ClientEntity>>
         this.search_recyclerview = search_recyclerview;
         this.keyword = keyword;
         this.context = context;
-        dialog = new SpotsDialog.Builder()
-                .setMessage("Searching clients")
-                .setContext(context)
-                .setCancelable(false)
-                .build();
+        dialog = Utilities.getInstance().showLoading(context, "Searching clients", false);
     }
 
 
@@ -46,36 +42,31 @@ public class ClientSearchTask extends AsyncTask<Void, Void, List<ClientEntity>>
     @Override
     protected List<ClientEntity> doInBackground(Void... voids) {
         String[] parameters = keyword.split(",");
+        ParseQuery<ParseObject> getRemarksQuery = ParseQuery.getQuery("Notes");
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Client");
         query.whereContainedIn("Tags", Arrays.asList(parameters));
         query.whereEqualTo("Deleted", false);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if(objects != null && e == null)
+        try {
+            List<ParseObject> objects = query.find();
+            if(objects != null) {
+                for(ParseObject object : objects)
                 {
-                    for(ParseObject object : objects)
-                    {
-                        ClientEntity clientEntity = new ClientEntity();
-                        clientEntity.setObjectId(object.getObjectId());
-                        clientEntity.setRepresentative(object.getString("Representative"));
-                        clientEntity.setPosition(object.getString("Position"));
-                        clientEntity.setCompany(object.getString("Company"));
-                        clientEntity.setIndustry(object.getString("Industry"));
-                        clientEntity.setType(object.getString("Type"));
-                        clientEntityList.add(clientEntity);
-                    }
+                    ClientEntity clientEntity = new ClientEntity();
+                    clientEntity.setObjectId(object.getObjectId());
+                    clientEntity.setRepresentative(object.getString("Representative"));
+                    clientEntity.setPosition(object.getString("Position"));
+                    clientEntity.setCompany(object.getString("Company"));
+                    clientEntity.setIndustry(object.getString("Industry"));
+                    clientEntity.setType(object.getString("Type"));
+                    getRemarksQuery.whereEqualTo("Deleted", false);
+                    getRemarksQuery.whereEqualTo("Parent", clientEntity.getObjectId());
+                    int remark_count = getRemarksQuery.count();
+                    clientEntity.setRemarkCount(String.valueOf(remark_count));
+                    clientEntityList.add(clientEntity);
                 }
-                finished = true;
             }
-        });
-        while(finished == false)
-        {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
         return clientEntityList;
     }

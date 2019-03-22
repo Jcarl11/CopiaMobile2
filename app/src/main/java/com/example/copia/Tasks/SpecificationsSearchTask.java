@@ -33,46 +33,38 @@ public class SpecificationsSearchTask extends AsyncTask<Void, Void, List<Specifi
         this.search_recyclerview = search_recyclerview;
         this.context = context;
         this.keyword = keyword;
-        dialog = new SpotsDialog.Builder()
-                .setMessage("Searching specifications")
-                .setContext(context)
-                .setCancelable(false)
-                .build();
+        dialog = Utilities.getInstance().showLoading(context, "Searching specifications", false);
     }
     @Override
     protected List<SpecificationsEntity> doInBackground(Void... voids) {
         String[] parameters = keyword.split(",");
+        ParseQuery<ParseObject> getRemarksQuery = ParseQuery.getQuery("Notes");
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Specifications");
         query.whereContainedIn("Tags", Arrays.asList(parameters));
         query.whereEqualTo("Deleted", false);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if(objects != null && e == null)
+        try {
+            List<ParseObject> objects = query.find();
+            if(objects != null) {
+                for(ParseObject object : objects)
                 {
-                    for(ParseObject object : objects)
-                    {
-                        SpecificationsEntity specificationsEntity = new SpecificationsEntity();
-                        specificationsEntity.setObjectid(object.getObjectId());
-                        specificationsEntity.setTitle(object.getString("Title"));
-                        specificationsEntity.setDivision(object.getString("Division"));
-                        specificationsEntity.setSection(object.getString("Section"));
-                        specificationsEntity.setType(object.getString("Type"));
-                        specificationsEntity.setDocument(specificationsEntity.getDivision() + " - " + specificationsEntity.getSection() + " - " + specificationsEntity.getType());
-                        specificationsEntities.add(specificationsEntity);
-                    }
+                    SpecificationsEntity specificationsEntity = new SpecificationsEntity();
+                    specificationsEntity.setObjectid(object.getObjectId());
+                    specificationsEntity.setTitle(object.getString("Title"));
+                    specificationsEntity.setDivision(object.getString("Division"));
+                    specificationsEntity.setSection(object.getString("Section"));
+                    specificationsEntity.setType(object.getString("Type"));
+                    specificationsEntity.setDocument(specificationsEntity.getDivision() + " - " + specificationsEntity.getSection() + " - " + specificationsEntity.getType());
+                    getRemarksQuery.whereEqualTo("Deleted", false);
+                    getRemarksQuery.whereEqualTo("Parent", specificationsEntity.getObjectid());
+                    int remark_count = getRemarksQuery.count();
+                    specificationsEntity.setRemarkCount(String.valueOf(remark_count));
+                    specificationsEntities.add(specificationsEntity);
                 }
-                finished = true;
             }
-        });
-        while(finished == false)
-        {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
         return specificationsEntities;
     }
 

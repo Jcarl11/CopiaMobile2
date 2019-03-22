@@ -33,46 +33,37 @@ public class ContractorsSearchTask extends AsyncTask<Void, Void, List<Contractor
         this.search_recyclerview = search_recyclerview;
         this.context = context;
         this.keyword = keyword;
-        dialog = new SpotsDialog.Builder()
-                .setMessage("Searching contractors")
-                .setContext(context)
-                .setCancelable(false)
-                .build();
+        dialog = Utilities.getInstance().showLoading(context, "Searching contractors", false);
     }
     @Override
     protected List<ContractorsEntity> doInBackground(Void... voids) {
         String[] parameters = keyword.split(",");
+        ParseQuery<ParseObject> getRemarksQuery = ParseQuery.getQuery("Notes");
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Contractors");
         query.whereContainedIn("Tags", Arrays.asList(parameters));
         query.whereEqualTo("Deleted", false);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if(objects != null && e == null)
+        try {
+            List<ParseObject> objects = query.find();
+            if(objects != null) {
+                for(ParseObject object : objects)
                 {
-                    for(ParseObject object : objects)
-                    {
-                        ContractorsEntity contractorsEntity = new ContractorsEntity();
-                        contractorsEntity.setObjectId(object.getObjectId());
-                        contractorsEntity.setRepresentative(object.getString("Representative"));
-                        contractorsEntity.setPosition(object.getString("Position"));
-                        contractorsEntity.setCompany(object.getString("Company"));
-                        contractorsEntity.setSpecialization(object.getString("Specialization"));
-                        contractorsEntity.setClassification(object.getString("Classification"));
-                        contractorsEntity.setIndustry(object.getString("Industry"));
-                        contractorsEntities.add(contractorsEntity);
-                    }
+                    ContractorsEntity contractorsEntity = new ContractorsEntity();
+                    contractorsEntity.setObjectId(object.getObjectId());
+                    contractorsEntity.setRepresentative(object.getString("Representative"));
+                    contractorsEntity.setPosition(object.getString("Position"));
+                    contractorsEntity.setCompany(object.getString("Company"));
+                    contractorsEntity.setSpecialization(object.getString("Specialization"));
+                    contractorsEntity.setClassification(object.getString("Classification"));
+                    contractorsEntity.setIndustry(object.getString("Industry"));
+                    getRemarksQuery.whereEqualTo("Deleted", false);
+                    getRemarksQuery.whereEqualTo("Parent", contractorsEntity.getObjectId());
+                    int remark_count = getRemarksQuery.count();
+                    contractorsEntity.setRemarkCount(String.valueOf(remark_count));
+                    contractorsEntities.add(contractorsEntity);
                 }
-                finished = true;
             }
-        });
-        while(finished == false)
-        {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
         return contractorsEntities;
     }

@@ -10,10 +10,11 @@ public class ConsultantsEntity implements Serializable {
     private String specialization;
     private String classification;
     private String industry;
+    private String remarkCount;
 
     public ConsultantsEntity() {}
 
-    public ConsultantsEntity(String objectId, String representative, String position, String company, String specialization, String classification, String industry) {
+    public ConsultantsEntity(String objectId, String representative, String position, String company, String specialization, String classification, String industry, String remarkCount) {
         this.objectId = objectId;
         this.representative = representative;
         this.position = position;
@@ -21,6 +22,7 @@ public class ConsultantsEntity implements Serializable {
         this.specialization = specialization;
         this.classification = classification;
         this.industry = industry;
+        this.remarkCount = remarkCount;
     }
 
     public String getObjectId() {
@@ -77,5 +79,13 @@ public class ConsultantsEntity implements Serializable {
 
     public void setIndustry(String industry) {
         this.industry = industry;
+    }
+
+    public String getRemarkCount() {
+        return remarkCount;
+    }
+
+    public void setRemarkCount(String remarkCount) {
+        this.remarkCount = remarkCount;
     }
 }

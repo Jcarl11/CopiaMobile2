@@ -46,7 +46,7 @@ public class ConsultantsAdapter extends RecyclerView.Adapter<ConsultantsAdapter.
     }
 
     public class ConsultantsViewHolder extends RecyclerView.ViewHolder{
-        TextView representative, position, company,specialization, classification, industry;
+        TextView representative, position, company,specialization, classification, industry, remarkCount;
         public ConsultantsViewHolder(@NonNull View itemView) {
             super(itemView);
             representative = itemView.findViewById(R.id.search_consultants_textview_representative);
@@ -55,6 +55,8 @@ public class ConsultantsAdapter extends RecyclerView.Adapter<ConsultantsAdapter.
             specialization = itemView.findViewById(R.id.search_consultants_textview_specialization);
             classification = itemView.findViewById(R.id.search_consultants_textview_classification);
             industry = itemView.findViewById(R.id.search_consultants_textview_industry);
+            remarkCount = itemView.findViewById(R.id.search_consultants_textview_remarks);
         }
+
     }
 }

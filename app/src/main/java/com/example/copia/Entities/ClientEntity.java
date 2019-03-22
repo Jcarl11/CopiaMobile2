@@ -13,26 +13,34 @@ public class ClientEntity implements Serializable
     String company;
     String industry;
     String type;
+    String remarkCount;
     public ClientEntity() {}
 
-    public ClientEntity(String objectId, String representative, String position, String company, String industry, String type) {
+    public ClientEntity(String objectId, String representative, String position, String company, String industry, String type, String remarkCount) {
         this.objectId = objectId;
         this.representative = representative;
         this.position = position;
         this.company = company;
         this.industry = industry;
         this.type = type;
+        this.remarkCount = remarkCount;
     }
 
-    public String getObjectId() {return objectId;}
+    public String getObjectId() {
+        return objectId;
+    }
 
-    public void setObjectId(String objectId) {this.objectId = objectId;}
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
+    }
+
+    public String getRepresentative() {
+        return representative;
+    }
 
     public void setRepresentative(String representative) {
         this.representative = representative;
     }
-
-    public String getRepresentative() {return representative;}
 
     public String getPosition() {
         return position;
@@ -64,5 +72,13 @@ public class ClientEntity implements Serializable
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public String getRemarkCount() {
+        return remarkCount;
+    }
+
+    public void setRemarkCount(String remarkCount) {
+        this.remarkCount = remarkCount;
     }
 }

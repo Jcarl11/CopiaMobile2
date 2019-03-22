@@ -247,7 +247,7 @@ public class FragmentSearch extends Fragment
                 .setItemClickCallback(new SwipeDismissRecyclerViewTouchListener.OnItemClickCallBack() {
                     @Override
                     public void onClick(int i) {
-                        String[] choices = new String[]{"Notes", "Image Files", "PDF Files", "Edit"};
+                        String[] choices = new String[]{"Remarks", "Image Files", "PDF Files", "Edit"};
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Choose what to show: ");
                         builder.setCancelable(true);

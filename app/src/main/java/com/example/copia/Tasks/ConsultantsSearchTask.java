@@ -33,47 +33,38 @@ public class ConsultantsSearchTask extends AsyncTask<Void, Void, List<Consultant
         this.search_recyclerview = search_recyclerview;
         this.context = context;
         this.keyword = keyword;
-        dialog = new SpotsDialog.Builder()
-                .setMessage("Searching consultants")
-                .setContext(context)
-                .setCancelable(false)
-                .build();
+        dialog = Utilities.getInstance().showLoading(context, "Searching consultants", false);
     }
 
     @Override
     protected List<ConsultantsEntity> doInBackground(Void... voids) {
         String[] parameters = keyword.split(",");
+        ParseQuery<ParseObject> getRemarksQuery = ParseQuery.getQuery("Notes");
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Consultants");
         query.whereContainedIn("Tags", Arrays.asList(parameters));
         query.whereEqualTo("Deleted", false);
-        query.findInBackground(new FindCallback<ParseObject>() {
-            @Override
-            public void done(List<ParseObject> objects, ParseException e) {
-                if(objects != null && e == null)
+        try {
+            List<ParseObject> objects = query.find();
+            if(objects != null) {
+                for(ParseObject object : objects)
                 {
-                    for(ParseObject object : objects)
-                    {
-                        ConsultantsEntity consultantsEntity = new ConsultantsEntity();
-                        consultantsEntity.setObjectId(object.getObjectId());
-                        consultantsEntity.setRepresentative(object.getString("Representative"));
-                        consultantsEntity.setPosition(object.getString("Position"));
-                        consultantsEntity.setCompany(object.getString("Company"));
-                        consultantsEntity.setSpecialization(object.getString("Specialization"));
-                        consultantsEntity.setClassification(object.getString("Classification"));
-                        consultantsEntity.setIndustry(object.getString("Industry"));
-                        consultantsEntities.add(consultantsEntity);
-                    }
+                    ConsultantsEntity consultantsEntity = new ConsultantsEntity();
+                    consultantsEntity.setObjectId(object.getObjectId());
+                    consultantsEntity.setRepresentative(object.getString("Representative"));
+                    consultantsEntity.setPosition(object.getString("Position"));
+                    consultantsEntity.setCompany(object.getString("Company"));
+                    consultantsEntity.setSpecialization(object.getString("Specialization"));
+                    consultantsEntity.setClassification(object.getString("Classification"));
+                    consultantsEntity.setIndustry(object.getString("Industry"));
+                    getRemarksQuery.whereEqualTo("Deleted", false);
+                    getRemarksQuery.whereEqualTo("Parent", consultantsEntity.getObjectId());
+                    int remark_count = getRemarksQuery.count();
+                    consultantsEntity.setRemarkCount(String.valueOf(remark_count));
+                    consultantsEntities.add(consultantsEntity);
                 }
-                finished = true;
             }
-        });
-        while(finished == false)
-        {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
         return consultantsEntities;
     }
