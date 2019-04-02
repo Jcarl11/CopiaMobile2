@@ -40,6 +40,7 @@ import io.github.codefalling.recyclerviewswipedismiss.SwipeDismissRecyclerViewTo
  * A simple {@link Fragment} subclass.
  */
 public class FragmentManageUsers extends Fragment {
+    private static String TAG = FragmentManageUsers.class.getCanonicalName();
     BetterSpinner users_spinner;
     RecyclerView users_recyclerview;
     List<UserEntity> userEntityList = new ArrayList<>();
