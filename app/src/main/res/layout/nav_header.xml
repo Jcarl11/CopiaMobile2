@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="176dp"
     android:gravity="bottom"
+    android:orientation="vertical"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
 
     <ImageView
         android:id="@+id/imageView3"
@@ -18,68 +20,72 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/drawerbanner" />
 
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_alignParentEnd="false"
-        android:layout_marginStart="8dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/copialogo"
-        app:layout_constraintBottom_toTopOf="@+id/textview_username"
-        app:layout_constraintStart_toStartOf="parent" />
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/imageView4"
+            android:layout_width="55dp"
+            android:layout_height="55dp"
+            android:layout_alignParentEnd="false"
+            android:layout_marginStart="8dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/copialogo"
+            app:layout_constraintBottom_toTopOf="@+id/textview_username"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textview_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="3dp"
-        android:paddingTop="8dp"
-        android:text="Username: "
-        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textColor="@android:color/black"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/textview_email"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/textview_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="3dp"
+            android:paddingTop="8dp"
+            android:text="Username: "
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/textview_email"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textview_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="3dp"
-        android:text="https://concipio-tektura.weebly.com/"
-        android:textColor="@android:color/black"
-        android:textSize="11dp"
-        android:textStyle="bold|italic"
-        app:layout_constraintBottom_toTopOf="@+id/textview_fullname"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/textview_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="3dp"
+            android:text="https://concipio-tektura.weebly.com/"
+            android:textColor="@android:color/black"
+            android:textSize="11dp"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toTopOf="@+id/textview_fullname"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textview_fullname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="3dp"
-        android:text="John Doe"
-        android:textColor="@android:color/black"
-        android:textSize="11dp"
-        android:textStyle="bold|italic"
-        app:layout_constraintBottom_toTopOf="@+id/textview_position"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/textview_fullname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="3dp"
+            android:text="John Doe"
+            android:textColor="@android:color/black"
+            android:textSize="11dp"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toTopOf="@+id/textview_position"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/textview_position"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Administrator"
-        android:textColor="@android:color/black"
-        android:textSize="11dp"
-        android:textStyle="bold|italic"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <TextView
+            android:id="@+id/textview_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Administrator"
+            android:textColor="@android:color/black"
+            android:textSize="11dp"
+            android:textStyle="bold|italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </android.support.constraint.ConstraintLayout>
 
-</android.support.constraint.ConstraintLayout>
+</FrameLayout>
