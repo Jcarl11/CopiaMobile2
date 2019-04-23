@@ -3,6 +3,7 @@ package com.example.copia;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -36,6 +37,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseRole;
 import com.parse.ParseUser;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
