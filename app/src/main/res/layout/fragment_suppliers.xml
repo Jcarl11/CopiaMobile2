@@ -13,30 +13,35 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Representative"
+            android:layout_marginTop="20dp"
             android:textColor="@android:color/black"/>
         <EditText
             android:id="@+id/suppliers_edittext_position"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Position"
+            android:layout_marginTop="10dp"
             android:textColor="@android:color/black"/>
         <EditText
             android:id="@+id/suppliers_edittext_company"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Company"
+            android:layout_marginTop="10dp"
             android:textColor="@android:color/black"/>
         <EditText
             android:id="@+id/suppliers_edittext_brand"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Brand"
+            android:layout_marginTop="10dp"
             android:textColor="@android:color/black"/>
 
         <com.weiwangcn.betterspinner.library.BetterSpinner
             android:id="@+id/suppliers_discipline"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:hint="Discipline"/>
 
         <com.dpizarro.autolabel.library.AutoLabelUI
@@ -48,6 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
             android:weightSum="3">
 
