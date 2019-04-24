@@ -54,8 +54,7 @@ public class SuppliersSearchTask extends AsyncTask<Void, Void, List<SuppliersEnt
                     suppliersEntity.setPosition(object.getString("Position"));
                     suppliersEntity.setCompany(object.getString("Company_Name"));
                     suppliersEntity.setBrand(object.getString("Brand"));
-                    suppliersEntity.setIndustry(object.getString("Industry"));
-                    suppliersEntity.setType(object.getString("Type"));
+                    suppliersEntity.setDiscipline(object.getString("Discipline"));
                     getRemarksQuery.whereEqualTo("Deleted", false);
                     getRemarksQuery.whereEqualTo("Parent", suppliersEntity.getObjectId());
                     int remark_count = getRemarksQuery.count();

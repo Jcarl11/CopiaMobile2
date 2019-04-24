@@ -8,22 +8,10 @@ public class SuppliersEntity implements Serializable {
     String position;
     String company;
     String brand;
-    String industry;
-    String type;
+    String discipline;
     String remarkCount;
 
     public SuppliersEntity() {}
-
-    public SuppliersEntity(String objectId, String representative, String position, String company, String brand, String industry, String type, String remarkCount) {
-        this.objectId = objectId;
-        this.representative = representative;
-        this.position = position;
-        this.company = company;
-        this.brand = brand;
-        this.industry = industry;
-        this.type = type;
-        this.remarkCount = remarkCount;
-    }
 
     public String getObjectId() {
         return objectId;
@@ -65,20 +53,12 @@ public class SuppliersEntity implements Serializable {
         this.brand = brand;
     }
 
-    public String getIndustry() {
-        return industry;
+    public String getDiscipline() {
+        return discipline;
     }
 
-    public void setIndustry(String industry) {
-        this.industry = industry;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setDiscipline(String discipline) {
+        this.discipline = discipline;
     }
 
     public String getRemarkCount() {

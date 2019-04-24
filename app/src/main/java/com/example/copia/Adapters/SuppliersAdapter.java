@@ -37,8 +37,7 @@ public class SuppliersAdapter extends RecyclerView.Adapter<SuppliersAdapter.Supp
         suppliersViewHolder.position.setText(suppliersEntity.getPosition());
         suppliersViewHolder.company.setText(suppliersEntity.getCompany());
         suppliersViewHolder.brand.setText(suppliersEntity.getBrand());
-        suppliersViewHolder.industry.setText(suppliersEntity.getIndustry());
-        suppliersViewHolder.type.setText(suppliersEntity.getType());
+        suppliersViewHolder.discipline.setText(suppliersEntity.getDiscipline());
         suppliersViewHolder.remarkCount.setText(suppliersEntity.getRemarkCount());
     }
 
@@ -48,15 +47,14 @@ public class SuppliersAdapter extends RecyclerView.Adapter<SuppliersAdapter.Supp
     }
 
     public class SuppliersViewHolder extends RecyclerView.ViewHolder{
-        TextView representative, position, company,brand, industry, type, remarkCount;
+        TextView representative, position, company,brand, discipline, type, remarkCount;
         public SuppliersViewHolder(@NonNull View itemView) {
             super(itemView);
             representative = itemView.findViewById(R.id.search_suppliers_textview_representative);
             position = itemView.findViewById(R.id.search_suppliers_textview_position);
             company = itemView.findViewById(R.id.search_suppliers_textview_company);
             brand = itemView.findViewById(R.id.search_suppliers_textview_brand);
-            industry = itemView.findViewById(R.id.search_suppliers_textview_industry);
-            type = itemView.findViewById(R.id.search_suppliers_textview_type);
+            discipline = itemView.findViewById(R.id.search_suppliers_textview_discipline);
             remarkCount = itemView.findViewById(R.id.search_suppliers_textview_remarks);
         }
     }

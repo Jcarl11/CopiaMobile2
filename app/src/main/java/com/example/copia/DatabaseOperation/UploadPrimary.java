@@ -46,32 +46,20 @@ public class UploadPrimary
 
     public ParseObject suppliers_upload(HashMap<String, String> suppliersData, ArrayList<String> tags)
     {
-        finished = false;
         successful = false;
         final ParseObject query = new ParseObject("Suppliers");
         query.put("Representative", suppliersData.get("Representative"));
         query.put("Position", suppliersData.get("Position"));
         query.put("Company_Name", suppliersData.get("Company_Name"));
         query.put("Brand", suppliersData.get("Brand"));
-        query.put("Industry", suppliersData.get("Industry"));
-        query.put("Type", suppliersData.get("Type"));
+        query.put("Discipline", suppliersData.get("Discipline"));
         query.put("Tags", new JSONArray(tags));
         query.put("Deleted", false);
-        query.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e == null)
-                    successful = true;
-                finished= true;
-            }
-        });
-        while(finished == false)
-        {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            query.save();
+            successful = true;
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
         return query;
     }

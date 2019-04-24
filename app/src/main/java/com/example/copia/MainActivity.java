@@ -44,6 +44,7 @@ import java.util.List;
 import dmax.dialog.SpotsDialog;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TAG = "MainActivity";
     private DrawerLayout drawer;
     TextView textview_username, textview_email, textview_fullname, textView_position;
     private String objectId = null;
@@ -65,7 +66,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         else if(user != null) {
 
             new RetrieveComboBoxTask().execute((Void) null);
-            //new RetrieveRoleTask().execute((Void) null);
             Fresco.initialize(this);
             NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
             View headerView = navigationView.getHeaderView(0);
@@ -148,11 +148,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     private class RetrieveComboBoxTask extends AsyncTask<Void, Void, ArrayList<ComboboxEntity>>
     {
+        ArrayList<ComboboxEntity> comboboxEntities = new ArrayList<>();
         AlertDialog dialog;
         public  RetrieveComboBoxTask(){
             dialog = Utilities.getInstance().showLoading(MainActivity.this, "Please wait", false);
         }
-        ArrayList<ComboboxEntity> comboboxEntities = new ArrayList<>();
+
         @Override
         protected ArrayList<ComboboxEntity> doInBackground(Void... voids) {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("ComboboxData");
@@ -186,6 +187,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         @Override
         protected void onPostExecute(ArrayList<ComboboxEntity> comboboxEntities) {
+            Log.d(TAG, "onPostExecute: comboboxEntities: " + comboboxEntities.size());
             dialog.dismiss();
             if(comboboxEntities.size() <= 0)
                 Utilities.getInstance().showAlertBox("Empty", "No data were retrieved", MainActivity.this);

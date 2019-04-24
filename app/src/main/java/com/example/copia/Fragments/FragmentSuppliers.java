@@ -9,9 +9,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,8 +36,10 @@ import com.vincent.filepicker.activity.ImagePickActivity;
 import com.vincent.filepicker.activity.NormalFilePickActivity;
 import com.vincent.filepicker.filter.entity.ImageFile;
 import com.vincent.filepicker.filter.entity.NormalFile;
+import com.weiwangcn.betterspinner.library.BetterSpinner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -45,35 +49,32 @@ import dmax.dialog.SpotsDialog;
 
 public class FragmentSuppliers extends Fragment implements View.OnClickListener
 {
+    private static final String TAG = "FragmentSuppliers";
     ParseObject reference = null;
     ArrayList<ImageFile> imageList = new ArrayList<>();
     ArrayList<NormalFile> filesList = new ArrayList<>();
-    ArrayList<String> industryList = new ArrayList<>();
-    ArrayList<String> typeList = new ArrayList<>();
+    ArrayList<String> discipline = new ArrayList<>();
     AutoLabelUI mAutoLabel_remark;
     AutoLabelUI suppliers_label_files;
     EditText suppliers_edittext_representative, suppliers_edittext_position, suppliers_edittext_company,suppliers_edittext_brand,suppliers_edittext_addremark;
-    Spinner suppliers_spinner_industry,suppliers_spinner_type;
+    BetterSpinner suppliers_discipline;
     Button suppliers_btn_addremark,suppliers_btn_upload, suppliers_btn_uploadfile, suppliers_btn_uploadimage;
+    String selectedDiscipline = null;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_suppliers, container, false);
         ((MainActivity)getActivity()).getSupportActionBar().setTitle("Suppliers");
-        List<ComboboxEntity> industry = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Suppliers", "Industry");
-        List<ComboboxEntity> type = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Suppliers", "Type");
-        for(ComboboxEntity entity : industry)
-            industryList.add(entity.getTitle());
-        for(ComboboxEntity entity : type)
-            typeList.add(entity.getTitle());
+        List<ComboboxEntity> disciplineList = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Suppliers", "Discipline");
+        Log.d(TAG, "onCreateView: disciplineList: " + disciplineList.size());
+        for(ComboboxEntity entity : disciplineList)
+            discipline.add(entity.getTitle());
 
         suppliers_edittext_representative = (EditText)view.findViewById(R.id.suppliers_edittext_representative);
         suppliers_edittext_position = (EditText)view.findViewById(R.id.suppliers_edittext_position);
         suppliers_edittext_company = (EditText)view.findViewById(R.id.suppliers_edittext_company);
         suppliers_edittext_brand = (EditText)view.findViewById(R.id.suppliers_edittext_brand);
         suppliers_edittext_addremark = (EditText)view.findViewById(R.id.suppliers_edittext_remarks);
-        suppliers_spinner_industry = (Spinner)view.findViewById(R.id.suppliers_combobox_industry);
-        suppliers_spinner_type = (Spinner)view.findViewById(R.id.suppliers_combobox_type);
         suppliers_btn_addremark = (Button)view.findViewById(R.id.suppliers_button_addremark);
         suppliers_btn_upload = (Button)view.findViewById(R.id.suppliers_button_upload);
         suppliers_btn_upload.setOnClickListener(this);
@@ -83,12 +84,16 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
         suppliers_btn_uploadimage.setOnClickListener(this);
         mAutoLabel_remark = (AutoLabelUI)view.findViewById(R.id.suppliers_label_remark);
         suppliers_label_files = (AutoLabelUI)view.findViewById(R.id.suppliers_label_files);
-        ArrayAdapter<String> dataAdapter1 = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, industryList);
-        ArrayAdapter<String> dataAdapter2 = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, typeList);
-        dataAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        suppliers_spinner_industry.setAdapter(dataAdapter1);
-        suppliers_spinner_type.setAdapter(dataAdapter2);
+        suppliers_discipline = (BetterSpinner) view.findViewById(R.id.suppliers_discipline);
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_dropdown_item_1line, discipline);
+        suppliers_discipline.setAdapter(myAdapter);
+        suppliers_discipline.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedDiscipline = String.valueOf(parent.getItemAtPosition(position));
+                Log.d(TAG, "onItemClick: selectedDiscipline: " + selectedDiscipline);
+            }
+        });
         suppliers_btn_addremark.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -161,9 +166,7 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
         String position = suppliers_edittext_position.getText().toString().trim();
         String company = suppliers_edittext_company.getText().toString().trim();
         String brand = suppliers_edittext_brand.getText().toString().trim();
-        String industry = suppliers_spinner_industry.getSelectedItem().toString();
-        String type = suppliers_spinner_type.getSelectedItem().toString();
-        if(!TextUtils.isEmpty(representative) && !TextUtils.isEmpty(position) && !TextUtils.isEmpty(company) && !TextUtils.isEmpty(brand) && !TextUtils.isEmpty(industry) && !TextUtils.isEmpty(type))
+        if(!TextUtils.isEmpty(representative) && !TextUtils.isEmpty(position) && !TextUtils.isEmpty(company) && !TextUtils.isEmpty(brand))
             hasNull = false;
 
         return hasNull;
@@ -175,16 +178,14 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
         String position = suppliers_edittext_position.getText().toString().trim().toUpperCase();
         String company = suppliers_edittext_company.getText().toString().trim().toUpperCase();
         String brand = suppliers_edittext_brand.getText().toString().trim().toUpperCase();
-        String industry = suppliers_spinner_industry.getSelectedItem().toString().toUpperCase();
-        String type = suppliers_spinner_type.getSelectedItem().toString().toUpperCase();
+        String discipline = selectedDiscipline;
 
         ArrayList<String> tags = new ArrayList<>();
         tags.add(representative);
         tags.add(position);
         tags.add(company);
         tags.add(brand);
-        tags.add(industry);
-        tags.add(type);
+        tags.add(discipline);
         String[] representativeSplit = representative.split("\\s+");
         String[] positionSplit = position.split("\\s+");
         String[] companySplit = company.split("\\s+");
@@ -201,18 +202,14 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
     }
     private class SuppliersUploadTask extends AsyncTask<Void, Void, Boolean>
     {
+
         UploadPrimary uploadPrimary = new UploadPrimary();
         RemarksUpload remarksUpload = new RemarksUpload();
         ImageUpload imageUpload = new ImageUpload(getContext());
         FileUpload fileUpload = new FileUpload();
         AlertDialog dialog;
-        public SuppliersUploadTask()
-        {
-            dialog = new SpotsDialog.Builder()
-                    .setMessage("Loading data")
-                    .setContext(getContext())
-                    .setCancelable(false)
-                    .build();
+        public SuppliersUploadTask() {
+            dialog = Utilities.getInstance().showLoading(getContext(), "Please wait", false);
         }
         @Override
         protected Boolean doInBackground(Void... voids) {
@@ -223,8 +220,8 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
             data.put("Position", suppliers_edittext_position.getText().toString().trim().toUpperCase());
             data.put("Company_Name", suppliers_edittext_company.getText().toString().trim().toUpperCase());
             data.put("Brand", suppliers_edittext_brand.getText().toString().trim().toUpperCase());
-            data.put("Industry", suppliers_spinner_industry.getSelectedItem().toString().toUpperCase());
-            data.put("Type", suppliers_spinner_type.getSelectedItem().toString().toUpperCase());
+            data.put("Discipline", selectedDiscipline.toUpperCase());
+            Log.d(TAG, "doInBackground: Discipline: "  + selectedDiscipline);
 
 
             if(Utilities.API_LEVEL >= android.os.Build.VERSION_CODES.N) //If api level is 24 or above

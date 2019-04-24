@@ -28,12 +28,11 @@ import java.util.List;
 public class SuppliersEditActivity extends AppCompatActivity {
     SuppliersEntity suppliersEntity;
     TextInputLayout representative, position, company, brand;
-    Spinner industry, type;
+    Spinner discipline_spinner;
     Button save;
-    ArrayList<String> industryLists = new ArrayList<>();
+    ArrayList<String> disciplineLists = new ArrayList<>();
     ArrayList<String> typeLists = new ArrayList<>();
     ArrayAdapter<String> dataAdapter1;
-    ArrayAdapter<String> dataAdapter2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,25 +40,18 @@ public class SuppliersEditActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("Suppliers Edit");
         Intent intent = getIntent();
         suppliersEntity = (SuppliersEntity) intent.getSerializableExtra(FragmentSearch.SUPPLIERS);
-        List<ComboboxEntity> industryList = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Suppliers", "Industry");
-        List<ComboboxEntity> typeList = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Suppliers", "Type");
-        for(ComboboxEntity entity : industryList)
-            industryLists.add(entity.getTitle().toUpperCase());
-        for(ComboboxEntity entity : typeList)
-            typeLists.add(entity.getTitle().toUpperCase());
-        dataAdapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, industryLists);
-        dataAdapter2 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, typeLists);
+        List<ComboboxEntity> disciplineList = ComboboxEntity.find(ComboboxEntity.class, "category = ? and field = ?","Suppliers", "Discipline");
+        for(ComboboxEntity entity : disciplineList)
+            disciplineLists.add(entity.getTitle().toUpperCase());
+        dataAdapter1 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, disciplineLists);
         dataAdapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        dataAdapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         representative = (TextInputLayout)findViewById(R.id.suppliers_edit_representative);
         position = (TextInputLayout)findViewById(R.id.suppliers_edit_position);
         company = (TextInputLayout)findViewById(R.id.suppliers_edit_company);
-        brand = (TextInputLayout)findViewById(R.id.suppliers_edit_brand); 
-        industry = (Spinner)findViewById(R.id.suppliers_edit_industry);
-        type = (Spinner)findViewById(R.id.suppliers_edit_type);
+        brand = (TextInputLayout)findViewById(R.id.suppliers_edit_brand);
+        discipline_spinner = (Spinner)findViewById(R.id.suppliers_edit_discipline);
         save = (Button)findViewById(R.id.suppliers_edit_save);
-        industry.setAdapter(dataAdapter1);
-        type.setAdapter(dataAdapter2);
+        discipline_spinner.setAdapter(dataAdapter1);
         setDefaultValues();
     }
     
@@ -91,8 +83,7 @@ public class SuppliersEditActivity extends AppCompatActivity {
         position.getEditText().setText(suppliersEntity.getPosition());
         company.getEditText().setText(suppliersEntity.getCompany());
         brand.getEditText().setText(suppliersEntity.getBrand());
-        industry.setSelection(dataAdapter1.getPosition(suppliersEntity.getIndustry()));
-        type.setSelection(dataAdapter2.getPosition(suppliersEntity.getType()));
+        discipline_spinner.setSelection(dataAdapter1.getPosition(suppliersEntity.getDiscipline()));
     }
 
 
@@ -107,8 +98,7 @@ public class SuppliersEditActivity extends AppCompatActivity {
             String pos = position.getEditText().getText().toString().trim();
             String comp = company.getEditText().getText().toString().trim();
             String brands = brand.getEditText().getText().toString().trim();
-            String ind = industry.getSelectedItem().toString();
-            String typ = type.getSelectedItem().toString();
+            String disc = discipline_spinner.getSelectedItem().toString();
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Suppliers");
             query.getInBackground(suppliersEntity.getObjectId(), new GetCallback<ParseObject>() {
                 @Override
@@ -119,8 +109,7 @@ public class SuppliersEditActivity extends AppCompatActivity {
                         object.put("Position", pos.toUpperCase());
                         object.put("Company_Name", comp.toUpperCase());
                         object.put("Brand", brands.toUpperCase());
-                        object.put("Industry", ind.toUpperCase());
-                        object.put("Type", typ.toUpperCase());
+                        object.put("Discipline", disc.toUpperCase());
                         object.put("Tags", suppliers_extractStringsToTags());
                         object.saveInBackground(new SaveCallback() {
                             @Override
@@ -156,8 +145,7 @@ public class SuppliersEditActivity extends AppCompatActivity {
                 suppliersEntity.setPosition(position.getEditText().getText().toString().trim().toUpperCase());
                 suppliersEntity.setCompany(company.getEditText().getText().toString().trim().toUpperCase());
                 suppliersEntity.setBrand(brand.getEditText().getText().toString().trim().toUpperCase());
-                suppliersEntity.setIndustry(industry.getSelectedItem().toString().toUpperCase());
-                suppliersEntity.setType(type.getSelectedItem().toString().toUpperCase());
+                suppliersEntity.setDiscipline(discipline_spinner.getSelectedItem().toString().toUpperCase());
                 Intent intent = new Intent();
                 intent.putExtra(FragmentSearch.SUPPLIERS, suppliersEntity);
                 setResult(RESULT_OK, intent);
@@ -176,16 +164,14 @@ public class SuppliersEditActivity extends AppCompatActivity {
         String pos = position.getEditText().getText().toString().trim().toUpperCase();
         String comp = company.getEditText().getText().toString().trim().toUpperCase();
         String brands = brand.getEditText().getText().toString().trim().toUpperCase();
-        String ind = industry.getSelectedItem().toString().toUpperCase();
-        String typ = type.getSelectedItem().toString().toUpperCase();
+        String disc = discipline_spinner.getSelectedItem().toString().toUpperCase();
 
         ArrayList<String> tags = new ArrayList<>();
         tags.add(rep);
         tags.add(pos);
         tags.add(comp);
         tags.add(brands);
-        tags.add(ind);
-        tags.add(typ);
+        tags.add(disc);
         String[] representativeSplit = rep.split("\\s+");
         String[] positionSplit = pos.split("\\s+");
         String[] companySplit = comp.split("\\s+");

@@ -1,10 +1,10 @@
 <resources>
     <string name="app_name">Copia</string>
-    <string name="back4app_server_url">https://copia.back4app.io/</string>
+    <string name="back4app_server_url">https://concipiotektura.back4app.io/</string>
 
     <!-- Change the following strings as required -->
-    <string name="back4app_app_id">G68vjaiK4qU69S87FBD6ZLCRTkHOuo6EudExDvKf</string>
-    <string name="back4app_client_key">y2nfgbVdt6jvJ9XGqlNHLBDXNU6F9yflmbQXTUzz</string>
+    <string name="back4app_app_id">4GCD5XK7GucFbTKnJa0fonFEBlAh3azBS3Gh0NNd</string>
+    <string name="back4app_client_key">NZhpiMQGNbTLp0p6RRk8AbbNHw3j6kzh5hZ50s8V</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="prompt_industry">Industry</string>

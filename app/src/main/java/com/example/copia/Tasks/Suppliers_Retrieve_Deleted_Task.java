@@ -41,8 +41,7 @@ public class Suppliers_Retrieve_Deleted_Task extends AsyncTask<Void, Void, List<
                 suppliersEntity.setPosition(object.getString("Position"));
                 suppliersEntity.setCompany(object.getString("Company_Name"));
                 suppliersEntity.setBrand(object.getString("Brand"));
-                suppliersEntity.setIndustry(object.getString("Industry"));
-                suppliersEntity.setType(object.getString("Type"));
+                suppliersEntity.setDiscipline(object.getString("Discipline"));
                 suppliersEntities.add(suppliersEntity);
             }
         }
