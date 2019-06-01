@@ -56,7 +56,8 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
     ArrayList<String> discipline = new ArrayList<>();
     AutoLabelUI mAutoLabel_remark;
     AutoLabelUI suppliers_label_files;
-    EditText suppliers_edittext_representative, suppliers_edittext_position, suppliers_edittext_company,suppliers_edittext_brand,suppliers_edittext_addremark;
+    EditText suppliers_edittext_representative, suppliers_edittext_position, suppliers_edittext_company,suppliers_edittext_brand,suppliers_edittext_addremark
+            ,suppliers_edittext_others;
     BetterSpinner suppliers_discipline;
     Button suppliers_btn_addremark,suppliers_btn_upload, suppliers_btn_uploadfile, suppliers_btn_uploadimage;
     String selectedDiscipline = null;
@@ -69,12 +70,13 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
         Log.d(TAG, "onCreateView: disciplineList: " + disciplineList.size());
         for(ComboboxEntity entity : disciplineList)
             discipline.add(entity.getTitle());
-
+        discipline.add("Others");
         suppliers_edittext_representative = (EditText)view.findViewById(R.id.suppliers_edittext_representative);
         suppliers_edittext_position = (EditText)view.findViewById(R.id.suppliers_edittext_position);
         suppliers_edittext_company = (EditText)view.findViewById(R.id.suppliers_edittext_company);
         suppliers_edittext_brand = (EditText)view.findViewById(R.id.suppliers_edittext_brand);
         suppliers_edittext_addremark = (EditText)view.findViewById(R.id.suppliers_edittext_remarks);
+        suppliers_edittext_others = (EditText)view.findViewById(R.id.suppliers_edittext_others);
         suppliers_btn_addremark = (Button)view.findViewById(R.id.suppliers_button_addremark);
         suppliers_btn_upload = (Button)view.findViewById(R.id.suppliers_button_upload);
         suppliers_btn_upload.setOnClickListener(this);
@@ -92,6 +94,10 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 selectedDiscipline = String.valueOf(parent.getItemAtPosition(position));
                 Log.d(TAG, "onItemClick: selectedDiscipline: " + selectedDiscipline);
+                suppliers_edittext_others.setVisibility(View.GONE);
+                if(selectedDiscipline.equalsIgnoreCase("Others")) {
+                    suppliers_edittext_others.setVisibility(View.VISIBLE);
+                }
             }
         });
         suppliers_btn_addremark.setOnClickListener(new View.OnClickListener() {
@@ -161,15 +167,27 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
 
     private boolean hasNullFields()
     {
-        boolean hasNull = true;
         String representative = suppliers_edittext_representative.getText().toString().trim();
         String position = suppliers_edittext_position.getText().toString().trim();
         String company = suppliers_edittext_company.getText().toString().trim();
         String brand = suppliers_edittext_brand.getText().toString().trim();
-        if(!TextUtils.isEmpty(representative) && !TextUtils.isEmpty(position) && !TextUtils.isEmpty(company) && !TextUtils.isEmpty(brand))
-            hasNull = false;
+        String others = selectedDiscipline.equalsIgnoreCase("Others") ?
+                suppliers_edittext_others.getText().toString().trim() : null;
+        if (!TextUtils.isEmpty(representative) &&
+                !TextUtils.isEmpty(position) &&
+                !TextUtils.isEmpty(company) &&
+                !TextUtils.isEmpty(brand) &&
+                selectedDiscipline != null ) {
+            if(selectedDiscipline.equalsIgnoreCase("Others")) {
+                if(!TextUtils.isEmpty(others)) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
 
-        return hasNull;
+        return true;
     }
 
     public ArrayList<String> suppliers_extractStringsToTags()
@@ -178,7 +196,9 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
         String position = suppliers_edittext_position.getText().toString().trim().toUpperCase();
         String company = suppliers_edittext_company.getText().toString().trim().toUpperCase();
         String brand = suppliers_edittext_brand.getText().toString().trim().toUpperCase();
-        String discipline = selectedDiscipline;
+        String discipline = selectedDiscipline.toUpperCase();
+        String others = selectedDiscipline.equalsIgnoreCase("Others") == true ?
+                suppliers_edittext_others.getText().toString().trim().toUpperCase() : null;
 
         ArrayList<String> tags = new ArrayList<>();
         tags.add(representative);
@@ -190,6 +210,7 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
         String[] positionSplit = position.split("\\s+");
         String[] companySplit = company.split("\\s+");
         String[] brandSplit = brand.split("\\s+");
+        String[] othersSplit = others != null ? others.split("\\s+") : null;
         for(String values : representativeSplit)
             tags.add(values.toUpperCase());
         for(String values : positionSplit)
@@ -198,6 +219,10 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
             tags.add(values.toUpperCase());
         for(String values : brandSplit)
             tags.add(values.toUpperCase());
+        if(othersSplit != null) {
+            for (String values : othersSplit)
+                tags.add(values.toUpperCase());
+        }
         return tags;
     }
     private class SuppliersUploadTask extends AsyncTask<Void, Void, Boolean>
@@ -220,7 +245,9 @@ public class FragmentSuppliers extends Fragment implements View.OnClickListener
             data.put("Position", suppliers_edittext_position.getText().toString().trim().toUpperCase());
             data.put("Company_Name", suppliers_edittext_company.getText().toString().trim().toUpperCase());
             data.put("Brand", suppliers_edittext_brand.getText().toString().trim().toUpperCase());
-            data.put("Discipline", selectedDiscipline.toUpperCase());
+            data.put("Discipline", selectedDiscipline.equalsIgnoreCase("Others") == true ?
+                    suppliers_edittext_others.getText().toString().trim().toUpperCase() :
+                    selectedDiscipline.toUpperCase());
             Log.d(TAG, "doInBackground: Discipline: "  + selectedDiscipline);
 
 
